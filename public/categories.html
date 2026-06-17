@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse cosmetics categories at Sanique. Take our Beauty Quiz for personalized skincare routines.">
+  <title>Beauty Quiz & Categories | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">Complimentary Shipping on Luxury Orders Above ₹1,500</div>
+    <div class="navbar">
+      <div class="menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></div>
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="/about.html" class="nav-item">Our Story</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:40px 5%;">
+    <!-- Section 1: Beauty Quiz -->
+    <section style="margin-bottom:60px;">
+      <h1 style="font-size:2.4rem; font-family:var(--font-serif); text-align:center; margin-bottom:10px;">Interactive Beauty Quiz</h1>
+      <p style="text-align:center; color:var(--text-secondary); max-width:600px; margin:0 auto 30px;">Discover your skin's perfect match. Answer these simple questions to unlock your custom skincare routine and shade options.</p>
+
+      <div id="quiz-result-container"></div>
+
+      <div id="quiz-questions-wrapper" style="max-width:600px; margin:0 auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:40px; box-shadow:0 10px 30px var(--shadow-color);">
+        <!-- Step 1 -->
+        <div class="quiz-step active" id="quiz-step-1">
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--rose-gold); font-weight:bold;">Step 1 of 4</span>
+          <h3 style="font-size:1.3rem; margin:10px 0 20px;">What is your primary skin concern?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option-card" onclick="nextQuizStep(1, 'dryness')">Dryness & Dullness</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(1, 'acne')">Acne & Excess Sebum</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(1, 'anti-aging')">Aging & Wrinkles</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(1, 'redness')">Redness & Sensitivity</div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="quiz-step" id="quiz-step-2">
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--rose-gold); font-weight:bold;">Step 2 of 4</span>
+          <h3 style="font-size:1.3rem; margin:10px 0 20px;">How would you describe your skin tone?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option-card" onclick="nextQuizStep(2, 'fair')">Fair / Light Complexion</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(2, 'medium')">Medium / Wheatish Tone</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(2, 'deep')">Deep / Warm Amber Tone</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="quiz-step" id="quiz-step-3">
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--rose-gold); font-weight:bold;">Step 3 of 4</span>
+          <h3 style="font-size:1.3rem; margin:10px 0 20px;">What is your makeup style preference?</h3>
+          <div class="quiz-options">
+            <div class="quiz-option-card" onclick="nextQuizStep(3, 'natural')">Minimal / Dewy Clean</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(3, 'glam')">Full Glamour / Matte Finish</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(3, 'bold')">Vibrant Lips & Graphic Eyes</div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="quiz-step" id="quiz-step-4">
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--rose-gold); font-weight:bold;">Step 4 of 4</span>
+          <h3 style="font-size:1.3rem; margin:10px 0 20px;">Choose a festival collection style:</h3>
+          <div class="quiz-options">
+            <div class="quiz-option-card" onclick="nextQuizStep(4, 'diwali')">Diwali Bright Gold Glow</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(4, 'bridal')">Royal Red Bridal Elegance</div>
+            <div class="quiz-option-card" onclick="nextQuizStep(4, 'party')">Sleek Midnight Party Vibe</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Categories Grid -->
+    <section>
+      <h2 style="font-size:2rem; font-family:var(--font-serif); text-align:center; margin-bottom:40px;">Shop By Category</h2>
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:25px;">
+        <!-- Card Lips -->
+        <a href="/shop.html?category=Lipsticks" style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:25px; text-align:center; box-shadow:0 4px 15px var(--shadow-color);">
+          <div class="cosmetic-render" style="width:40px; height:60px; margin:0 auto 15px; background:linear-gradient(to bottom, #9B111E, #2C0C0E);"></div>
+          <h3 style="font-size:1.15rem; margin-bottom:5px;">Lipsticks</h3>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Matte, Satin, Gloss</span>
+        </a>
+        <!-- Card Foundations -->
+        <a href="/shop.html?category=Foundations" style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:25px; text-align:center; box-shadow:0 4px 15px var(--shadow-color);">
+          <div class="cosmetic-render" style="width:40px; height:60px; margin:0 auto 15px; background:linear-gradient(to bottom, #EAD2C2, #B99379);"></div>
+          <h3 style="font-size:1.15rem; margin-bottom:5px;">Foundations</h3>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">HD Fluid, Dewy Base</span>
+        </a>
+        <!-- Card Serums -->
+        <a href="/shop.html?category=Serums" style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:25px; text-align:center; box-shadow:0 4px 15px var(--shadow-color);">
+          <div class="cosmetic-render" style="width:40px; height:60px; margin:0 auto 15px; background:linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(183, 110, 121, 0.6));"></div>
+          <h3 style="font-size:1.15rem; margin-bottom:5px;">Serums</h3>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Vitamin C, Hyaluronic</span>
+        </a>
+        <!-- Card SPF -->
+        <a href="/shop.html?category=Sunscreens" style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:25px; text-align:center; box-shadow:0 4px 15px var(--shadow-color);">
+          <div class="cosmetic-render" style="width:40px; height:60px; margin:0 auto 15px; background:linear-gradient(to bottom, #F9EBEA, #D4AC0D);"></div>
+          <h3 style="font-size:1.15rem; margin-bottom:5px;">Sunscreens</h3>
+          <span style="font-size:0.75rem; color:var(--text-secondary);">Matte physical shield</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/ai-tools.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your Sanique Cosmetics shipment delivery progress in real-time.">
+  <title>Track Order | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links"><a href="/index.html" class="nav-item">Home</a><a href="/shop.html" class="nav-item">Shop</a></nav>
+    </div>
+  </header>
+
+  <main style="max-width:800px; margin:100px auto 0; padding:60px 5%;">
+    <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:40px; box-shadow:0 10px 30px var(--shadow-color); text-align:center;">
+      <h1 style="font-size:2.2rem; font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px;">Order Tracking</h1>
+      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:30px;">Tracking number: <strong id="tracking-number-text" style="color:var(--text-primary);">SQ...</strong></p>
+
+      <!-- Visual Pipeline tracker -->
+      <div style="display:flex; justify-content:space-between; align-items:center; position:relative; margin: 40px 0 60px; max-width:600px; margin-left:auto; margin-right:auto;">
+        <!-- Connecting bars -->
+        <div style="position:absolute; top:25px; left:0; width:100%; height:4px; background:var(--mid-grey); z-index:1;"></div>
+        <div id="tracking-progress-bar" style="position:absolute; top:25px; left:0; width:0%; height:4px; background:var(--rose-gold); z-index:2; transition: width 0.8s ease-in-out;"></div>
+
+        <!-- Node 1 -->
+        <div style="z-index:3; text-align:center; width:100px;">
+          <div id="node-ordered" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-shopping-bag"></i></div>
+          <span style="font-size:0.8rem; font-weight:600; display:block;">Ordered</span>
+        </div>
+        <!-- Node 2 -->
+        <div style="z-index:3; text-align:center; width:100px;">
+          <div id="node-shipped" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-truck"></i></div>
+          <span style="font-size:0.8rem; font-weight:600; display:block;">Shipped</span>
+        </div>
+        <!-- Node 3 -->
+        <div style="z-index:3; text-align:center; width:100px;">
+          <div id="node-delivered" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-box-open"></i></div>
+          <span style="font-size:0.8rem; font-weight:600; display:block;">Delivered</span>
+        </div>
+      </div>
+
+      <!-- Specs info -->
+      <div style="border-top:1px solid var(--border-color); padding-top:25px; text-align:left; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div>
+          <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:5px;">Shipping Address:</h4>
+          <p id="track-address-text" style="font-size:0.9rem; line-height:1.5; color:var(--text-primary);"></p>
+        </div>
+        <div>
+          <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:5px;">Order Details:</h4>
+          <p style="font-size:0.9rem; line-height:1.5; color:var(--text-primary);">
+            Payment Method: <span id="track-payment-text">COD</span><br>
+            Amount Paid: <strong id="track-amount-text" style="color:var(--rose-gold);">₹0</strong>
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top:35px; display:flex; gap:15px; justify-content:center;">
+        <a href="/dashboard.html" class="btn btn-primary">Go To Dashboard</a>
+        <a id="invoice-download-btn" href="#" class="btn btn-outline" download>Download Invoice</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', loadTrackingDetails);
+
+    async function loadTrackingDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) return;
+
+      const token = localStorage.getItem('sanique_token');
+
+      try {
+        const res = await fetch(`/api/orders/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const order = await res.json();
+
+        if (res.status !== 200) {
+          showToast("Failed to fetch tracking details", "error");
+          return;
+        }
+
+        // Render values
+        document.getElementById('tracking-number-text').textContent = order.trackingNumber;
+        document.getElementById('track-address-text').innerHTML = `
+          ${order.shippingAddress.street}<br>
+          ${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.zipCode}
+        `;
+        document.getElementById('track-payment-text').textContent = order.paymentMethod;
+        document.getElementById('track-amount-text').textContent = `₹${order.amount.toLocaleString('en-IN')}`;
+        
+        const invoiceBtn = document.getElementById('invoice-download-btn');
+        if (invoiceBtn) invoiceBtn.href = `/api/orders/${order._id}/invoice`;
+
+        // Render pipeline states
+        const progress = document.getElementById('tracking-progress-bar');
+        const nodeOrdered = document.getElementById('node-ordered');
+        const nodeShipped = document.getElementById('node-shipped');
+        const nodeDelivered = document.getElementById('node-delivered');
+
+        const activeColor = 'var(--rose-gold)';
+
+        if (order.orderStatus === 'Ordered') {
+          progress.style.width = '0%';
+          nodeOrdered.style.backgroundColor = activeColor;
+        } else if (order.orderStatus === 'Shipped') {
+          progress.style.width = '50%';
+          nodeOrdered.style.backgroundColor = activeColor;
+          nodeShipped.style.backgroundColor = activeColor;
+        } else if (order.orderStatus === 'Delivered') {
+          progress.style.width = '100%';
+          nodeOrdered.style.backgroundColor = activeColor;
+          nodeShipped.style.backgroundColor = activeColor;
+          nodeDelivered.style.backgroundColor = activeColor;
+        } else if (order.orderStatus === 'Cancelled') {
+          document.getElementById('tracking-number-text').textContent += ' (CANCELLED)';
+          progress.style.width = '0%';
+          progress.style.backgroundColor = '#E05D5D';
+          nodeOrdered.style.backgroundColor = '#E05D5D';
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

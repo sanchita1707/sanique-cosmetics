@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore details, ingredients list, and try on shades in virtual cosmetic camera at Sanique Cosmetics.">
+  <title>Product Details | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-top">Complimentary Shipping on Luxury Orders Above ₹1,500</div>
+    <div class="navbar">
+      <div class="menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></div>
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="/about.html" class="nav-item">Our Story</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cart Drawer Overlay -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body"></div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn">View Full Cart</a>
+    </div>
+  </div>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:40px 5%;">
+    <!-- Main layout split -->
+    <div style="display:grid; grid-template-columns: 1fr 1.1fr; gap:50px; margin-bottom:50px; flex-wrap:wrap;">
+      
+      <!-- Left Image Gallery -->
+      <section style="display:flex; flex-direction:column; gap:20px;">
+        <div id="details-main-img" style="aspect-ratio:1; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); display:flex; align-items:center; justify-content:center; padding:30px; box-shadow:0 4px 15px var(--shadow-color);"></div>
+        <div id="details-thumbnails" style="display:flex; gap:10px; justify-content:center;"></div>
+      </section>
+
+      <!-- Right Details Specs -->
+      <section style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <span id="details-category" style="text-transform:uppercase; font-size:0.8rem; color:var(--rose-gold); font-weight:600; letter-spacing:1.5px;">Category</span>
+          <h1 id="details-title" style="font-size:2.8rem; font-family:var(--font-serif); margin:5px 0 10px; line-height:1.2;">Product Name</h1>
+          
+          <div id="details-rating" class="product-rating" style="margin-bottom:15px;"></div>
+          <div id="details-stock" style="margin-bottom:15px;"></div>
+        </div>
+
+        <div id="details-price" style="border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:15px 0;"></div>
+
+        <div>
+          <p id="details-description" style="line-height:1.7; color:var(--text-secondary); margin-bottom:20px;">Product description goes here...</p>
+          
+          <h4 style="font-size:0.85rem; text-transform:uppercase; color:var(--text-secondary); margin-bottom:8px;">Choose Shade:</h4>
+          <div id="details-shades" class="shade-container" style="margin-bottom:20px;"></div>
+
+          <!-- Camera and Finder actions -->
+          <div id="try-on-actions" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- Purchase options -->
+        <div style="display:flex; gap:15px;">
+          <button class="btn btn-luxury" id="details-buy-now" style="flex:1;">Buy Now</button>
+          <button class="btn btn-outline" id="details-add-cart" style="flex:1;">Add to Cart</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Accordion Tabs -->
+    <section style="margin-bottom:50px;">
+      <div style="border-bottom:1px solid var(--border-color); display:flex; gap:30px; margin-bottom:25px;">
+        <h3 style="font-size:1.15rem; color:var(--rose-gold); padding-bottom:8px; border-bottom:2.5px solid var(--rose-gold); cursor:pointer;">Benefits</h3>
+        <h3 style="font-size:1.15rem; color:var(--text-secondary); cursor:pointer;">How To Use</h3>
+      </div>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
+        <ul id="details-benefits" style="list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></ul>
+        <h4 style="margin-bottom:8px; font-weight:600;">Application Method:</h4>
+        <p id="details-howtouse" style="line-height:1.6; color:var(--text-secondary);"></p>
+      </div>
+    </section>
+
+    <!-- Side layouts: Safety audit & bundles -->
+    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:40px; margin-bottom:50px; flex-wrap:wrap;">
+      <section id="ingredient-safety-checker"></section>
+      <section id="frequently-bought"></section>
+    </div>
+
+    <!-- Review Section -->
+    <section style="border-top:1px solid var(--border-color); padding-top:40px;">
+      <h2 style="font-family:var(--font-serif); margin-bottom:30px;">Customer Reviews</h2>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:50px; flex-wrap:wrap;">
+        <!-- Form -->
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color); height:fit-content;">
+          <h3 style="font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:15px;">Write a Review</h3>
+          <form id="review-form" style="display:flex; flex-direction:column; gap:15px;">
+            <div>
+              <label style="font-size:0.85rem; display:block; margin-bottom:5px;">Rating:</label>
+              <select id="review-rating" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);" required>
+                <option value="5">5 Stars - Luminous</option>
+                <option value="4">4 Stars - Very Good</option>
+                <option value="3">3 Stars - Average</option>
+                <option value="2">2 Stars - Poor</option>
+                <option value="1">1 Star - Unsatisfactory</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.85rem; display:block; margin-bottom:5px;">Your Comments:</label>
+              <textarea id="review-comment" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); height:100px; outline:none; background:var(--bg-primary); color:var(--text-primary);" required placeholder="Review comments..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-luxury" style="width:100%;">Submit Review</button>
+          </form>
+        </div>
+
+        <!-- List -->
+        <div id="reviews-list" style="display:flex; flex-direction:column; gap:20px;"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/product-details.js"></script>
+  <script src="/js/ai-tools.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Register or login to Sanique Cosmetics. Manage loyalty points, routines, and track shipments.">
+  <title>Account | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links"><a href="/index.html" class="nav-item">Home</a><a href="/shop.html" class="nav-item">Shop</a></nav>
+    </div>
+  </header>
+
+  <main style="display:flex; align-items:center; justify-content:center; padding:100px 5% 60px; min-height:90vh;">
+    <!-- Double glass card -->
+    <div id="auth-card-container" style="background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-color); border-radius:var(--border-radius); box-shadow:0 10px 40px var(--shadow-color); width:100%; max-width:850px; display:grid; grid-template-columns:1fr 1fr; overflow:hidden; min-height:500px; flex-wrap:wrap;">
+      
+      <!-- Brand Left Panel -->
+      <section style="background: linear-gradient(135deg, var(--charcoal), var(--rose-gold)); color:var(--white); padding:50px; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+        <h2 style="font-family:var(--font-serif); font-size:2.4rem; color:var(--white); margin-bottom:15px;">The Luxury Club</h2>
+        <p style="color:var(--soft-pink); font-size:0.9rem; line-height:1.6; margin-bottom:25px;">
+          Create an account to unlock specialized routines planner, progressive skin logging, and earn 10% points on every checkout!
+        </p>
+        <div class="cosmetic-render" style="width:70px; height:100px; margin:0 auto; transform:scale(0.85);"><div class="cosmetic-render-label" style="font-size:0.35rem; top:25px;">SANIQUE</div></div>
+      </section>
+
+      <!-- Forms Right Panel -->
+      <section style="padding:50px; display:flex; flex-direction:column; justify-content:center;">
+        <!-- Login Form -->
+        <div id="login-form-box">
+          <h2 style="font-family:var(--font-serif); margin-bottom:20px; color:var(--rose-gold);">Login</h2>
+          <form id="login-form" style="display:flex; flex-direction:column; gap:15px;">
+            <input type="email" id="login-email" placeholder="Email Address" required style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <input type="password" id="login-password" placeholder="Password" required style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <button type="submit" class="btn btn-luxury" style="width:100%;">Sign In</button>
+          </form>
+          <p style="font-size:0.8rem; margin-top:20px; text-align:center; color:var(--text-secondary);">
+            New to Sanique? <a href="#" onclick="toggleAuthForm(true)" style="color:var(--rose-gold); font-weight:600;">Create Account</a>
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form-box" style="display:none;">
+          <h2 style="font-family:var(--font-serif); margin-bottom:20px; color:var(--gold);">Register</h2>
+          <form id="register-form" style="display:flex; flex-direction:column; gap:12px;">
+            <input type="text" id="reg-name" placeholder="Full Name" required style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <input type="email" id="reg-email" placeholder="Email Address" required style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <input type="password" id="reg-password" placeholder="Password" required style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <input type="text" id="reg-mobile" placeholder="Mobile Number" required style="padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <button type="submit" class="btn btn-luxury" style="width:100%;">Create Account</button>
+          </form>
+          <p style="font-size:0.8rem; margin-top:15px; text-align:center; color:var(--text-secondary);">
+            Already have an account? <a href="#" onclick="toggleAuthForm(false)" style="color:var(--rose-gold); font-weight:600;">Sign In</a>
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    function toggleAuthForm(showRegister) {
+      const loginBox = document.getElementById('login-form-box');
+      const registerBox = document.getElementById('register-form-box');
+      
+      if (showRegister) {
+        loginBox.style.display = 'none';
+        registerBox.style.display = 'block';
+      } else {
+        loginBox.style.display = 'block';
+        registerBox.style.display = 'none';
+      }
+    }
+
+    // Bind Forms API
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.status === 200) {
+          localStorage.setItem('sanique_token', data.token);
+          localStorage.setItem('sanique_isAdmin', data.isAdmin);
+          localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
+          
+          showToast("Welcome back to Sanique!", "success");
+          setTimeout(() => {
+            // Check redirects
+            const urlParams = new URLSearchParams(window.location.search);
+            const red = urlParams.get('redirect') || '';
+            if (red) window.location.href = '/' + red;
+            else window.location.href = data.isAdmin ? '/admin.html' : '/dashboard.html';
+          }, 1000);
+        } else {
+          showToast(data.message || "Invalid credentials", "error");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const mobile = document.getElementById('reg-mobile').value;
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, mobile })
+        });
+        const data = await res.json();
+
+        if (res.status === 201) {
+          localStorage.setItem('sanique_token', data.token);
+          localStorage.setItem('sanique_isAdmin', data.isAdmin);
+          
+          showToast("Welcome! Earned 100 loyalty registration points.", "success");
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1500);
+        } else {
+          showToast(data.message || "Registration failed", "error");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>

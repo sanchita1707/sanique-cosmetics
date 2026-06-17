@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View your saved products at Sanique Cosmetics. Manage your luxury wishlist.">
+  <title>Your Wishlist | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
+    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:10px;">Your Wishlist</h1>
+    <p style="text-align:center; color:var(--text-secondary); margin-bottom:40px;">Items you've bookmarked for later purchase.</p>
+
+    <div class="product-grid" id="wishlist-grid">
+      <!-- Loaded dynamically via script below -->
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', loadWishlist);
+
+    async function loadWishlist() {
+      const container = document.getElementById('wishlist-grid');
+      if (!container) return;
+
+      const wishList = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
+      if (wishList.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:50px 0;">
+            <i class="far fa-heart" style="font-size:4rem; color:var(--rose-gold); margin-bottom:20px;"></i>
+            <h3 style="font-family:var(--font-serif); margin-bottom:10px;">Your wishlist is empty</h3>
+            <a href="/shop.html" class="btn btn-luxury" style="margin-top:10px;">Browse Shop</a>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/products');
+        const products = await res.json();
+        const wished = products.filter(p => wishList.includes(p._id));
+
+        if (wished.length === 0) {
+          container.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Wishlist items not found in database.</p>';
+          return;
+        }
+
+        container.innerHTML = wished.map(product => {
+          const shadeName = product.shades && product.shades.length > 0 ? product.shades[0].name : '';
+          return `
+            <div class="product-card" onclick="window.location.href='/product.html?id=${product._id}'">
+              <button class="wishlist-btn active" onclick="event.stopPropagation(); removeWishItem('${product._id}')">
+                <i class="fas fa-trash-alt" style="color:#E05D5D;"></i>
+              </button>
+              <div class="product-img-wrapper">
+                <div class="cosmetic-render" style="background: linear-gradient(to bottom, ${getCategoryGradient(product.category)});"><div class="cosmetic-render-label">SANIQUE</div></div>
+              </div>
+              <div class="product-info">
+                <div class="product-category">${product.category}</div>
+                <h3 class="product-title">${product.name}</h3>
+                <div class="product-price">
+                  <span class="price-actual">₹${(product.discountPrice || product.price).toLocaleString('en-IN')}</span>
+                </div>
+                <div class="product-actions" style="margin-top:15px;">
+                  <button class="btn btn-luxury" style="padding:10px; width:100%; font-size:0.8rem;" onclick="event.stopPropagation(); moveToCart('${product._id}', '${product.name}', ${product.discountPrice || product.price}, '${product.images[0]}', '${shadeName}')">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function removeWishItem(id) {
+      let wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
+      wish = wish.filter(i => i !== id);
+      localStorage.setItem('sanique_wishlist', JSON.stringify(wish));
+      showToast("Removed from wishlist", "error");
+      loadWishlist();
+    }
+
+    function moveToCart(id, name, price, img, shade) {
+      addToCart(id, name, price, img, shade);
+      removeWishItem(id);
+    }
+
+    function getCategoryGradient(cat) {
+      switch(cat) {
+        case 'Lipsticks': return '#9B111E, #2C0C0E';
+        case 'Foundations': return '#EAD2C2, #B99379';
+        case 'Serums': return 'rgba(255,255,255,0.4), rgba(183, 110, 121, 0.6)';
+        case 'Sunscreens': return '#F9EBEA, #D4AC0D';
+        case 'Face Wash': return '#E8F8F5, #73C6B6';
+        case 'Makeup Kits': return '#2C2C2C, #B76E79';
+        default: return '#F8E8EE, #B76E79';
+      }
+    }
+  </script>
+</body>
+</html>

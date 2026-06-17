@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover Sanique Cosmetics - Premium Luxury Skincare & Makeup. Shop our organic lipsticks, foundations, serums, and experience AI virtual makeup try-on.">
+  <title>Sanique Cosmetics | Luxury Beauty & Skincare</title>
+  <!-- Google Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header>
+    <div class="header-top">
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
+    </div>
+    <div class="navbar">
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
+        <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="/about.html" class="nav-item">Our Story</a>
+        <a href="/blog.html" class="nav-item">Beauty Blog</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/shop.html" class="nav-btn" title="Search"><i class="fas fa-search"></i></a>
+        <a href="/login.html" class="nav-btn" id="user-btn" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cart Drawer Overlay -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- Hero Banner Slide -->
+    <section class="hero-banner" style="background: linear-gradient(135deg, var(--soft-pink), var(--white)); padding: 120px 5% 80px; position:relative; min-height: 80vh; display:flex; align-items:center;">
+      <div class="hero-content" style="max-width: 600px; z-index: 2;">
+        <h5 style="text-transform:uppercase; letter-spacing:3px; color:var(--rose-gold); margin-bottom:15px; font-weight:600;">Luxury Re-Defined</h5>
+        <h1 style="font-size: 3.8rem; line-height: 1.1; margin-bottom: 25px; color:var(--charcoal);">Radiate Your True Elegance.</h1>
+        <p style="font-size: 1.1rem; color:var(--text-secondary); margin-bottom:35px; line-height:1.7;">
+          Formulated in Milan, designed for Indian royalty. Indulge in clean ingredients, weightless textures, and 24-hour flawless stay.
+        </p>
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+          <a href="/shop.html" class="btn btn-luxury">Shop Collection</a>
+          <button class="btn btn-outline" onclick="openSkinAnalysisModal()"><i class="fas fa-camera"></i> AI Skin Scanner</button>
+        </div>
+      </div>
+      <div class="hero-image-render" style="position:absolute; right:5%; top:50%; transform:translateY(-50%); width:450px; height:450px; background: radial-gradient(circle, var(--soft-pink) 0%, transparent 70%); display:flex; align-items:center; justify-content:center;">
+        <div class="cosmetic-render" style="width: 180px; height: 260px; transform: rotate(-5deg); z-index: 1;">
+          <div class="cosmetic-render-label" style="font-size:0.8rem; top:70px;">SANIQUE</div>
+        </div>
+        <div class="cosmetic-render" style="width: 120px; height: 180px; background:linear-gradient(to bottom, #9B111E, #2C0C0E); transform: translate(-40px, 40px) rotate(10deg); z-index: 2;">
+          <div class="cosmetic-render-label" style="font-size:0.55rem; top:50px;">SANIQUE</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand Story Statement -->
+    <section class="section" style="text-align:center; background: var(--bg-primary);">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h5 style="color:var(--rose-gold); text-transform:uppercase; letter-spacing:2px; margin-bottom:15px;">The Heritage</h5>
+        <h2 style="font-size: 2.2rem; margin-bottom: 20px;">Organically Sourced, Scientifically Perfected</h2>
+        <p style="font-size: 1.05rem; line-height: 1.8; color:var(--text-secondary);">
+          At Sanique, we believe cosmetics should enrich your skin. Every lipstick is formulated with hydrating cold-pressed jojoba oils, and our foundations are packed with multi-weight Hyaluronic complexes to protect your natural barrier. Safe, dermatologically certified, and luxury-first.
+        </p>
+      </div>
+    </section>
+
+    <!-- Best Sellers -->
+    <section class="section">
+      <h2 class="section-title">The Best Sellers</h2>
+      <p class="section-subtitle">Our most-loved creations curated by professional runway artists.</p>
+      <div class="product-grid" id="shop-product-grid">
+        <!-- Loaded dynamically from server database seed -->
+      </div>
+    </section>
+
+    <!-- Quiz CTA Banner -->
+    <section class="section" style="background: linear-gradient(135deg, var(--charcoal), var(--rose-gold)); color: var(--white); border-radius: var(--border-radius); margin: 0 5% 80px; padding: 60px;">
+      <div style="max-width: 600px;">
+        <h3 style="font-size: 2.2rem; margin-bottom: 15px; color:#FFF;">Find Your Personalized Regimen</h3>
+        <p style="color: var(--soft-pink); font-size:1rem; margin-bottom:30px; line-height:1.6;">
+          Take our interactive 5-question beauty quiz. Sasha, our AI Consultant, will score your responses to draft your morning skincare checklists and color palette matches.
+        </p>
+        <a href="/categories.html" class="btn btn-luxury" style="background: var(--gold); color:var(--charcoal);">Take Beauty Quiz</a>
+      </div>
+    </section>
+
+    <!-- Before & After Transformation Slider -->
+    <section class="section" style="background:var(--bg-primary);">
+      <h2 class="section-title">Skincare Transformations</h2>
+      <p class="section-subtitle">Real results from 14 days of using the Vitamin C Glow Serum.</p>
+      <div class="before-after-wrapper" id="ba-slider">
+        <div class="ba-image ba-after">
+          <!-- After (smooth glowing skin render) -->
+          <div style="width:100%; height:100%; background: linear-gradient(135deg, #F8E8EE, #FADBD8); display:flex; align-items:center; justify-content:center; flex-direction:column;">
+            <h3 style="color:var(--rose-gold); font-size:1.8rem; font-family:var(--font-serif);">14 Days After</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem;">Hydrated, radiant skin tone, zero dark spots</p>
+          </div>
+        </div>
+        <div class="ba-image ba-before" id="ba-before-img">
+          <!-- Before (dull skin render) -->
+          <div style="width:650px; height:100%; background: linear-gradient(135deg, #CCD1D1, #BDC3C7); display:flex; align-items:center; justify-content:center; flex-direction:column; padding-right:150px;">
+            <h3 style="color:#5D6D7E; font-size:1.8rem; font-family:var(--font-serif);">Before Application</h3>
+            <p style="color:#7F8C8D; font-size:0.85rem;">Dull texture, hyperpigmented patches</p>
+          </div>
+        </div>
+        <div class="ba-slider-handle" id="ba-handle">
+          <div class="ba-slider-button"><i class="fas fa-arrows-alt-h"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Testimonials -->
+    <section class="section">
+      <h2 class="section-title">Royal Reviews</h2>
+      <p class="section-subtitle">Read what beauty editors and verified customers say about Sanique.</p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:30px;">
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
+          <div style="color:var(--gold); margin-bottom:12px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p style="font-style:italic; font-size:0.95rem; line-height:1.6; margin-bottom:15px; color:var(--text-primary);">
+            "The Glow foundation is pure magic. It survived an entire outdoor summer wedding in Gurugram without setting or creasing. Best luxury makeup buy!"
+          </p>
+          <strong>Sonia Malhotra</strong> <span style="font-size:0.8rem; color:var(--text-secondary); display:block;">Verified Buyer, New Delhi</span>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
+          <div style="color:var(--gold); margin-bottom:12px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p style="font-style:italic; font-size:0.95rem; line-height:1.6; margin-bottom:15px; color:var(--text-primary);">
+            "As someone with highly sensitive skin, finding a safe chemical-free sunscreen was hard. Sanique's SPF 50 is lightweight, leaves zero white cast, and smells amazing."
+          </p>
+          <strong>Dr. Ananya Roy</strong> <span style="font-size:0.8rem; color:var(--text-secondary); display:block;">Dermatologist, Mumbai</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="section" style="background: var(--bg-secondary); border-top: 1px solid var(--border-color); text-align:center; padding:60px 5%;">
+      <div style="max-width:500px; margin:0 auto;">
+        <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Join the Sanique Society</h2>
+        <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:20px;">Receive early access to collections, beauty newsletters, and 100 bonus loyalty points.</p>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed! Check email for welcome points.','success');">
+          <input type="email" class="newsletter-input" placeholder="Your premium email address..." required>
+          <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations.</p>
+       <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html">Lips Collection</a></li>
+          <li><a href="/shop.html">Luminous Foundations</a></li>
+          <li><a href="/shop.html">Organic Serums</a></li>
+          <li><a href="/shop.html">Festival Makeup Kits</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+          <li><a href="/contact.html">Location Boutique</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
+    </div>
+  </footer>
+
+  <!-- GSAP & Global scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="/js/main.js"></script>
+  <script src="/js/shop.js"></script>
+  <script src="/js/ai-tools.js"></script>
+  
+  <script>
+    // Before After Slider drag
+    const slider = document.getElementById('ba-slider');
+    const beforeImg = document.getElementById('ba-before-img');
+    const handle = document.getElementById('ba-handle');
+
+    if (slider && beforeImg && handle) {
+      let isDragging = false;
+
+      const onMove = (e) => {
+        if (!isDragging) return;
+        const rect = slider.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let x = clientX - rect.left;
+        
+        if (x < 0) x = 0;
+        if (x > rect.width) x = rect.width;
+        
+        const pct = (x / rect.width) * 100;
+        beforeImg.style.width = `${pct}%`;
+        handle.style.left = `${pct}%`;
+      };
+
+      handle.addEventListener('mousedown', () => isDragging = true);
+      window.addEventListener('mouseup', () => isDragging = false);
+      window.addEventListener('mousemove', onMove);
+      
+      handle.addEventListener('touchstart', () => isDragging = true);
+      window.addEventListener('touchend', () => isDragging = false);
+      window.addEventListener('touchmove', onMove);
+    }
+  </script>
+</body>
+</html>

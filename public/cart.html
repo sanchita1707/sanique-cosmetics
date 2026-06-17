@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View your luxury shopping cart. Adjust quantities, review GST information, and check out securely at Sanique.">
+  <title>Shopping Cart | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
+    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:40px;">Your Shopping Bag</h1>
+    
+    <div style="display:grid; grid-template-columns: 1.8fr 1fr; gap:40px; flex-wrap:wrap; margin-bottom:50px;">
+      <!-- Detailed table items -->
+      <section id="cart-page-items"></section>
+
+      <!-- Cart totals review -->
+      <section style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color); height:fit-content;">
+        <h3 style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Order Summary</h3>
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.95rem;">
+          <span>Subtotal (Excl. Tax)</span>
+          <span id="cart-page-subtotal">₹0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.95rem; color:var(--text-secondary);">
+          <span>GST Tax (18% standard)</span>
+          <span id="cart-page-tax">₹0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; color:var(--rose-gold); border-top:1px solid var(--border-color); padding-top:15px; margin-bottom:25px;">
+          <span>Total (Incl. Tax)</span>
+          <span id="cart-page-total">₹0</span>
+        </div>
+        <button id="cart-page-checkout" class="btn btn-luxury" style="width:100%;">Proceed to Checkout</button>
+      </section>
+    </div>
+
+    <!-- Smart Recommendations carousel -->
+    <section id="smart-cart-recommendations" style="border-top:1px solid var(--border-color); padding-top:40px;"></section>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/cart.js"></script>
+</body>
+</html>

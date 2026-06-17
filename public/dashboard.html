@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage your skincare routine, track skin progress, and view order history at Sanique Cosmetics.">
+  <title>User Dashboard | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+      </nav>
+      <div class="nav-icons">
+        <button class="nav-btn" onclick="userLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
+    <!-- Top Details Profile banner -->
+    <section class="loyalty-card">
+      <div class="loyalty-header">
+        <div>
+          <h1 id="dash-user-name" style="font-family:var(--font-serif); font-size:2.4rem; color:var(--white);">Customer Name</h1>
+          <p id="dash-user-email" style="font-size:0.95rem; color:var(--soft-pink);"></p>
+        </div>
+        <div class="vip-badge" id="dash-vip-level">Bronze Member</div>
+      </div>
+      <div>
+        <div class="loyalty-score" id="dash-points">0</div>
+        <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--soft-pink);">Loyalty Reward Balance (₹1 Discount = 1 Point)</p>
+      </div>
+    </section>
+
+    <!-- Routine Checklist & Skin Progress -->
+    <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px; margin-bottom:50px; flex-wrap:wrap;">
+      
+      <!-- Skincare Routine Checklist -->
+      <section style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
+        <h2 style="font-family:var(--font-serif); margin-bottom:5px; color:var(--rose-gold);">Beauty Routine Planner</h2>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Complete your morning and night steps. Checkmarks persist locally.</p>
+        
+        <div class="routine-grid">
+          <div class="routine-column">
+            <h3><i class="fas fa-sun"></i> Morning Steps</h3>
+            <div class="routine-checklist" id="routine-morning-list"></div>
+          </div>
+          <div class="routine-column">
+            <h3><i class="fas fa-moon"></i> Evening Steps</h3>
+            <div class="routine-checklist" id="routine-night-list"></div>
+          </div>
+        </div>
+        <button class="btn btn-luxury" style="width:100%; margin-top:20px; font-size:0.8rem;" onclick="showToast('Skincare routine progress saved!','success')">Save Progress Checklist</button>
+      </section>
+
+      <!-- Skincare Journal & Uploads -->
+      <section style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
+        <h2 style="font-family:var(--font-serif); margin-bottom:5px; color:var(--gold);">Skin Progress Tracker</h2>
+        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Log camera snapshots to track your texture improvements.</p>
+        
+        <div style="text-align:center;">
+          <video id="tracker-video" style="width:100%; height:200px; object-fit:cover; border-radius:8px; display:none; background:#000; border:2px solid var(--rose-gold); margin-bottom:15px;" autoplay playsinline></video>
+          
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
+            <select id="tracker-condition-select" style="padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem;">
+              <option value="Glowing Texture">Glowing / Radiant Skin</option>
+              <option value="Dry Patches">Dry / Irritated Patches</option>
+              <option value="Oily Breakouts">Oily / Active Breakouts</option>
+            </select>
+            <input type="text" id="tracker-notes-input" placeholder="Notes (e.g. Day 4: Skin feels hydrated)" style="padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem;">
+          </div>
+
+          <button class="btn btn-luxury" id="btn-start-tracker-cam" style="width:100%;"><i class="fas fa-camera"></i> Launch Progress Camera</button>
+          <button class="btn btn-primary" id="btn-capture-tracker" style="display:none; width:100%; background:var(--success);">Record Snapshot Log</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tracker Journal Log List -->
+    <section style="margin-bottom:50px;">
+      <h2 style="font-family:var(--font-serif); margin-bottom:20px;">Your Skincare Journals</h2>
+      <div class="tracker-journal-grid" id="tracker-journal-grid"></div>
+    </section>
+
+    <!-- Order History List -->
+    <section>
+      <h2 style="font-family:var(--font-serif); margin-bottom:20px;">Your Orders & Invoices</h2>
+      <div id="order-history-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Secure Checkout at Sanique. Pay using Razorpay card gate, UPI, or cash on delivery.">
+  <title>Checkout | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
+    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:40px;">Checkout Details</h1>
+
+    <form id="checkout-form" style="display:grid; grid-template-columns: 1.3fr 1fr; gap:50px; flex-wrap:wrap;">
+      <!-- Left: Shipping & Payments -->
+      <section style="display:flex; flex-direction:column; gap:30px;">
+        <!-- Shipping Address -->
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
+          <h3 style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Shipping Address</h3>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <input type="text" id="checkout-street" placeholder="Flat No, Apartment, Street Address" required style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <div style="display:flex; gap:10px;">
+              <input type="text" id="checkout-city" placeholder="City" required style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+              <input type="text" id="checkout-state" placeholder="State" required style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+              <input type="text" id="checkout-zip" placeholder="ZIP Code" required style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
+          <h3 style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Select Payment Method</h3>
+          <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;">
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <input type="radio" name="paymentMethod" value="COD" id="pay-cod" checked style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <strong>Cash On Delivery (COD)</strong>
+            </label>
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <input type="radio" name="paymentMethod" value="UPI" id="pay-upi" style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <strong>UPI Scan QR Code</strong>
+            </label>
+            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <input type="radio" name="paymentMethod" value="Razorpay" id="pay-razorpay" style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <strong>Credit / Debit Card (Razorpay Gate)</strong>
+            </label>
+          </div>
+          <!-- Details Rendered dynamically by checkout.js -->
+          <div id="payment-method-details"></div>
+   
+        </div>
+      </section>
+
+      <!-- Right: Summary & Points -->
+      <section style="display:flex; flex-direction:column; gap:30px;">
+        <!-- Loyalty points container -->
+        <div id="loyalty-redemption-container"></div>
+
+        <!-- Coupon input -->
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
+          <h3 style="font-family:var(--font-serif); margin-bottom:15px;">Coupon Code</h3>
+          <div style="display:flex; gap:10px;">
+            <input type="text" id="coupon-code-input" placeholder="e.g. SANIQUE10" style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); text-transform:uppercase; flex-grow:1;">
+            <button type="button" id="apply-coupon-btn" class="btn btn-primary" style="padding:10px 20px; font-size:0.8rem;">Apply</button>
+          </div>
+        </div>
+
+        <!-- Grand Total Breakdown -->
+        <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
+          <h3 style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Order Details</h3>
+          <div id="checkout-summary-items" style="margin-bottom:15px;"></div>
+          
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem;">
+            <span>Subtotal</span>
+            <span id="checkout-subtotal">₹0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#E05D5D;">
+            <span>Coupon Discount</span>
+            <span id="checkout-discount">- ₹0</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#E05D5D;">
+            <span>Loyalty Points Redeemed</span>
+            <span id="checkout-points-discount">- ₹0</span>
+          </div>
+          
+          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.3rem; color:var(--rose-gold); border-top:1px solid var(--border-color); padding-top:15px; margin-bottom:20px;">
+            <span>Grand Total</span>
+            <span id="checkout-grand-total">₹0</span>
+          </div>
+
+          <button type="submit" class="btn btn-luxury" style="width:100%;">Place Order</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

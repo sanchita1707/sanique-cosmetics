@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sanique Cosmetics Admin Portal. Monitor revenues, update catalog items, and process orders.">
+  <title>Admin Dashboard | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <span style="font-family:var(--font-serif); font-size:1.1rem; color:var(--rose-gold); font-weight:bold; letter-spacing:1px;">ADMIN PORTAL</span>
+      <div class="nav-icons">
+        <button class="nav-btn" onclick="userLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1300px; margin:100px auto 0; padding:40px 5%;">
+    
+    <!-- Metrics Boxes -->
+    <section class="admin-metrics-grid">
+      <div class="admin-metric-card">
+        <div class="admin-metric-num" id="metric-total-sales">₹0</div>
+        <div class="admin-metric-label">Total Revenue</div>
+      </div>
+      <div class="admin-metric-card">
+        <div class="admin-metric-num" id="metric-total-orders">0</div>
+        <div class="admin-metric-label">Orders Handled</div>
+      </div>
+      <div class="admin-metric-card">
+        <div class="admin-metric-num" id="metric-total-products">0</div>
+        <div class="admin-metric-label">Catalog Products</div>
+      </div>
+      <div class="admin-metric-card">
+        <div class="admin-metric-num" style="color:var(--gold);">18%</div>
+        <div class="admin-metric-label">Avg GST Applied</div>
+      </div>
+    </section>
+
+    <!-- Visual Charts -->
+    <section class="charts-grid">
+      <div class="chart-card">
+        <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--rose-gold);">Sales Performance (Timeline)</h3>
+        <canvas id="chart-revenue" style="width:100%; height:220px;"></canvas>
+      </div>
+      <div class="chart-card" style="display:flex; flex-direction:column; align-items:center;">
+        <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--gold); width:100%;">Category Sales Split</h3>
+        <canvas id="chart-category" style="width:180px; height:180px;"></canvas>
+      </div>
+    </section>
+
+    <!-- Tab navigation -->
+    <section style="margin-bottom:30px;">
+      <div style="border-bottom:1px solid var(--border-color); display:flex; gap:15px;">
+        <button class="admin-tab-btn active" data-target="admin-products-tab">Products List</button>
+        <button class="admin-tab-btn" data-target="admin-orders-tab">Orders Timeline</button>
+      </div>
+    </section>
+
+    <!-- Tab content 1: Products -->
+    <section id="admin-products-tab" class="admin-tab-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="font-family:var(--font-serif); font-size:1.5rem;">Product Catalog CRUD</h2>
+        <button class="btn btn-luxury" onclick="openProductEditModal()"><i class="fas fa-plus"></i> Add New Product</button>
+      </div>
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Product Details</th>
+              <th>MRP Price</th>
+              <th>Discount Price</th>
+              <th>Inventory</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-products-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab content 2: Orders -->
+    <section id="admin-orders-tab" class="admin-tab-content" style="display:none;">
+      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Order Delivery Status Control</h2>
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Tracking ID</th>
+              <th>Recipient</th>
+              <th>Final Bill</th>
+              <th>Payment Status</th>
+              <th>Order Progress</th>
+              <th>Invoice</th>
+            </tr>
+          </thead>
+          <tbody id="admin-orders-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

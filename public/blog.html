@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read our beauty tips, skincare advice, and festival makeup recommendations at Sanique Cosmetics.">
+  <title>Beauty Blog & Tutorials | Sanique Cosmetics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="/about.html" class="nav-item">Our Story</a>
+        <a href="/blog.html" class="nav-item">Beauty Blog</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn"><i class="fas fa-user"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:100px auto 0; padding:40px 5%;">
+    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:10px;">Sanique Journal</h1>
+    <p style="text-align:center; color:var(--text-secondary); margin-bottom:50px;">Curated beauty secrets, routines, and lookbooks from professional artists.</p>
+
+    <!-- Articles Grid -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:30px;">
+      <!-- Post 1 -->
+      <article style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); overflow:hidden; box-shadow:0 4px 15px var(--shadow-color);">
+        <div style="height:200px; background:linear-gradient(135deg, var(--soft-pink), var(--rose-gold)); display:flex; align-items:center; justify-content:center; color:var(--white);">
+          <i class="fas fa-leaf" style="font-size:3rem;"></i>
+        </div>
+        <div style="padding:25px;">
+          <span style="font-size:0.75rem; color:var(--rose-gold); text-transform:uppercase; font-weight:600;">Skincare Routines</span>
+          <h3 style="font-size:1.3rem; margin:8px 0 12px; font-family:var(--font-serif);">The 3-Step Morning Skincare Prep</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:15px;">
+            Preparing your skin before applying makeup is crucial for a smooth dewy look that lasts. Learn how gentle cleansing, Vitamin C serums, and light SPF keep your barrier protected.
+          </p>
+          <a href="/categories.html" style="color:var(--rose-gold); font-size:0.85rem; font-weight:600;">Launch routine planner <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- Post 2 -->
+      <article style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); overflow:hidden; box-shadow:0 4px 15px var(--shadow-color);">
+        <div style="height:200px; background:linear-gradient(135deg, var(--charcoal), var(--gold)); display:flex; align-items:center; justify-content:center; color:var(--white);">
+          <i class="fas fa-crown" style="font-size:3rem;"></i>
+        </div>
+        <div style="padding:25px;">
+          <span style="font-size:0.75rem; color:var(--gold); text-transform:uppercase; font-weight:600;">Festival Collections</span>
+          <h3 style="font-size:1.3rem; margin:8px 0 12px; font-family:var(--font-serif);">Diwali Lookbook: Molten Gold Glow</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:15px;">
+            A step-by-step breakdown on using the 24K Liquid Highlighter and Crimson Silk Matte Lipstick to achieve an elegant, radiant ethnic glow for Diwali and Navratri.
+          </p>
+          <a href="/shop.html?category=Makeup%20Kits" style="color:var(--rose-gold); font-size:0.85rem; font-weight:600;">Shop Festival Kits <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+
+      <!-- Post 3 -->
+      <article style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); overflow:hidden; box-shadow:0 4px 15px var(--shadow-color);">
+        <div style="height:200px; background:linear-gradient(135deg, var(--soft-pink), var(--white)); display:flex; align-items:center; justify-content:center; color:var(--rose-gold);">
+          <i class="fas fa-vial" style="font-size:3rem;"></i>
+        </div>
+        <div style="padding:25px;">
+          <span style="font-size:0.75rem; color:var(--rose-gold); text-transform:uppercase; font-weight:600;">Ingredient Audits</span>
+          <h3 style="font-size:1.3rem; margin:8px 0 12px; font-family:var(--font-serif);">Understanding Ceramides & Vitamin E</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:15px;">
+            Why clean ingredients matter. Read our cosmetic editor's guide on auditing preservatives, fragrance, and why we use pure Argan Oils inside our Kohl Black Kajals.
+          </p>
+          <a href="/shop.html" style="color:var(--rose-gold); font-size:0.85rem; font-weight:600;">Inspect products <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  </footer>
+  <script src="/js/main.js"></script>
+</body>
+</html>
