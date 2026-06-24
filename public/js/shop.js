@@ -49,81 +49,33 @@ async function fetchProducts() {
 // Render Products Grid
 function renderProducts(products) {
   const container = document.getElementById('shop-product-grid');
+
   console.log("Products received:", products);
   console.log("Container found:", container);
 
   if (!container) return;
 
   if (products.length === 0) {
-    console.log("Rendering started");
-    container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px 0; color: var(--text-secondary);"><i class="fas fa-search-minus" style="font-size:3rem; margin-bottom:15px;"></i><p>No products found matching your luxury preferences.</p></div>';
+    container.innerHTML =
+      '<h2 style="text-align:center;">No Products Found</h2>';
     return;
   }
 
-  container.innerHTML = products.map(product => {
-    const isWished = isProductInWishlist(product._id);
-    const badgeHtml = product.stock <= 5 ? `<div class="product-badge">Low Stock</div>` :
-      (product.discountPrice ? `<div class="product-badge">Offer</div>` : '');
-
-    // Check shades
-    const shadesHtml = product.shades && product.shades.length > 0 ?
-      `<div class="shade-container">
-        ${product.shades.map((s, i) => `<span class="shade-bubble ${i === 0 ? 'active' : ''}" style="background-color: ${s.hex}" title="${s.name}" onclick="event.stopPropagation(); selectCardShade(this, '${s.name}')"></span>`).join('')}
-       </div>` : '';
-
-    const activeShadeName = product.shades && product.shades.length > 0 ? product.shades[0].name : '';
-
-    // Render packaging design if binary is missing
-    const renderHtml = `
-<img
-  src="${product.images?.[0] || '/assets/images/products/default-product.jpg'}"
-  alt="${product.name}"
-  loading="lazy"
-  style="
-    width:100%;
-    height:280px;
-    object-fit:contain;
-    display:block;
-    padding:15px;
-    transition:0.4s ease;
-  "
-  onerror="this.src='/assets/images/products/default-product.jpg'"
->
-`;
-
-    return `
-      <div class="product-card" onclick="window.location.href='/product.html?id=${product._id}'">
-        ${badgeHtml}
-        <button class="wishlist-btn ${isWished ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlistItem('${product._id}', this)">
-          <i class="${isWished ? 'fas' : 'far'} fa-heart"></i>
-        </button>
-        <div class="product-img-wrapper">
-          ${renderHtml}
-        </div>
-        <div class="product-info">
-          <div class="product-category">${product.category}</div>
-          <h3 class="product-title">${product.name}</h3>
-          <div class="product-rating">
-            <i class="fas fa-star"></i> <span>${product.rating.toFixed(1)} (${product.reviewsCount})</span>
-          </div>
-          ${shadesHtml}
-          <div class="product-price">
-            <span class="price-actual">₹${(product.discountPrice || product.price).toLocaleString('en-IN')}</span>
-            ${product.discountPrice ? `<span class="price-mrp">₹${product.price.toLocaleString('en-IN')}</span>` : ''}
-          </div>
-          <div class="product-actions">
-            <button class="btn-add-cart" onclick="event.stopPropagation(); triggerAddToCart('${product._id}', '${product.name}', ${product.discountPrice || product.price}, '${product.images[0]}', '${activeShadeName}')">
-              Add to Cart
-            </button>
-            <button class="btn-quick-view" onclick="event.stopPropagation(); toggleCompareProduct('${product._id}')">
-              Compare
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  container.innerHTML = products.map(product => `
+    <div style="
+      background:yellow;
+      padding:20px;
+      margin:20px;
+      border:2px solid black;
+      color:black;
+    ">
+      <h2>${product.name}</h2>
+      <p>${product.category}</p>
+      <p>₹${product.price}</p>
+    </div>
+  `).join('');
 }
+
 
 // Helpers for cosmetic packaging styling
 function getCategoryGradient(cat) {
