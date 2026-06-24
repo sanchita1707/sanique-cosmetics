@@ -49,26 +49,30 @@ async function fetchProducts() {
 // Render Products Grid
 function renderProducts(products) {
   const container = document.getElementById('shop-product-grid');
+  console.log("Products received:", products);
+  console.log("Container found:", container);
+
   if (!container) return;
 
   if (products.length === 0) {
+    console.log("Rendering started");
     container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px 0; color: var(--text-secondary);"><i class="fas fa-search-minus" style="font-size:3rem; margin-bottom:15px;"></i><p>No products found matching your luxury preferences.</p></div>';
     return;
   }
 
   container.innerHTML = products.map(product => {
     const isWished = isProductInWishlist(product._id);
-    const badgeHtml = product.stock <= 5 ? `<div class="product-badge">Low Stock</div>` : 
-                      (product.discountPrice ? `<div class="product-badge">Offer</div>` : '');
-    
+    const badgeHtml = product.stock <= 5 ? `<div class="product-badge">Low Stock</div>` :
+      (product.discountPrice ? `<div class="product-badge">Offer</div>` : '');
+
     // Check shades
-    const shadesHtml = product.shades && product.shades.length > 0 ? 
+    const shadesHtml = product.shades && product.shades.length > 0 ?
       `<div class="shade-container">
-        ${product.shades.map((s, i) => `<span class="shade-bubble ${i===0?'active':''}" style="background-color: ${s.hex}" title="${s.name}" onclick="event.stopPropagation(); selectCardShade(this, '${s.name}')"></span>`).join('')}
+        ${product.shades.map((s, i) => `<span class="shade-bubble ${i === 0 ? 'active' : ''}" style="background-color: ${s.hex}" title="${s.name}" onclick="event.stopPropagation(); selectCardShade(this, '${s.name}')"></span>`).join('')}
        </div>` : '';
 
     const activeShadeName = product.shades && product.shades.length > 0 ? product.shades[0].name : '';
-  
+
     // Render packaging design if binary is missing
     const renderHtml = `
 <img
@@ -90,8 +94,8 @@ function renderProducts(products) {
     return `
       <div class="product-card" onclick="window.location.href='/product.html?id=${product._id}'">
         ${badgeHtml}
-        <button class="wishlist-btn ${isWished?'active':''}" onclick="event.stopPropagation(); toggleWishlistItem('${product._id}', this)">
-          <i class="${isWished?'fas':'far'} fa-heart"></i>
+        <button class="wishlist-btn ${isWished ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlistItem('${product._id}', this)">
+          <i class="${isWished ? 'fas' : 'far'} fa-heart"></i>
         </button>
         <div class="product-img-wrapper">
           ${renderHtml}
@@ -123,7 +127,7 @@ function renderProducts(products) {
 
 // Helpers for cosmetic packaging styling
 function getCategoryGradient(cat) {
-  switch(cat) {
+  switch (cat) {
     case 'Lipsticks': return '#9B111E, #2C0C0E';
     case 'Foundations': return '#EAD2C2, #B99379';
     case 'Serums': return 'rgba(255,255,255,0.4), rgba(183, 110, 121, 0.6)';
@@ -138,7 +142,7 @@ function selectCardShade(elem, name) {
   const card = elem.closest('.product-card');
   card.querySelectorAll('.shade-bubble').forEach(s => s.classList.remove('active'));
   elem.classList.add('active');
-  
+
   // Re-bind click value on cart button
   const cartBtn = card.querySelector('.btn-add-cart');
   if (cartBtn) {
@@ -177,7 +181,7 @@ async function toggleWishlistItem(id, button) {
       body: JSON.stringify({ productId: id })
     });
     const data = await res.json();
-    
+
     let wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
     const index = wish.indexOf(id);
     if (index > -1) {
@@ -211,9 +215,9 @@ function initShopFilters() {
     // Search query input (instant filtering)
     if (searchInput && searchInput.value) {
       const query = searchInput.value.toLowerCase().trim();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(query) || 
-        p.category.toLowerCase().includes(query) || 
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query) ||
         p.description.toLowerCase().includes(query)
       );
     }
@@ -246,15 +250,15 @@ function initShopFilters() {
     if (sortingSelect && sortingSelect.value) {
       const sortVal = sortingSelect.value;
       if (sortVal === 'price-low') {
-        filtered.sort((a,b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
+        filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
       } else if (sortVal === 'price-high') {
-        filtered.sort((a,b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
+        filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
       } else if (sortVal === 'rating') {
-        filtered.sort((a,b) => b.rating - a.rating);
+        filtered.sort((a, b) => b.rating - a.rating);
       } else if (sortVal === 'newest') {
-        filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       } else if (sortVal === 'best-selling') {
-        filtered.sort((a,b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
+        filtered.sort((a, b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
       }
     }
 
@@ -314,7 +318,7 @@ function initSmartSearch() {
         <strong>${m.name}</strong> <span style="font-size:0.75rem; color: var(--rose-gold); float:right;">${m.category}</span>
       </div>
     `).join('');
-    
+
     suggestBox.style.display = 'block';
   });
 
@@ -352,7 +356,7 @@ function initVoiceSearch() {
     searchInput.value = transcript;
     voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
     showToast(`Searching for: "${transcript}"`, "success");
-    
+
     // Trigger list filtering
     const matched = allProducts.filter(p => p.name.toLowerCase().includes(transcript.toLowerCase()) || p.category.toLowerCase().includes(transcript.toLowerCase()));
     renderProducts(matched);
@@ -476,7 +480,7 @@ function openComparisonModal() {
         </tr>
         <tr>
           <td>Ingredients</td>
-          ${matched.map(p => `<td>${p.ingredients.slice(0,3).join(', ')}...</td>`).join('')}
+          ${matched.map(p => `<td>${p.ingredients.slice(0, 3).join(', ')}...</td>`).join('')}
         </tr>
         <tr>
           <td>Benefits</td>
