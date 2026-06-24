@@ -68,9 +68,11 @@
         
         <select id="shop-sort" style="padding:12px 20px; border-radius:30px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-primary); outline:none; font-size:0.85rem;">
           <option value="">Sort By</option>
+          <option value="newest">Newest Arrivals</option>
           <option value="price-low">Price: Low to High</option>
           <option value="price-high">Price: High to Low</option>
           <option value="rating">Rating: High to Low</option>
+          <option value="best-selling">Best Selling</option>
         </select>
       </div>
     </div>
@@ -87,18 +89,11 @@
             <option value="Lipsticks">Lipsticks</option>
             <option value="Foundations">Foundations</option>
             <option value="Concealers">Concealers</option>
-            <option value="Face Powder">Face Powder</option>
-            <option value="Blush">Blush</option>
-            <option value="Highlighter">Highlighter</option>
-            <option value="Eyeliner">Eyeliner</option>
-            <option value="Mascara">Mascara</option>
-            <option value="Kajal">Kajal</option>
-            <option value="Eyeshadow Palettes">Eyeshadow Palettes</option>
             <option value="Face Wash">Face Wash</option>
             <option value="Serums">Serums</option>
             <option value="Moisturizers">Moisturizers</option>
-            <option value="Sunscreens">Sunscreens</option>
-            <option value="Makeup Kits">Makeup Kits</option>
+            <option value="Kajal & Eyeliner">Kajal & Eyeliner</option>
+            <option value="Eyeshadow Palettes">Eyeshadow Palettes</option>
           </select>
         </div>
 
@@ -110,6 +105,16 @@
             <option value="500-1000">₹500 - ₹1,000</option>
             <option value="1000-2500">₹1,000 - ₹2,500</option>
             <option value="2500-10000">Above ₹2,500</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:25px;">
+          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">Rating</h4>
+          <select id="filter-rating" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+            <option value="">All Ratings</option>
+            <option value="4.8">4.8 & Above ★</option>
+            <option value="4.5">4.5 & Above ★</option>
+            <option value="4.0">4.0 & Above ★</option>
           </select>
         </div>
 

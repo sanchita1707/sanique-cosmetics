@@ -7,132 +7,296 @@
   <title>Track Order | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+  <!-- Header -->
   <header>
     <div class="navbar">
+      <div class="menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></div>
       <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
-      <nav class="nav-links"><a href="/index.html" class="nav-item">Home</a><a href="/shop.html" class="nav-item">Shop</a></nav>
+      <nav class="nav-links">
+        <a href="/index.html" class="nav-item">Home</a>
+        <a href="/shop.html" class="nav-item">Shop</a>
+        <a href="/categories.html" class="nav-item">Categories</a>
+      </nav>
+      <div class="nav-icons">
+        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      </div>
     </div>
   </header>
 
-  <main style="max-width:800px; margin:100px auto 0; padding:60px 5%;">
-    <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:40px; box-shadow:0 10px 30px var(--shadow-color); text-align:center;">
-      <h1 style="font-size:2.2rem; font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px;">Order Tracking</h1>
-      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:30px;">Tracking number: <strong id="tracking-number-text" style="color:var(--text-primary);">SQ...</strong></p>
+  <!-- Cart Drawer Overlay -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body"></div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn">View Full Cart</a>
+    </div>
+  </div>
 
-      <!-- Visual Pipeline tracker -->
-      <div style="display:flex; justify-content:space-between; align-items:center; position:relative; margin: 40px 0 60px; max-width:600px; margin-left:auto; margin-right:auto;">
-        <!-- Connecting bars -->
-        <div style="position:absolute; top:25px; left:0; width:100%; height:4px; background:var(--mid-grey); z-index:1;"></div>
-        <div id="tracking-progress-bar" style="position:absolute; top:25px; left:0; width:0%; height:4px; background:var(--rose-gold); z-index:2; transition: width 0.8s ease-in-out;"></div>
+  <main style="max-width:850px; margin:100px auto 0; padding:60px 5%;">
+    <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:40px; box-shadow:0 10px 30px var(--shadow-color); text-align:center; position:relative;">
+      <h1 style="font-size:2.2rem; font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px;">Order Tracking Portal</h1>
+      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:30px;">Track your shipment status instantly using your Order ID or Tracking ID.</p>
 
-        <!-- Node 1 -->
-        <div style="z-index:3; text-align:center; width:100px;">
-          <div id="node-ordered" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-shopping-bag"></i></div>
-          <span style="font-size:0.8rem; font-weight:600; display:block;">Ordered</span>
-        </div>
-        <!-- Node 2 -->
-        <div style="z-index:3; text-align:center; width:100px;">
-          <div id="node-shipped" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-truck"></i></div>
-          <span style="font-size:0.8rem; font-weight:600; display:block;">Shipped</span>
-        </div>
-        <!-- Node 3 -->
-        <div style="z-index:3; text-align:center; width:100px;">
-          <div id="node-delivered" style="width:50px; height:50px; border-radius:50%; background:var(--mid-grey); color:var(--white); display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--white); box-shadow:0 0 5px rgba(0,0,0,0.1);"><i class="fas fa-box-open"></i></div>
-          <span style="font-size:0.8rem; font-weight:600; display:block;">Delivered</span>
-        </div>
+      <!-- Search Input Container -->
+      <div style="display:flex; max-width:500px; margin:0 auto 30px; gap:10px;">
+        <input type="text" id="track-search-input" placeholder="e.g. SAN1001 or SQ12345678IN" style="flex-grow:1; padding:12px 20px; border-radius:30px; border:1px solid var(--border-color); outline:none; background:var(--bg-primary); color:var(--text-primary); font-size:0.9rem;">
+        <button onclick="searchTracking()" class="btn btn-luxury" style="padding:12px 25px; border-radius:30px; font-size:0.85rem;"><i class="fas fa-search"></i> Trace</button>
       </div>
 
-      <!-- Specs info -->
-      <div style="border-top:1px solid var(--border-color); padding-top:25px; text-align:left; display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-        <div>
-          <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:5px;">Shipping Address:</h4>
-          <p id="track-address-text" style="font-size:0.9rem; line-height:1.5; color:var(--text-primary);"></p>
+      <!-- Tracking Results Content (Hidden by default) -->
+      <div id="tracking-results-box" style="display:none; border-top:1px solid var(--border-color); padding-top:30px; margin-top:20px; text-align:left;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h3 style="font-family:var(--font-sans); font-size:1.1rem; font-weight:700;">Order ID: <span id="res-order-id" style="color:var(--rose-gold);">SAN1001</span></h3>
+            <span style="font-size:0.8rem; color:var(--text-secondary);">Tracking ID: <strong id="res-tracking-id">SQ12345678IN</strong></span>
+          </div>
+          <div>
+            <span class="status-badge" id="res-status-badge" style="padding:6px 15px; font-size:0.8rem;">CONFIRMED</span>
+          </div>
         </div>
-        <div>
-          <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:5px;">Order Details:</h4>
-          <p style="font-size:0.9rem; line-height:1.5; color:var(--text-primary);">
-            Payment Method: <span id="track-payment-text">COD</span><br>
-            Amount Paid: <strong id="track-amount-text" style="color:var(--rose-gold);">₹0</strong>
-          </p>
+
+        <!-- 5-Status Responsive Timeline -->
+        <div class="tracking-timeline">
+          <div class="timeline-line"></div>
+          <div class="timeline-progress" id="tracking-progress-bar"></div>
+
+          <!-- Node 1 -->
+          <div class="timeline-node" id="node-confirmed">
+            <div class="node-icon"><i class="fas fa-clipboard-check"></i></div>
+            <span class="node-label">Confirmed</span>
+          </div>
+          <!-- Node 2 -->
+          <div class="timeline-node" id="node-packed">
+            <div class="node-icon"><i class="fas fa-box"></i></div>
+            <span class="node-label">Packed</span>
+          </div>
+          <!-- Node 3 -->
+          <div class="timeline-node" id="node-shipped">
+            <div class="node-icon"><i class="fas fa-truck"></i></div>
+            <span class="node-label">Shipped</span>
+          </div>
+          <!-- Node 4 -->
+          <div class="timeline-node" id="node-outfordelivery">
+            <div class="node-icon"><i class="fas fa-shipping-fast"></i></div>
+            <span class="node-label">Out For Delivery</span>
+          </div>
+          <!-- Node 5 -->
+          <div class="timeline-node" id="node-delivered">
+            <div class="node-icon"><i class="fas fa-check-circle"></i></div>
+            <span class="node-label">Delivered</span>
+          </div>
         </div>
+
+        <!-- Delivery Details -->
+        <div style="border-top:1px solid var(--border-color); padding-top:25px; display:grid; grid-template-columns: 1.2fr 1fr; gap:30px; margin-bottom:30px;">
+          <div>
+            <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px;">Shipping Details:</h4>
+            <p id="res-customer-name" style="font-weight:600; font-size:0.95rem; margin-bottom:4px;"></p>
+            <p id="res-address" style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary);"></p>
+          </div>
+          <div>
+            <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px;">Order Summary:</h4>
+            <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
+              Payment Method: <strong id="res-payment-method" style="color:var(--text-primary);">COD</strong><br>
+              Payment Status: <span id="res-payment-status" class="status-badge" style="font-size:0.7rem; padding:2px 8px; margin-left:5px;">Pending</span><br>
+              Total Bill: <strong id="res-amount" style="color:var(--rose-gold); font-size:1.1rem; display:inline-block; margin-top:5px;">₹0</strong>
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:30px;">
+          <a href="/dashboard.html" class="btn btn-primary" style="padding:10px 25px; font-size:0.8rem;">Go To Dashboard</a>
+          <a id="invoice-download-btn" href="#" class="btn btn-outline" style="padding:10px 25px; font-size:0.8rem;"><i class="fas fa-download"></i> Download Invoice</a>
+        </div>
+
       </div>
 
-      <div style="margin-top:35px; display:flex; gap:15px; justify-content:center;">
-        <a href="/dashboard.html" class="btn btn-primary">Go To Dashboard</a>
-        <a id="invoice-download-btn" href="#" class="btn btn-outline" download>Download Invoice</a>
+      <!-- Welcome/Idle placeholder -->
+      <div id="tracking-idle-box" style="padding:40px 0; color:var(--text-secondary);">
+        <i class="fas fa-map-marker-alt" style="font-size:4rem; color:var(--rose-gold-glow); margin-bottom:15px; display:block;"></i>
+        <p>Please enter your 7-character Order ID (e.g., SAN1001) or 12-character Tracking ID (e.g., SQ12345678IN) to search.</p>
       </div>
+
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
     <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
   </footer>
 
   <script src="/js/main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', loadTrackingDetails);
-
-    async function loadTrackingDetails() {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check query string
       const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
-      if (!id) return;
+      const query = urlParams.get('id');
+      if (query) {
+        document.getElementById('track-search-input').value = query;
+        fetchTrackingData(query);
+      }
+    });
 
-      const token = localStorage.getItem('sanique_token');
+    function searchTracking() {
+      const queryInput = document.getElementById('track-search-input');
+      if (!queryInput) return;
+      const query = queryInput.value.trim();
+      if (!query) {
+        showToast("Please enter an Order ID or Tracking ID", "error");
+        return;
+      }
+      fetchTrackingData(query);
+    }
 
+    async function fetchTrackingData(query) {
       try {
-        const res = await fetch(`/api/orders/${id}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const order = await res.json();
-
-        if (res.status !== 200) {
-          showToast("Failed to fetch tracking details", "error");
+        const res = await fetch(`/api/orders/track/${query}`);
+        
+        if (res.status === 404) {
+          showToast("No order found matching this search", "error");
+          document.getElementById('tracking-results-box').style.display = 'none';
+          document.getElementById('tracking-idle-box').style.display = 'block';
           return;
         }
 
-        // Render values
-        document.getElementById('tracking-number-text').textContent = order.trackingNumber;
-        document.getElementById('track-address-text').innerHTML = `
-          ${order.shippingAddress.street}<br>
-          ${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.zipCode}
-        `;
-        document.getElementById('track-payment-text').textContent = order.paymentMethod;
-        document.getElementById('track-amount-text').textContent = `₹${order.amount.toLocaleString('en-IN')}`;
+        const order = await res.json();
+
+        // Render Values
+        document.getElementById('tracking-idle-box').style.display = 'none';
+        document.getElementById('tracking-results-box').style.display = 'block';
+
+        document.getElementById('res-order-id').textContent = order.orderId;
+        document.getElementById('res-tracking-id').textContent = order.trackingId || order.trackingNumber || 'N/A';
+        document.getElementById('res-customer-name').textContent = order.customerName;
         
+        // Address formatted
+        if (typeof order.shippingAddress === 'object') {
+          document.getElementById('res-address').innerHTML = `
+            ${order.shippingAddress.street || ''}<br>
+            ${order.shippingAddress.city || ''}, ${order.shippingAddress.state || ''} - ${order.shippingAddress.zipCode || ''}
+          `;
+        } else {
+          document.getElementById('res-address').textContent = order.shippingAddress;
+        }
+
+        document.getElementById('res-payment-method').textContent = order.paymentMethod;
+        
+        // Payment Badge
+        const pStatus = document.getElementById('res-payment-status');
+        pStatus.textContent = order.paymentStatus;
+        pStatus.className = `status-badge status-${order.paymentStatus.toLowerCase()}`;
+
+        document.getElementById('res-amount').textContent = `₹${(order.totalAmount || order.amount).toLocaleString('en-IN')}`;
+        
+        // Invoice Download button
         const invoiceBtn = document.getElementById('invoice-download-btn');
-        if (invoiceBtn) invoiceBtn.href = `/api/orders/${order._id}/invoice`;
+        if (invoiceBtn) {
+          invoiceBtn.onclick = (e) => {
+            e.preventDefault();
+            downloadTrackingInvoice(order._id);
+          };
+        }
 
-        // Render pipeline states
+        // Status Badge
+        const statusBadge = document.getElementById('res-status-badge');
+        statusBadge.textContent = order.orderStatus.toUpperCase();
+        statusBadge.className = `status-badge status-${order.orderStatus.toLowerCase() === 'pending' || order.orderStatus.toLowerCase() === 'confirmed' ? 'ordered' : order.orderStatus.toLowerCase()}`;
+
+        // Render Timeline Progress
+        const nodes = ['confirmed', 'packed', 'shipped', 'outfordelivery', 'delivered'];
+        nodes.forEach(n => {
+          document.getElementById(`node-${n}`).classList.remove('active', 'completed');
+        });
+
         const progress = document.getElementById('tracking-progress-bar');
-        const nodeOrdered = document.getElementById('node-ordered');
-        const nodeShipped = document.getElementById('node-shipped');
-        const nodeDelivered = document.getElementById('node-delivered');
+        const status = order.orderStatus.toLowerCase();
 
-        const activeColor = 'var(--rose-gold)';
-
-        if (order.orderStatus === 'Ordered') {
-          progress.style.width = '0%';
-          nodeOrdered.style.backgroundColor = activeColor;
-        } else if (order.orderStatus === 'Shipped') {
-          progress.style.width = '50%';
-          nodeOrdered.style.backgroundColor = activeColor;
-          nodeShipped.style.backgroundColor = activeColor;
-        } else if (order.orderStatus === 'Delivered') {
-          progress.style.width = '100%';
-          nodeOrdered.style.backgroundColor = activeColor;
-          nodeShipped.style.backgroundColor = activeColor;
-          nodeDelivered.style.backgroundColor = activeColor;
-        } else if (order.orderStatus === 'Cancelled') {
-          document.getElementById('tracking-number-text').textContent += ' (CANCELLED)';
+        if (status === 'cancelled') {
           progress.style.width = '0%';
           progress.style.backgroundColor = '#E05D5D';
-          nodeOrdered.style.backgroundColor = '#E05D5D';
+          document.getElementById('node-confirmed').classList.add('active');
+          document.getElementById('node-confirmed').querySelector('.node-icon').style.backgroundColor = '#E05D5D';
+          statusBadge.style.backgroundColor = '#FADBD8';
+          statusBadge.style.color = '#B03A2E';
+        } else {
+          progress.style.backgroundColor = 'var(--rose-gold)';
+          
+          let level = 0;
+          if (status === 'pending' || status === 'confirmed') {
+            level = 1;
+            document.getElementById('node-confirmed').classList.add('active');
+          } else if (status === 'packed') {
+            level = 2;
+            document.getElementById('node-confirmed').classList.add('completed');
+            document.getElementById('node-packed').classList.add('active');
+          } else if (status === 'shipped') {
+            level = 3;
+            document.getElementById('node-confirmed').classList.add('completed');
+            document.getElementById('node-packed').classList.add('completed');
+            document.getElementById('node-shipped').classList.add('active');
+          } else if (status === 'out for delivery' || status === 'outfordelivery') {
+            level = 4;
+            document.getElementById('node-confirmed').classList.add('completed');
+            document.getElementById('node-packed').classList.add('completed');
+            document.getElementById('node-shipped').classList.add('completed');
+            document.getElementById('node-outfordelivery').classList.add('active');
+          } else if (status === 'delivered') {
+            level = 5;
+            document.getElementById('node-confirmed').classList.add('completed');
+            document.getElementById('node-packed').classList.add('completed');
+            document.getElementById('node-shipped').classList.add('completed');
+            document.getElementById('node-outfordelivery').classList.add('completed');
+            document.getElementById('node-delivered').classList.add('active');
+          }
+
+          const percentages = [0, 0, 25, 50, 75, 100];
+          progress.style.width = `${percentages[level]}%`;
         }
 
       } catch (err) {
+        console.error("Tracking lookup error:", err);
+        showToast("Error looking up tracking details", "error");
+      }
+    }
+
+    async function downloadTrackingInvoice(orderId) {
+      const token = localStorage.getItem('sanique_token');
+      if (!token) {
+        showToast("Please log in to download the invoice", "error");
+        return;
+      }
+      try {
+        const res = await fetch(`/api/orders/${orderId}/invoice`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) {
+          showToast("Failed to download invoice. Make sure you are the order owner.", "error");
+          return;
+        }
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `Invoice_${orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showToast("Invoice downloaded successfully", "success");
+      } catch (err) {
         console.error(err);
+        showToast("Error downloading invoice", "error");
       }
     }
   </script>

@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createOrder,
   getOrderById,
+  getOrderByTracking,
   getMyOrders,
   getOrders,
   updateOrderStatus,
@@ -17,11 +18,13 @@ router.route('/')
 
 router.post('/coupon', protect, validateCoupon);
 router.get('/myorders', protect, getMyOrders);
+router.get('/track/:query', getOrderByTracking); // public tracking endpoint
 
 router.route('/:id')
   .get(protect, getOrderById);
 
 router.put('/:id/status', protect, admin, updateOrderStatus);
-router.get('/:id/invoice', protect, downloadInvoice);
+router.get('/:id/invoice', downloadInvoice);
 
 module.exports = router;
+

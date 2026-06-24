@@ -16,56 +16,62 @@
       <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
       <span style="font-family:var(--font-serif); font-size:1.1rem; color:var(--rose-gold); font-weight:bold; letter-spacing:1px;">ADMIN PORTAL</span>
       <div class="nav-icons">
-        <button class="nav-btn" onclick="userLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        <button class="nav-btn" onclick="userLogout()" title="Logout" style="font-size:1.1rem; background:none; border:none; color:var(--text-primary); cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </div>
     </div>
   </header>
 
   <main style="max-width:1300px; margin:100px auto 0; padding:40px 5%;">
     
-    <!-- Metrics Boxes -->
-    <section class="admin-metrics-grid">
-      <div class="admin-metric-card">
-        <div class="admin-metric-num" id="metric-total-sales">₹0</div>
-        <div class="admin-metric-label">Total Revenue</div>
-      </div>
-      <div class="admin-metric-card">
-        <div class="admin-metric-num" id="metric-total-orders">0</div>
-        <div class="admin-metric-label">Orders Handled</div>
-      </div>
-      <div class="admin-metric-card">
-        <div class="admin-metric-num" id="metric-total-products">0</div>
-        <div class="admin-metric-label">Catalog Products</div>
-      </div>
-      <div class="admin-metric-card">
-        <div class="admin-metric-num" style="color:var(--gold);">18%</div>
-        <div class="admin-metric-label">Avg GST Applied</div>
-      </div>
-    </section>
-
-    <!-- Visual Charts -->
-    <section class="charts-grid">
-      <div class="chart-card">
-        <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--rose-gold);">Sales Performance (Timeline)</h3>
-        <canvas id="chart-revenue" style="width:100%; height:220px;"></canvas>
-      </div>
-      <div class="chart-card" style="display:flex; flex-direction:column; align-items:center;">
-        <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--gold); width:100%;">Category Sales Split</h3>
-        <canvas id="chart-category" style="width:180px; height:180px;"></canvas>
-      </div>
-    </section>
-
     <!-- Tab navigation -->
-    <section style="margin-bottom:30px;">
-      <div style="border-bottom:1px solid var(--border-color); display:flex; gap:15px;">
-        <button class="admin-tab-btn active" data-target="admin-products-tab">Products List</button>
-        <button class="admin-tab-btn" data-target="admin-orders-tab">Orders Timeline</button>
+    <section style="margin-bottom:35px;">
+      <div style="border-bottom:1px solid var(--border-color); display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="admin-tab-btn active" data-target="admin-dashboard-tab">Dashboard</button>
+        <button class="admin-tab-btn" data-target="admin-products-tab">Products</button>
+        <button class="admin-tab-btn" data-target="admin-orders-tab">Orders</button>
+        <button class="admin-tab-btn" data-target="admin-payments-tab">Payments</button>
+        <button class="admin-tab-btn" data-target="admin-customers-tab">Customers</button>
       </div>
     </section>
 
-    <!-- Tab content 1: Products -->
-    <section id="admin-products-tab" class="admin-tab-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <!-- Tab content 1: Dashboard Analytics -->
+    <section id="admin-dashboard-tab" class="admin-tab-content">
+      <!-- Metrics Boxes -->
+      <div class="admin-metrics-grid">
+        <div class="admin-metric-card">
+          <div class="admin-metric-num" id="metric-total-sales">₹0</div>
+          <div class="admin-metric-label">Total Revenue</div>
+        </div>
+        <div class="admin-metric-card">
+          <div class="admin-metric-num" id="metric-total-orders">0</div>
+          <div class="admin-metric-label">Orders Handled</div>
+        </div>
+        <div class="admin-metric-card">
+          <div class="admin-metric-num" id="metric-total-products">0</div>
+          <div class="admin-metric-label">Catalog Products</div>
+        </div>
+        <div class="admin-metric-card">
+          <div class="admin-metric-num" id="metric-total-customers">0</div>
+          <div class="admin-metric-label">Total Customers</div>
+        </div>
+      </div>
+
+      <!-- Visual Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--rose-gold);">Sales Performance (Timeline)</h3>
+          <canvas id="chart-revenue" style="width:100%; height:220px;"></canvas>
+        </div>
+        <div class="chart-card" style="display:flex; flex-direction:column; align-items:center;">
+          <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--gold); width:100%;">Category Sales Split</h3>
+          <canvas id="chart-category" style="width:180px; height:180px;"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab content 2: Products CRUD -->
+    <section id="admin-products-tab" class="admin-tab-content" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
         <h2 style="font-family:var(--font-serif); font-size:1.5rem;">Product Catalog CRUD</h2>
         <button class="btn btn-luxury" onclick="openProductEditModal()"><i class="fas fa-plus"></i> Add New Product</button>
       </div>
@@ -86,14 +92,14 @@
       </div>
     </section>
 
-    <!-- Tab content 2: Orders -->
+    <!-- Tab content 3: Orders Status Control -->
     <section id="admin-orders-tab" class="admin-tab-content" style="display:none;">
       <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Order Delivery Status Control</h2>
       <div class="admin-table-container">
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Tracking ID</th>
+              <th>Order ID / Tracking ID</th>
               <th>Recipient</th>
               <th>Final Bill</th>
               <th>Payment Status</th>
@@ -102,6 +108,46 @@
             </tr>
           </thead>
           <tbody id="admin-orders-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab content 4: Payments Logs -->
+    <section id="admin-payments-tab" class="admin-tab-content" style="display:none;">
+      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Transaction Payment Logs</h2>
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Payment Transaction ID</th>
+              <th>Order ID</th>
+              <th>Amount Paid</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Logged Date</th>
+            </tr>
+          </thead>
+          <tbody id="admin-payments-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab content 5: Customers -->
+    <section id="admin-customers-tab" class="admin-tab-content" style="display:none;">
+      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Registered Loyalty Customers</h2>
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Customer Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Loyalty points</th>
+              <th>VIP Tier</th>
+              <th>Default Address</th>
+            </tr>
+          </thead>
+          <tbody id="admin-customers-tbody"></tbody>
         </table>
       </div>
     </section>

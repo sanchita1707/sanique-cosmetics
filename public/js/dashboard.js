@@ -210,13 +210,39 @@ async function loadOrderHistory() {
         
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <a href="/tracking.html?id=${order._id}" class="btn btn-primary" style="padding:6px 15px; font-size:0.75rem; border-radius:4px;">Track Delivery</a>
-          <a href="/api/orders/${order._id}/invoice" class="btn btn-outline" style="padding:6px 15px; font-size:0.75rem; border-radius:4px;" download>Download PDF Invoice</a>
+          <button onclick="downloadUserInvoice('${order._id}')" class="btn btn-outline" style="padding:6px 15px; font-size:0.75rem; border-radius:4px; cursor:pointer; background:none; border:1px solid var(--border-color); color:var(--text-primary);">Download PDF Invoice</button>
         </div>
       </div>
     `).join('');
 
   } catch (err) {
     console.error("Orders load error:", err);
+  }
+}
+
+async function downloadUserInvoice(orderId) {
+  const token = localStorage.getItem('sanique_token');
+  try {
+    const res = await fetch(`/api/orders/${orderId}/invoice`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) {
+      showToast("Failed to download invoice", "error");
+      return;
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `Invoice_${orderId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    showToast("Invoice downloaded successfully", "success");
+  } catch (err) {
+    console.error(err);
+    showToast("Error downloading invoice", "error");
   }
 }
 

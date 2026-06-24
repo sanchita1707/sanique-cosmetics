@@ -265,57 +265,16 @@ async function handleOrderPlacement(e) {
   };
 
   const token = localStorage.getItem('sanique_token');
-
-  // Trigger simulated popup overlays for Razorpay or UPI
-  if (paymentMethod === 'Razorpay') {
-    showSimulatedPaymentPopup(orderData, token);
-  } else {
-    submitOrderToBackend(orderData, token);
-  }
-}
-
-function showSimulatedPaymentPopup(orderData, token) {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay active';
-  overlay.id = 'razorpay-popup';
-  overlay.innerHTML = `
-    <div class="modal-container" style="max-width:400px; text-align:center; padding:30px;">
-      <i class="fab fa-cc-stripe" style="font-size:3rem; color:var(--rose-gold);"></i>
-      <h3 style="margin:15px 0 10px; font-family:var(--font-serif);">Razorpay Checkout Gate</h3>
-      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px;">Paying: <strong>₹${finalBill.toLocaleString('en-IN')}</strong></p>
-      
-      <div style="text-align:left; display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
-        <input type="text" placeholder="Card Number (4111 2222 ...)" value="4111222233334444" style="padding:8px 12px; border-radius:4px; border:1px solid var(--border-color); font-size:0.85rem;">
-        <div style="display:flex; gap:10px;">
-          <input type="text" placeholder="MM/YY" value="12/29" style="flex:1; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color); font-size:0.85rem;">
-          <input type="password" placeholder="CVV" value="123" style="flex:1; padding:8px 12px; border-radius:4px; border:1px solid var(--border-color); font-size:0.85rem;">
-        </div>
-      </div>
-      
-      <button class="btn btn-luxury" id="razorpay-submit" style="width:100%;">Authorize Payment</button>
-      <button class="btn btn-outline" id="razorpay-cancel" style="width:100%; margin-top:10px; padding:8px;">Cancel</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-
-  document.getElementById('razorpay-cancel').addEventListener('click', () => {
-    overlay.remove();
-    showToast("Payment cancelled by customer", "error");
-  });
-
-  document.getElementById('razorpay-submit').addEventListener('click', () => {
-    overlay.remove();
-    showToast("Razorpay Authentication Approved", "success");
-    submitOrderToBackend(orderData, token);
-  });
+  submitOrderToBackend(orderData, token);
 }
 
 async function submitOrderToBackend(orderData, token) {
-  try {
-    const btn = document.querySelector('button[type="submit"]');
-    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
+  const btn = document.querySelector('button[type="submit"]');
+  if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Order...';
 
-    const res = await fetch('/api/orders', {
+  try {
+    // 1. Create order in our database first (marked as Pending if Razorpay, Confirmed if COD)
+    const orderRes = await fetch('/api/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -323,20 +282,103 @@ async function submitOrderToBackend(orderData, token) {
       },
       body: JSON.stringify(orderData)
     });
-    const order = await res.json();
+    const order = await orderRes.json();
 
-    if (res.status === 201) {
+    if (orderRes.status !== 201) {
+      showToast(order.message || "Failed to create order", "error");
+      if (btn) btn.innerHTML = 'Place Order';
+      return;
+    }
+
+    // 2. If Payment Method is COD or UPI, complete order immediately
+    if (orderData.paymentMethod !== 'Razorpay') {
       showToast("Order placed successfully!", "success");
-      // Clear Cart
       localStorage.removeItem('sanique_cart');
       setTimeout(() => {
-        window.location.href = `/tracking.html?id=${order._id}`;
+        window.location.href = `/tracking.html?id=${order.orderId}`;
       }, 1500);
-    } else {
-      showToast(order.message || "Failed to place order", "error");
-      if (btn) btn.innerHTML = 'Place Order';
+      return;
     }
+
+    // 3. For Razorpay, fetch Razorpay Order ID from backend payment API
+    const rpRes = await fetch('/api/payments/razorpay/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ amount: finalBill })
+    });
+    const rpData = await rpRes.json();
+
+    if (!rpData.success) {
+      showToast("Failed to initialize payment gateway", "error");
+      if (btn) btn.innerHTML = 'Place Order';
+      return;
+    }
+
+    // 4. Configure Razorpay Options and Open Checkout Modal
+    const options = {
+      key: rpData.keyId,
+      amount: rpData.order.amount,
+      currency: rpData.order.currency,
+      name: "Sanique Cosmetics",
+      description: `Purchase Order ID: ${order.orderId}`,
+      order_id: rpData.order.id,
+      handler: async function (response) {
+        if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming Payment...';
+        
+        // 5. Verify signature on backend
+        const verifyRes = await fetch('/api/payments/razorpay/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id || rpData.order.id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            amount: finalBill,
+            orderId: order.orderId,
+            method: "Razorpay Card/UPI"
+          })
+        });
+        const verifyData = await verifyRes.json();
+
+        if (verifyData.success) {
+          showToast("Payment verified! Order confirmed.", "success");
+          localStorage.removeItem('sanique_cart');
+          setTimeout(() => {
+            window.location.href = `/tracking.html?id=${order.orderId}`;
+          }, 1500);
+        } else {
+          showToast("Payment verification failed", "error");
+          if (btn) btn.innerHTML = 'Place Order';
+        }
+      },
+      prefill: {
+        name: order.customerName,
+        email: order.email,
+        contact: order.phone
+      },
+      theme: {
+        color: "#B76E79"
+      },
+      modal: {
+        ondismiss: function () {
+          showToast("Payment cancelled by customer", "error");
+          if (btn) btn.innerHTML = 'Place Order';
+        }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
   } catch (err) {
-    console.error("Order error:", err);
+    console.error("Order payment error:", err);
+    showToast("An error occurred during payment processing", "error");
+    if (btn) btn.innerHTML = 'Place Order';
   }
 }

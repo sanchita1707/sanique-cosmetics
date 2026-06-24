@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
 const User = require('../models/User');
+const Counter = require('../models/Counter');
 const PDFDocument = require('pdfkit');
 
 // Helper to generate tracking number
@@ -13,14 +14,15 @@ const generateTrackingNo = () => {
 // @route   POST /api/orders
 // @access  Private
 const createOrder = async (req, res) => {
-  const { orderItems, shippingAddress, paymentMethod, couponCode, redeemPoints } = req.body;
+  const { orderItems, shippingAddress, paymentMethod, couponCode, redeemPoints, customerName, email, phone } = req.body;
 
   try {
     if (!orderItems || orderItems.length === 0) {
       return res.status(400).json({ message: 'No products in order items' });
     }
 
-    let calculatedAmount = 0;
+    let subtotal = 0;
+    let totalGst = 0;
     const finalProducts = [];
 
     // Verify stock and calculate cost
@@ -39,12 +41,18 @@ const createOrder = async (req, res) => {
       await product.save();
 
       const basePrice = product.discountPrice || product.price;
-      calculatedAmount += basePrice * item.quantity;
+      const lineTotal = basePrice * item.quantity;
+      subtotal += lineTotal;
+
+      const gstRate = product.gstPercent || 18;
+      const gstAmount = Math.round(lineTotal * (gstRate / 100));
+      totalGst += gstAmount;
 
       finalProducts.push({
         productId: product._id,
-        quantity: item.quantity,
+        name: product.name,
         price: basePrice,
+        quantity: item.quantity,
         shade: item.shade || ""
       });
     }
@@ -53,9 +61,9 @@ const createOrder = async (req, res) => {
     // Handle coupon code
     if (couponCode) {
       const coupon = await Coupon.findOne({ code: couponCode, active: true });
-      if (coupon && coupon.expiryDate > new Date() && calculatedAmount >= coupon.minPurchase) {
+      if (coupon && coupon.expiryDate > new Date() && subtotal >= coupon.minPurchase) {
         if (coupon.discountType === 'percentage') {
-          discountApplied = Math.round((calculatedAmount * coupon.value) / 100);
+          discountApplied = Math.round((subtotal * coupon.value) / 100);
         } else {
           discountApplied = coupon.value;
         }
@@ -67,14 +75,14 @@ const createOrder = async (req, res) => {
 
     // Handle loyalty point redemption
     if (redeemPoints && redeemPoints > 0) {
-      const maxRedeem = Math.min(user.loyaltyPoints, calculatedAmount - discountApplied);
+      const maxRedeem = Math.min(user.loyaltyPoints, subtotal - discountApplied);
       if (maxRedeem > 0) {
         loyaltyPointsRedeemedAmount = maxRedeem;
         user.loyaltyPoints -= maxRedeem;
       }
     }
 
-    const finalAmount = Math.max(0, calculatedAmount - discountApplied - loyaltyPointsRedeemedAmount);
+    const finalAmount = Math.max(0, subtotal - discountApplied - loyaltyPointsRedeemedAmount);
 
     // Credit loyalty points to user (10% of final amount in points, 1 point = 1 INR)
     const pointsEarned = Math.round(finalAmount * 0.10);
@@ -92,17 +100,44 @@ const createOrder = async (req, res) => {
     }
     await user.save();
 
+    // Auto-increment custom orderId sequence (SAN1001, SAN1002...)
+    const counter = await Counter.findOneAndUpdate(
+      { id: 'orderId' },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+    const customOrderId = `SAN${counter.seq}`;
+    const generatedTracking = generateTrackingNo();
+
+    // Format shipping address to string if it is an object
+    let formattedAddress = shippingAddress;
+    if (typeof shippingAddress === 'object') {
+      formattedAddress = `${shippingAddress.street || ''}, ${shippingAddress.city || ''}, ${shippingAddress.state || ''} - ${shippingAddress.zipCode || ''}`;
+    }
+
     // Create Order object
     const order = new Order({
+      orderId: customOrderId,
       userId: req.user._id,
+      customerName: customerName || req.user.name,
+      email: email || req.user.email,
+      phone: phone || req.user.mobile || "9999999999",
+      shippingAddress: formattedAddress,
       products: finalProducts,
+      subtotal,
+      gst: totalGst,
+      discount: discountApplied + loyaltyPointsRedeemedAmount,
+      totalAmount: finalAmount,
+      paymentMethod,
+      paymentStatus: paymentMethod === 'COD' ? 'Pending' : (paymentMethod === 'Razorpay' ? 'Pending' : 'Paid'),
+      orderStatus: paymentMethod === 'COD' ? 'Confirmed' : (paymentMethod === 'Razorpay' ? 'Pending' : 'Confirmed'),
+      trackingId: generatedTracking,
+      
+      // Compatibility fields
       amount: finalAmount,
       discountApplied,
       loyaltyRedeemed: loyaltyPointsRedeemedAmount,
-      shippingAddress,
-      paymentMethod,
-      paymentStatus: paymentMethod === 'COD' ? 'Pending' : 'Paid', // UPI/Razorpay mock auto pays
-      trackingNumber: generateTrackingNo()
+      trackingNumber: generatedTracking
     });
 
     const createdOrder = await order.save();
@@ -117,15 +152,41 @@ const createOrder = async (req, res) => {
 // @access  Private
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate('userId', 'name email').populate('products.productId', 'name brand images');
+    const order = await Order.findById(req.params.id)
+      .populate('userId', 'name email mobile')
+      .populate('products.productId', 'name brand images');
     if (order) {
       // Authorize order owner or admin
-      if (order.userId._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      if (order.userId && order.userId._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
         return res.status(403).json({ message: 'Unauthorized access to order history' });
       }
       res.json(order);
     } else {
       res.status(404).json({ message: 'Order not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get order status by public query (OrderID or TrackingID)
+// @route   GET /api/orders/track/:query
+// @access  Public
+const getOrderByTracking = async (req, res) => {
+  try {
+    const { query } = req.params;
+    const order = await Order.findOne({
+      $or: [
+        { orderId: query },
+        { trackingId: query },
+        { trackingNumber: query }
+      ]
+    }).populate('products.productId', 'name brand images');
+
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(404).json({ message: 'No matching order found for this Order ID or Tracking ID.' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -161,7 +222,7 @@ const getOrders = async (req, res) => {
   }
 };
 
-// @desc    Update order status (Admin Only)
+// @desc    Update order status & tracking status (Admin Only)
 // @route   PUT /api/orders/:id/status
 // @access  Private/Admin
 const updateOrderStatus = async (req, res) => {
@@ -234,7 +295,7 @@ const downloadInvoice = async (req, res) => {
     }
 
     // Authorize order owner or admin
-    if (order.userId._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    if (order.userId && order.userId._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
       return res.status(403).json({ message: 'Not authorized to download this invoice' });
     }
 
@@ -242,7 +303,7 @@ const downloadInvoice = async (req, res) => {
 
     // Set headers
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=Invoice_${order.trackingNumber}.pdf`);
+    res.setHeader('Content-Disposition', `attachment; filename=Invoice_${order.orderId || order.trackingId}.pdf`);
     doc.pipe(res);
 
     // Document styling - Brand Color Accent: Rose Gold (#B76E79) and Charcoal (#2C2C2C)
@@ -254,23 +315,30 @@ const downloadInvoice = async (req, res) => {
     doc.fontSize(10).font('Helvetica-Oblique').text('Premium Luxury Skincare & Makeup', 50, 78);
     
     doc.fillColor(darkGrey).fontSize(14).font('Helvetica-Bold').text('TAX INVOICE', 400, 50, { align: 'right' });
-    doc.fontSize(9).font('Helvetica').text(`Invoice No: INV-${order._id.toString().substring(0, 8).toUpperCase()}`, 400, 70, { align: 'right' });
+    doc.fontSize(9).font('Helvetica').text(`Invoice No: INV-${order.orderId || order._id.toString().substring(0, 8).toUpperCase()}`, 400, 70, { align: 'right' });
     doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`, 400, 83, { align: 'right' });
-    doc.text(`Tracking ID: ${order.trackingNumber}`, 400, 96, { align: 'right' });
+    doc.text(`Order ID: ${order.orderId || 'N/A'}`, 400, 96, { align: 'right' });
+    doc.text(`Tracking ID: ${order.trackingId || order.trackingNumber || 'N/A'}`, 400, 109, { align: 'right' });
 
-    doc.moveTo(50, 120).lineTo(550, 120).strokeColor('#E0E0E0').stroke();
+    doc.moveTo(50, 125).lineTo(550, 125).strokeColor('#E0E0E0').stroke();
 
     // Addresses
     doc.fontSize(10).font('Helvetica-Bold').text('Billed To:', 50, 140);
-    doc.font('Helvetica').text(order.userId.name, 50, 155);
-    doc.text(order.userId.email, 50, 170);
-    doc.text(`Phone: ${order.userId.mobile}`, 50, 185);
+    doc.font('Helvetica').text(order.customerName || (order.userId ? order.userId.name : 'Valued Customer'), 50, 155);
+    doc.text(order.email || (order.userId ? order.userId.email : ''), 50, 170);
+    doc.text(`Phone: ${order.phone || (order.userId ? order.userId.mobile : '')}`, 50, 185);
 
     doc.font('Helvetica-Bold').text('Ship To:', 300, 140);
-    doc.font('Helvetica').text(order.userId.name, 300, 155);
-    doc.text(order.shippingAddress.street, 300, 170);
-    doc.text(`${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.zipCode}`, 300, 185);
-    doc.text('India', 300, 200);
+    doc.font('Helvetica');
+    if (typeof order.shippingAddress === 'object') {
+      doc.text(order.customerName || (order.userId ? order.userId.name : 'Valued Customer'), 300, 155);
+      doc.text(order.shippingAddress.street || '', 300, 170);
+      doc.text(`${order.shippingAddress.city || ''}, ${order.shippingAddress.state || ''} - ${order.shippingAddress.zipCode || ''}`, 300, 185);
+      doc.text('India', 300, 200);
+    } else {
+      doc.text(order.customerName || (order.userId ? order.userId.name : 'Valued Customer'), 300, 155);
+      doc.text(order.shippingAddress || '', 300, 170, { width: 250 });
+    }
 
     doc.moveTo(50, 225).lineTo(550, 225).strokeColor('#E0E0E0').stroke();
 
@@ -289,14 +357,14 @@ const downloadInvoice = async (req, res) => {
     y = 275;
     doc.font('Helvetica').fillColor(darkGrey).lineWidth(0.5);
 
-    let subtotal = 0;
+    let calcSubtotal = 0;
     for (const item of order.products) {
-      const pName = item.productId ? item.productId.name : 'Unknown Product';
+      const pName = item.name || (item.productId ? item.productId.name : 'Unknown Product');
       const shadeText = item.shade ? ` (Shade: ${item.shade})` : '';
       const pPrice = item.price;
       const gst = item.productId ? (item.productId.gstPercent || 18) : 18;
       const lineTotal = pPrice * item.quantity;
-      subtotal += lineTotal;
+      calcSubtotal += lineTotal;
 
       doc.text(`${pName}${shadeText}`, 50, y, { width: 220 });
       doc.text(item.quantity.toString(), 270, y, { width: 40, align: 'center' });
@@ -312,20 +380,18 @@ const downloadInvoice = async (req, res) => {
     y += 10;
     doc.font('Helvetica-Bold');
     doc.text('Subtotal:', 350, y, { width: 110, align: 'right' });
-    doc.font('Helvetica').text(`Rs. ${subtotal.toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
+    doc.font('Helvetica').text(`Rs. ${order.subtotal ? order.subtotal.toLocaleString('en-IN') : calcSubtotal.toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
 
-    if (order.discountApplied > 0) {
+    y += 20;
+    doc.font('Helvetica-Bold');
+    doc.text('GST (Included):', 350, y, { width: 110, align: 'right' });
+    doc.font('Helvetica').text(`Rs. ${order.gst ? order.gst.toLocaleString('en-IN') : Math.round(calcSubtotal * 0.18).toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
+
+    if (order.discount > 0 || order.discountApplied > 0) {
       y += 20;
       doc.font('Helvetica-Bold').fillColor('#E05D5D');
-      doc.text('Coupon Discount:', 350, y, { width: 110, align: 'right' });
-      doc.font('Helvetica').text(`- Rs. ${order.discountApplied.toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
-    }
-
-    if (order.loyaltyRedeemed > 0) {
-      y += 20;
-      doc.font('Helvetica-Bold').fillColor('#E05D5D');
-      doc.text('Loyalty Redeemed:', 350, y, { width: 110, align: 'right' });
-      doc.font('Helvetica').text(`- Rs. ${order.loyaltyRedeemed.toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
+      doc.text('Discount Applied:', 350, y, { width: 110, align: 'right' });
+      doc.font('Helvetica').text(`- Rs. ${(order.discount || order.discountApplied || 0).toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
     }
 
     y += 25;
@@ -333,7 +399,7 @@ const downloadInvoice = async (req, res) => {
 
     doc.font('Helvetica-Bold').fontSize(12).fillColor(brandColor);
     doc.text('Grand Total:', 350, y, { width: 110, align: 'right' });
-    doc.text(`Rs. ${order.amount.toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
+    doc.text(`Rs. ${(order.totalAmount || order.amount).toLocaleString('en-IN')}`, 470, y, { width: 80, align: 'right' });
 
     // Payment Information
     y += 40;
@@ -343,11 +409,11 @@ const downloadInvoice = async (req, res) => {
     doc.text(`Status: ${order.paymentStatus}`, 50, y + 27);
 
     // Terms / Footer
-    doc.moveTo(50, 480).lineTo(550, 480).strokeColor('#E0E0E0').stroke();
+    doc.moveTo(50, y + 55).lineTo(550, y + 55).strokeColor('#E0E0E0').stroke();
     doc.fontSize(8).fillColor('#888888');
-    doc.text('Thank you for choosing Sanique Cosmetics - Luxury Beauty & Skincare.', 50, 495, { align: 'center' });
-    doc.text('This is a computer-generated tax invoice and does not require a physical signature.', 50, 508, { align: 'center' });
-    doc.text('For queries, contact support@sanique.com', 50, 520, { align: 'center' });
+    doc.text('Thank you for choosing Sanique Cosmetics - Luxury Beauty & Skincare.', 50, y + 70, { align: 'center' });
+    doc.text('This is a computer-generated tax invoice and does not require a physical signature.', 50, y + 83, { align: 'center' });
+    doc.text('For queries, contact support@sanique.com', 50, y + 95, { align: 'center' });
 
     doc.end();
   } catch (error) {
@@ -358,6 +424,7 @@ const downloadInvoice = async (req, res) => {
 module.exports = {
   createOrder,
   getOrderById,
+  getOrderByTracking,
   getMyOrders,
   getOrders,
   updateOrderStatus,

@@ -201,10 +201,22 @@ async function toggleWishlistItem(id, button) {
 function initShopFilters() {
   const categorySelect = document.getElementById('filter-category');
   const priceSelect = document.getElementById('filter-price');
+  const ratingSelect = document.getElementById('filter-rating');
+  const searchInput = document.getElementById('shop-search');
   const sortingSelect = document.getElementById('shop-sort');
 
   const applyFilters = () => {
     let filtered = [...allProducts];
+
+    // Search query input (instant filtering)
+    if (searchInput && searchInput.value) {
+      const query = searchInput.value.toLowerCase().trim();
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) || 
+        p.category.toLowerCase().includes(query) || 
+        p.description.toLowerCase().includes(query)
+      );
+    }
 
     // Category
     if (categorySelect && categorySelect.value) {
@@ -219,9 +231,15 @@ function initShopFilters() {
         if (max) {
           return finalPrice >= min && finalPrice <= max;
         } else {
-          return finalPrice >= min; // above 2500 case
+          return finalPrice >= min;
         }
       });
+    }
+
+    // Rating Filter
+    if (ratingSelect && ratingSelect.value) {
+      const minRating = Number(ratingSelect.value);
+      filtered = filtered.filter(p => p.rating >= minRating);
     }
 
     // Sorting
@@ -233,16 +251,25 @@ function initShopFilters() {
         filtered.sort((a,b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
       } else if (sortVal === 'rating') {
         filtered.sort((a,b) => b.rating - a.rating);
+      } else if (sortVal === 'newest') {
+        filtered.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } else if (sortVal === 'best-selling') {
+        filtered.sort((a,b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
       }
     }
 
     renderProducts(filtered);
   };
 
-  [categorySelect, priceSelect, sortingSelect].forEach(item => {
+  [categorySelect, priceSelect, ratingSelect, sortingSelect].forEach(item => {
     if (item) item.addEventListener('change', applyFilters);
   });
+
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
 }
+
 
 // Smart search suggestions autocomplete
 function initSmartSearch() {

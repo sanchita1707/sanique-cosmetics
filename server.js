@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/auth', require('./backend/routes/authRoutes'));
 app.use('/api/products', require('./backend/routes/productRoutes'));
 app.use('/api/orders', require('./backend/routes/orderRoutes'));
+app.use('/api/payments', require('./backend/routes/paymentRoutes'));
 app.use('/api/ai', require('./backend/routes/aiRoutes'));
 
 // Serve Static Files

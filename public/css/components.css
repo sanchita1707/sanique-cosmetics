@@ -609,12 +609,15 @@
 }
 
 .status-ordered { background-color: #EBF5FB; color: #2980B9; }
+.status-confirmed { background-color: #EBF5FB; color: #2980B9; }
+.status-packed { background-color: #EAE6FF; color: #6C5CE7; }
 .status-shipped { background-color: #FEF9E7; color: #D4AC0D; }
 .status-delivered { background-color: #E8F8F5; color: #117A65; }
 .status-cancelled { background-color: #FADBD8; color: #B03A2E; }
 
 .status-paid { background-color: #E8F8F5; color: #117A65; }
 .status-pending { background-color: #FEF9E7; color: #D4AC0D; }
+.status-failed { background-color: #FADBD8; color: #B03A2E; }
 
 /* Admin charts styling context */
 .charts-grid {
@@ -637,3 +640,126 @@
   padding: 20px;
   box-shadow: 0 4px 15px var(--shadow-color);
 }
+
+/* 5-Status Visual Timeline */
+.tracking-timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin: 50px 0 70px;
+  width: 100%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--mid-grey);
+  z-index: 1;
+}
+
+.timeline-progress {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background: var(--rose-gold);
+  z-index: 2;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.timeline-node {
+  z-index: 3;
+  text-align: center;
+  width: 80px;
+  position: relative;
+}
+
+.timeline-node .node-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--mid-grey);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  border: 3px solid var(--card-bg);
+  box-shadow: 0 4px 10px var(--shadow-color);
+  font-size: 1.1rem;
+  transition: all 0.4s ease;
+}
+
+.timeline-node.active .node-icon {
+  background: var(--rose-gold);
+  color: var(--white);
+  box-shadow: 0 0 15px var(--rose-gold-glow);
+  transform: scale(1.1);
+}
+
+.timeline-node.completed .node-icon {
+  background: var(--success);
+  color: var(--white);
+}
+
+.timeline-node .node-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: block;
+  color: var(--text-secondary);
+  transition: color 0.4s ease;
+}
+
+.timeline-node.active .node-label {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+@media(max-width: 600px) {
+  .tracking-timeline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+    padding-left: 30px;
+    margin: 30px 0;
+  }
+  
+  .timeline-line {
+    left: 48px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+  }
+  
+  .timeline-progress {
+    left: 48px;
+    top: 0;
+    width: 4px;
+    height: 0%;
+  }
+  
+  .timeline-node {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    gap: 15px;
+  }
+  
+  .timeline-node .node-icon {
+    margin: 0;
+  }
+  
+  .timeline-node .node-label {
+    margin-top: 0;
+  }
+}
+

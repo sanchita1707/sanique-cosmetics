@@ -17,10 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadAdminDashboard();
 });
 
+let adminPayments = [];
+let adminCustomers = [];
+
 // Load all admin metrics, charts, and tables
 async function loadAdminDashboard() {
   await fetchAdminProducts();
   await fetchAdminOrders();
+  await fetchAdminPayments();
+  await fetchAdminCustomers();
   renderSalesCharts();
 }
 
@@ -36,6 +41,19 @@ function initAdminTabs() {
         content.style.display = 'none';
       });
       document.getElementById(target).style.display = 'block';
+      
+      // Auto-fetch fresh data depending on active tab
+      if (target === 'admin-dashboard-tab') {
+        loadAdminDashboard();
+      } else if (target === 'admin-products-tab') {
+        fetchAdminProducts();
+      } else if (target === 'admin-orders-tab') {
+        fetchAdminOrders();
+      } else if (target === 'admin-payments-tab') {
+        fetchAdminPayments();
+      } else if (target === 'admin-customers-tab') {
+        fetchAdminCustomers();
+      }
     });
   });
 }
@@ -45,6 +63,10 @@ async function fetchAdminProducts() {
   try {
     const res = await fetch('/api/products');
     adminProducts = await res.json();
+    
+    const prodText = document.getElementById('metric-total-products');
+    if (prodText) prodText.textContent = adminProducts.length;
+
     renderProductsTable();
   } catch (err) {
     console.error(err);
@@ -64,7 +86,7 @@ function renderProductsTable() {
       <td>₹${p.price.toLocaleString('en-IN')}</td>
       <td>₹${(p.discountPrice || p.price).toLocaleString('en-IN')}</td>
       <td>${p.stock} units</td>
-      <td><i class="fas fa-star" style="color:var(--gold);"></i> ${p.rating.toFixed(1)}</td>
+      <td><i class="fas fa-star" style="color:var(--gold);"></i> ${(p.rating || 0).toFixed(1)}</td>
       <td>
         <button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem; border-radius:4px;" onclick="openProductEditModal('${p._id}')">Edit</button>
         <button class="btn btn-primary" style="padding:4px 10px; font-size:0.75rem; border-radius:4px; background:#E05D5D;" onclick="deleteAdminProduct('${p._id}')">Delete</button>
@@ -84,21 +106,17 @@ async function fetchAdminOrders() {
     
     // Compute metrics
     let totalSales = 0;
-    let itemsCount = 0;
     adminOrders.forEach(o => {
       if (o.paymentStatus === 'Paid') {
-        totalSales += o.amount;
+        totalSales += (o.totalAmount || o.amount || 0);
       }
-      o.products.forEach(p => itemsCount += p.quantity);
     });
 
     const salesText = document.getElementById('metric-total-sales');
     const orderText = document.getElementById('metric-total-orders');
-    const prodText = document.getElementById('metric-total-products');
 
     if (salesText) salesText.textContent = `₹${totalSales.toLocaleString('en-IN')}`;
     if (orderText) orderText.textContent = adminOrders.length;
-    if (prodText) prodText.textContent = adminProducts.length;
 
     renderOrdersTable();
   } catch (err) {
@@ -111,33 +129,180 @@ function renderOrdersTable() {
   if (!tbody) return;
 
   tbody.innerHTML = adminOrders.map(o => {
-    const uName = o.userId ? o.userId.name : 'Guest User';
+    const uName = o.userId ? o.userId.name : (o.customerName || 'Guest User');
     
+    let displayAddress = 'N/A';
+    if (o.shippingAddress) {
+      if (typeof o.shippingAddress === 'object') {
+        displayAddress = `${o.shippingAddress.city || ''}, ${o.shippingAddress.state || ''}`;
+      } else if (typeof o.shippingAddress === 'string') {
+        displayAddress = o.shippingAddress;
+      }
+    }
+
     return `
       <tr>
-        <td>${o.trackingNumber}</td>
+        <td>
+          <strong>${o.orderId || 'N/A'}</strong>
+          <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">
+            ${o.trackingId || o.trackingNumber || 'N/A'}
+          </div>
+        </td>
         <td>
           <div style="font-weight:600;">${uName}</div>
-          <span style="font-size:0.75rem; color:var(--text-secondary);">${o.shippingAddress.city}, ${o.shippingAddress.state}</span>
+          <span style="font-size:0.75rem; color:var(--text-secondary); display:inline-block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${displayAddress}">${displayAddress}</span>
         </td>
-        <td>₹${o.amount.toLocaleString('en-IN')}</td>
+        <td>₹${(o.totalAmount || o.amount || 0).toLocaleString('en-IN')}</td>
         <td>
           <span class="status-badge status-${o.paymentStatus.toLowerCase()}">${o.paymentStatus}</span>
         </td>
         <td>
           <select style="padding:4px 8px; border-radius:4px; border:1px solid var(--border-color);" onchange="updateOrderAdminStatus('${o._id}', this.value)">
-            <option value="Ordered" ${o.orderStatus==='Ordered'?'selected':''}>Ordered</option>
+            <option value="Pending" ${o.orderStatus==='Pending'?'selected':''}>Pending</option>
+            <option value="Confirmed" ${o.orderStatus==='Confirmed' || o.orderStatus==='Ordered'?'selected':''}>Confirmed</option>
+            <option value="Packed" ${o.orderStatus==='Packed'?'selected':''}>Packed</option>
             <option value="Shipped" ${o.orderStatus==='Shipped'?'selected':''}>Shipped</option>
             <option value="Delivered" ${o.orderStatus==='Delivered'?'selected':''}>Delivered</option>
             <option value="Cancelled" ${o.orderStatus==='Cancelled'?'selected':''}>Cancelled</option>
           </select>
         </td>
         <td>
-          <a href="/api/orders/${o._id}/invoice" class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem; border-radius:4px;" download>Invoice</a>
+          <button class="btn btn-outline" style="padding:4px 10px; font-size:0.75rem; border-radius:4px; cursor:pointer;" onclick="downloadAdminInvoice('${o._id}')">
+            <i class="fas fa-download"></i> Invoice
+          </button>
         </td>
       </tr>
     `;
   }).join('');
+}
+
+// Fetch all payments (Admin Only)
+async function fetchAdminPayments() {
+  const token = localStorage.getItem('sanique_token');
+  try {
+    const res = await fetch('/api/payments', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    adminPayments = await res.json();
+    renderPaymentsTable();
+  } catch (err) {
+    console.error("Error fetching payments:", err);
+  }
+}
+
+function renderPaymentsTable() {
+  const tbody = document.getElementById('admin-payments-tbody');
+  if (!tbody) return;
+
+  if (!adminPayments || adminPayments.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No payment transactions recorded.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = adminPayments.map(p => {
+    const pDate = new Date(p.createdAt).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    return `
+      <tr>
+        <td><strong>${p.paymentId}</strong></td>
+        <td>${p.orderId}</td>
+        <td>₹${p.amount.toLocaleString('en-IN')}</td>
+        <td>${p.method}</td>
+        <td><span class="status-badge status-${p.status.toLowerCase()}">${p.status}</span></td>
+        <td>${pDate}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Fetch all customers (Admin Only)
+async function fetchAdminCustomers() {
+  const token = localStorage.getItem('sanique_token');
+  try {
+    const res = await fetch('/api/auth/users', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    adminCustomers = await res.json();
+
+    const custText = document.getElementById('metric-total-customers');
+    if (custText) custText.textContent = adminCustomers.length;
+
+    renderCustomersTable();
+  } catch (err) {
+    console.error("Error fetching customers:", err);
+  }
+}
+
+function renderCustomersTable() {
+  const tbody = document.getElementById('admin-customers-tbody');
+  if (!tbody) return;
+
+  if (!adminCustomers || adminCustomers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No registered customers.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = adminCustomers.map(c => {
+    let formattedAddress = 'No address stored';
+    if (c.address) {
+      if (typeof c.address === 'object') {
+        const parts = [
+          c.address.street,
+          c.address.city,
+          c.address.state,
+          c.address.zipCode
+        ].filter(Boolean);
+        if (parts.length > 0) {
+          formattedAddress = parts.join(', ');
+        }
+      } else if (typeof c.address === 'string') {
+        formattedAddress = c.address;
+      }
+    }
+
+    return `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.email}</td>
+        <td>${c.mobile || 'N/A'}</td>
+        <td>${c.loyaltyPoints || 0} pts</td>
+        <td><span class="status-badge status-confirmed" style="background-color:#F5EEF8; color:#8E44AD;">${c.vipLevel || 'Bronze'}</span></td>
+        <td style="max-width: 250px; white-space: normal; word-break: break-word;">${formattedAddress}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Securely download invoice for admin
+async function downloadAdminInvoice(orderId) {
+  const token = localStorage.getItem('sanique_token');
+  try {
+    const res = await fetch(`/api/orders/${orderId}/invoice`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) {
+      showToast("Failed to download invoice", "error");
+      return;
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = `Invoice_${orderId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    showToast("Invoice downloaded successfully", "success");
+  } catch (err) {
+    console.error(err);
+    showToast("Error downloading invoice", "error");
+  }
 }
 
 // Update order status trigger
