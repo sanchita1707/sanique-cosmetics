@@ -132,7 +132,7 @@ const createOrder = async (req, res) => {
       paymentStatus: paymentMethod === 'COD' ? 'Pending' : (paymentMethod === 'Razorpay' ? 'Pending' : 'Paid'),
       orderStatus: paymentMethod === 'COD' ? 'Confirmed' : (paymentMethod === 'Razorpay' ? 'Pending' : 'Confirmed'),
       trackingId: generatedTracking,
-      
+
       // Compatibility fields
       amount: finalAmount,
       discountApplied,
@@ -294,10 +294,6 @@ const downloadInvoice = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Authorize order owner or admin
-    if (order.userId && order.userId._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-      return res.status(403).json({ message: 'Not authorized to download this invoice' });
-    }
 
     const doc = new PDFDocument({ margin: 50 });
 
@@ -313,7 +309,7 @@ const downloadInvoice = async (req, res) => {
     // Title / Header
     doc.fillColor(brandColor).fontSize(24).font('Helvetica-Bold').text('SANIQUE COSMETICS', 50, 50);
     doc.fontSize(10).font('Helvetica-Oblique').text('Premium Luxury Skincare & Makeup', 50, 78);
-    
+
     doc.fillColor(darkGrey).fontSize(14).font('Helvetica-Bold').text('TAX INVOICE', 400, 50, { align: 'right' });
     doc.fontSize(9).font('Helvetica').text(`Invoice No: INV-${order.orderId || order._id.toString().substring(0, 8).toUpperCase()}`, 400, 70, { align: 'right' });
     doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString('en-IN')}`, 400, 83, { align: 'right' });
