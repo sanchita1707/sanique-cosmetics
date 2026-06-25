@@ -50,9 +50,8 @@ function renderCartPage() {
     const lineTotal = item.price * item.quantity;
     subtotal += lineTotal;
 
-    const imgHtml = item.image && item.image.startsWith('/assets') ? 
-      `<div class="cosmetic-render" style="width:40px; height:55px; transform:scale(0.8); margin-right:15px;"><div class="cosmetic-render-label" style="font-size:0.25rem; top:15px;">SANIQUE</div></div>` :
-      `<img src="${item.image}" alt="${item.name}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; margin-right:15px;">`;
+    const imgUrl = item.image ? item.image : '/assets/images/products/default-product.jpg';
+    const imgHtml = `<img src="${imgUrl}" alt="${item.name}" style="width:60px; height:60px; object-fit:cover; border-radius:8px; margin-right:15px;" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">`;
 
     html += `
       <tr style="border-bottom: 1px solid var(--border-color); vertical-align:middle;">

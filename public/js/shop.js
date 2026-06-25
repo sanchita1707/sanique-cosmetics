@@ -31,15 +31,11 @@ async function fetchProducts() {
     const categorySelect = document.getElementById('filter-category');
     if (categorySelect && category) categorySelect.value = category;
 
-    // Build query URL
-    let queryUrl = '/api/products?';
-    if (category) queryUrl += `category=${encodeURIComponent(category)}&`;
-    if (search) queryUrl += `search=${encodeURIComponent(search)}&`;
-
-    const res = await fetch(queryUrl);
+    // Fetch all products to allow full, dynamic client-side filtering
+    const res = await fetch('/api/products');
     allProducts = await res.json();
 
-    renderProducts(allProducts);
+    applyFilters();
   } catch (error) {
     console.error("Error loading products:", error);
     productContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #E05D5D;">Failed to load products. Please check server connection.</p>';
@@ -50,30 +46,124 @@ async function fetchProducts() {
 function renderProducts(products) {
   const container = document.getElementById('shop-product-grid');
 
-  console.log("Products received:", products);
-  console.log("Container found:", container);
-
   if (!container) return;
 
   if (products.length === 0) {
     container.innerHTML =
-      '<h2 style="text-align:center;">No Products Found</h2>';
+      '<h2 style="grid-column: 1/-1; text-align:center; padding: 50px 0; font-family: var(--font-serif); color: var(--text-secondary);">No Products Found</h2>';
     return;
   }
 
-  container.innerHTML = products.map(product => `
-    <div style="
-      background:yellow;
-      padding:20px;
-      margin:20px;
-      border:2px solid black;
-      color:black;
-    ">
-      <h2>${product.name}</h2>
-      <p>${product.category}</p>
-      <p>₹${product.price}</p>
-    </div>
-  `).join('');
+  container.innerHTML = products.map(product => {
+    const firstImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/assets/images/products/default-product.jpg';
+    
+    // Badges logic
+    let badgeHtml = '';
+    const hasDiscount = product.discountPrice && product.discountPrice < product.price;
+    if (hasDiscount) {
+      const discountPercent = Math.round(((product.price - product.discountPrice) / product.price) * 100);
+      badgeHtml += `<span class="product-badge">${discountPercent}% OFF</span>`;
+    }
+    
+    let stockBadgeHtml = '';
+    if (product.stock === 0) {
+      stockBadgeHtml = `<span class="product-badge" style="background:#E05D5D; left:auto; right:15px;">Out of Stock</span>`;
+    } else if (product.stock > 0 && product.stock <= 5) {
+      stockBadgeHtml = `<span class="product-badge" style="background:#D4AC0D; left:auto; right:15px;">Only ${product.stock} Left</span>`;
+    }
+
+    // Wishlist button state
+    const isWished = isProductInWishlist(product._id);
+    const wishlistClass = isWished ? 'wishlist-btn active' : 'wishlist-btn';
+    const wishlistIcon = isWished ? 'fas fa-heart' : 'far fa-heart';
+
+    // Compare button state
+    const isCompared = comparedProducts.includes(product._id);
+    const compareClass = isCompared ? 'compare-btn active' : 'compare-btn';
+
+    // Ratings stars
+    const ratingVal = product.rating || 0;
+    const fullStars = Math.floor(ratingVal);
+    const halfStar = ratingVal % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+    let starsHtml = '';
+    for (let i = 0; i < fullStars; i++) starsHtml += '<i class="fas fa-star"></i>';
+    if (halfStar) starsHtml += '<i class="fas fa-star-half-alt"></i>';
+    for (let i = 0; i < emptyStars; i++) starsHtml += '<i class="far fa-star"></i>';
+
+    // Price display
+    let priceHtml = '';
+    if (hasDiscount) {
+      priceHtml = `
+        <span class="price-actual">₹${product.discountPrice.toLocaleString('en-IN')}</span>
+        <span class="price-mrp">₹${product.price.toLocaleString('en-IN')}</span>
+      `;
+    } else {
+      priceHtml = `<span class="price-actual">₹${product.price.toLocaleString('en-IN')}</span>`;
+    }
+
+    // Shades selection (shade bubbles)
+    let shadesHtml = '';
+    let selectedShadeName = '';
+    if (product.shades && product.shades.length > 0) {
+      selectedShadeName = product.shades[0].name;
+      shadesHtml = `
+        <div class="shade-container">
+          ${product.shades.map((shade, sIdx) => `
+            <span class="shade-bubble ${sIdx === 0 ? 'active' : ''}" 
+                  style="background-color: ${shade.hex};" 
+                  title="${shade.name}" 
+                  onclick="selectCardShade(this, '${shade.name.replace(/'/g, "\\'")}')">
+            </span>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    const cartPrice = product.discountPrice || product.price;
+    const isOutOfStock = product.stock === 0;
+    const cartBtnHtml = isOutOfStock ? 
+      `<button class="btn btn-add-cart" disabled style="background:#bdc3c7; cursor:not-allowed;">Out of Stock</button>` :
+      `<button class="btn btn-add-cart" onclick="triggerAddToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}', '${selectedShadeName.replace(/'/g, "\\'")}')">Add to Cart</button>`;
+
+    return `
+      <div class="product-card" data-id="${product._id}">
+        ${badgeHtml}
+        ${stockBadgeHtml}
+        <button class="${wishlistClass}" onclick="toggleWishlistItem('${product._id}', this)" title="Add to Wishlist">
+          <i class="${wishlistIcon}"></i>
+        </button>
+        <button class="${compareClass}" onclick="toggleCompareProduct('${product._id}')" title="Compare Product">
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+        
+        <div class="product-img-wrapper" onclick="window.location.href='/product.html?id=${product._id}'" style="cursor:pointer;">
+          <img src="${firstImg}" alt="${product.name}" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">
+        </div>
+        
+        <div class="product-info">
+          <div class="product-category">${product.category}</div>
+          <h3 class="product-title" onclick="window.location.href='/product.html?id=${product._id}'" style="cursor:pointer; font-family:var(--font-serif);">${product.name}</h3>
+          
+          <div class="product-rating">
+            ${starsHtml}
+            <span>(${product.reviewsCount || 0} reviews)</span>
+          </div>
+
+          ${shadesHtml}
+
+          <div class="product-price">
+            ${priceHtml}
+          </div>
+
+          <div class="product-actions">
+            ${cartBtnHtml}
+            <button class="btn btn-quick-view" onclick="window.location.href='/product.html?id=${product._id}'">Details</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 
@@ -153,69 +243,75 @@ async function toggleWishlistItem(id, button) {
   }
 }
 
-// Filters & Sorting triggers
-function initShopFilters() {
+// Global Filter Logic
+function applyFilters() {
   const categorySelect = document.getElementById('filter-category');
   const priceSelect = document.getElementById('filter-price');
   const ratingSelect = document.getElementById('filter-rating');
   const searchInput = document.getElementById('shop-search');
   const sortingSelect = document.getElementById('shop-sort');
 
-  const applyFilters = () => {
-    let filtered = [...allProducts];
+  let filtered = [...allProducts];
 
-    // Search query input (instant filtering)
-    if (searchInput && searchInput.value) {
-      const query = searchInput.value.toLowerCase().trim();
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.category.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query)
-      );
-    }
+  // Search query input (instant filtering)
+  if (searchInput && searchInput.value) {
+    const query = searchInput.value.toLowerCase().trim();
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query) ||
+      (p.description && p.description.toLowerCase().includes(query))
+    );
+  }
 
-    // Category
-    if (categorySelect && categorySelect.value) {
-      filtered = filtered.filter(p => p.category === categorySelect.value);
-    }
+  // Category
+  if (categorySelect && categorySelect.value) {
+    filtered = filtered.filter(p => p.category === categorySelect.value);
+  }
 
-    // Price Range
-    if (priceSelect && priceSelect.value) {
-      const [min, max] = priceSelect.value.split('-').map(Number);
-      filtered = filtered.filter(p => {
-        const finalPrice = p.discountPrice || p.price;
-        if (max) {
-          return finalPrice >= min && finalPrice <= max;
-        } else {
-          return finalPrice >= min;
-        }
-      });
-    }
-
-    // Rating Filter
-    if (ratingSelect && ratingSelect.value) {
-      const minRating = Number(ratingSelect.value);
-      filtered = filtered.filter(p => p.rating >= minRating);
-    }
-
-    // Sorting
-    if (sortingSelect && sortingSelect.value) {
-      const sortVal = sortingSelect.value;
-      if (sortVal === 'price-low') {
-        filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
-      } else if (sortVal === 'price-high') {
-        filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
-      } else if (sortVal === 'rating') {
-        filtered.sort((a, b) => b.rating - a.rating);
-      } else if (sortVal === 'newest') {
-        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      } else if (sortVal === 'best-selling') {
-        filtered.sort((a, b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
+  // Price Range
+  if (priceSelect && priceSelect.value) {
+    const [min, max] = priceSelect.value.split('-').map(Number);
+    filtered = filtered.filter(p => {
+      const finalPrice = p.discountPrice || p.price;
+      if (max) {
+        return finalPrice >= min && finalPrice <= max;
+      } else {
+        return finalPrice >= min;
       }
-    }
+    });
+  }
 
-    renderProducts(filtered);
-  };
+  // Rating Filter
+  if (ratingSelect && ratingSelect.value) {
+    const minRating = Number(ratingSelect.value);
+    filtered = filtered.filter(p => p.rating >= minRating);
+  }
+
+  // Sorting
+  if (sortingSelect && sortingSelect.value) {
+    const sortVal = sortingSelect.value;
+    if (sortVal === 'price-low') {
+      filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
+    } else if (sortVal === 'price-high') {
+      filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
+    } else if (sortVal === 'rating') {
+      filtered.sort((a, b) => b.rating - a.rating);
+    } else if (sortVal === 'newest') {
+      filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (sortVal === 'best-selling') {
+      filtered.sort((a, b) => b.reviewsCount - a.reviewsCount || b.rating - a.rating);
+    }
+  }
+
+  renderProducts(filtered);
+}
+
+function initShopFilters() {
+  const categorySelect = document.getElementById('filter-category');
+  const priceSelect = document.getElementById('filter-price');
+  const ratingSelect = document.getElementById('filter-rating');
+  const searchInput = document.getElementById('shop-search');
+  const sortingSelect = document.getElementById('shop-sort');
 
   [categorySelect, priceSelect, ratingSelect, sortingSelect].forEach(item => {
     if (item) item.addEventListener('change', applyFilters);
@@ -378,6 +474,20 @@ function toggleCompareProduct(id) {
 
   localStorage.setItem('sanique_compare', JSON.stringify(comparedProducts));
   renderCompareTray();
+  
+  // Update card compare buttons visually
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    const cardId = card.getAttribute('data-id');
+    const compBtn = card.querySelector('.compare-btn');
+    if (compBtn && cardId) {
+      if (comparedProducts.includes(cardId)) {
+        compBtn.classList.add('active');
+      } else {
+        compBtn.classList.remove('active');
+      }
+    }
+  });
 }
 
 function renderCompareTray() {

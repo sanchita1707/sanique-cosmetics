@@ -246,9 +246,4 @@ async function downloadUserInvoice(orderId) {
   }
 }
 
-function userLogout() {
-  localStorage.removeItem('sanique_token');
-  localStorage.removeItem('sanique_isAdmin');
-  showToast("Logged out successfully", "success");
-  setTimeout(() => window.location.href = '/index.html', 1000);
-}
+

@@ -188,7 +188,7 @@ const toggleWishlist = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (user) {
-      const index = user.wishlist.indexOf(productId);
+      const index = user.wishlist.findIndex(id => id.toString() === productId.toString());
       if (index > -1) {
         user.wishlist.splice(index, 1);
         await user.save();

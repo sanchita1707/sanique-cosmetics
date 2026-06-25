@@ -405,6 +405,35 @@ main {
   color: #E05D5D;
 }
 
+.compare-btn {
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  background: var(--bg-glass);
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: var(--transition);
+  color: var(--text-primary);
+}
+
+.compare-btn:hover {
+  background: var(--rose-gold);
+  color: var(--white);
+}
+
+.compare-btn.active {
+  color: var(--rose-gold);
+  background: var(--bg-primary);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
 .product-img-wrapper {
   position: relative;
   height: 320px;

@@ -27,6 +27,7 @@ async function fetchProductDetails(id) {
     renderProductDetails();
     renderSafetyChecker();
     renderFrequentlyBought();
+    fetchRelatedProducts();
     fetchReviews(id);
   } catch (err) {
     console.error("Details error:", err);
@@ -42,12 +43,24 @@ function renderProductDetails() {
   const thumbsContainer = document.getElementById('details-thumbnails');
 
   if (mainImg) {
-    // Elegant packaging render dynamically if no assets
-    mainImg.innerHTML = `
-      <div class="cosmetic-render" style="width: 250px; height: 350px; background: linear-gradient(to bottom, ${getCategoryGradient(currentProduct.category)});">
-        <div class="cosmetic-render-label" style="font-size:1.1rem; top:100px; padding: 10px 0;">SANIQUE</div>
-      </div>
-    `;
+    const images = currentProduct.images || [];
+    const firstImg = images.length > 0 ? images[0] : '/assets/images/products/default-product.jpg';
+    
+    mainImg.innerHTML = `<img src="${firstImg}" id="main-product-image" alt="${currentProduct.name}" style="max-width:100%; max-height:100%; object-fit:contain;" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">`;
+
+    if (thumbsContainer) {
+      if (images.length > 1) {
+        thumbsContainer.innerHTML = images.map((img, idx) => `
+          <div class="thumb-wrapper ${idx === 0 ? 'active' : ''}" 
+               style="width:60px; height:60px; border:1px solid var(--border-color); border-radius:6px; cursor:pointer; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff; padding:5px;"
+               onclick="swapMainImage(this, '${img}')">
+            <img src="${img}" style="max-width:100%; max-height:100%; object-fit:contain;" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">
+          </div>
+        `).join('');
+      } else {
+        thumbsContainer.innerHTML = '';
+      }
+    }
   }
 
   // Details
@@ -120,6 +133,7 @@ function renderProductDetails() {
   // Bind Add to Cart / Buy Now
   const addBtn = document.getElementById('details-add-cart');
   const buyBtn = document.getElementById('details-buy-now');
+  const cartImg = (currentProduct.images && currentProduct.images.length > 0) ? currentProduct.images[0] : '/assets/images/products/default-product.jpg';
 
   if (addBtn) {
     addBtn.addEventListener('click', () => {
@@ -127,7 +141,7 @@ function renderProductDetails() {
         showToast("Product is out of stock", "error");
         return;
       }
-      addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, currentProduct.images[0], selectedShade);
+      addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, cartImg, selectedShade);
     });
   }
 
@@ -138,7 +152,7 @@ function renderProductDetails() {
         return;
       }
       // Add and redirect
-      addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, currentProduct.images[0], selectedShade);
+      addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, cartImg, selectedShade);
       window.location.href = '/cart.html';
     });
   }
@@ -223,8 +237,9 @@ function renderFrequentlyBought() {
 }
 
 function buyBundle() {
+  const cartImg = (currentProduct.images && currentProduct.images.length > 0) ? currentProduct.images[0] : '/assets/images/products/default-product.jpg';
   // Add current
-  addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, currentProduct.images[0], selectedShade);
+  addToCart(currentProduct._id, currentProduct.name, currentProduct.discountPrice || currentProduct.price, cartImg, selectedShade);
   // Add a face wash: mock addition with ID (we lookup/seed) or static
   addToCart("666c0000000000000000000b", "Hydrating Gel Face Wash", 399, "/assets/images/products/skincare-facewash.jpg");
   showToast("Bundle added! Check Cart drawer.", "success");
@@ -322,5 +337,71 @@ function getCategoryGradient(cat) {
     case 'Face Wash': return '#E8F8F5, #73C6B6';
     case 'Makeup Kits': return '#2C2C2C, #B76E79';
     default: return '#F8E8EE, #B76E79';
+  }
+}
+
+// Image swap handler
+function swapMainImage(thumb, imgSrc) {
+  const mainImageEl = document.getElementById('main-product-image');
+  if (mainImageEl) {
+    mainImageEl.src = imgSrc;
+  }
+  document.querySelectorAll('#details-thumbnails .thumb-wrapper').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
+// Fetch and Render Related Products
+async function fetchRelatedProducts() {
+  const container = document.getElementById('related-products-grid');
+  if (!container || !currentProduct) return;
+
+  try {
+    const res = await fetch('/api/products');
+    const allProducts = await res.json();
+    
+    // Filter related products of same category, excluding current product
+    const related = allProducts.filter(p => p.category === currentProduct.category && p._id !== currentProduct._id).slice(0, 3);
+    
+    if (related.length === 0) {
+      document.getElementById('related-products-section').style.display = 'none';
+      return;
+    }
+
+    container.innerHTML = related.map(product => {
+      const firstImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/assets/images/products/default-product.jpg';
+      const hasDiscount = product.discountPrice && product.discountPrice < product.price;
+      const cartPrice = product.discountPrice || product.price;
+      const shadeName = product.shades && product.shades.length > 0 ? product.shades[0].name : '';
+
+      let priceHtml = '';
+      if (hasDiscount) {
+        priceHtml = `
+          <span class="price-actual">₹${product.discountPrice.toLocaleString('en-IN')}</span>
+          <span class="price-mrp" style="text-decoration:line-through; font-size:0.85rem; color:var(--text-secondary); margin-left:8px;">₹${product.price.toLocaleString('en-IN')}</span>
+        `;
+      } else {
+        priceHtml = `<span class="price-actual">₹${product.price.toLocaleString('en-IN')}</span>`;
+      }
+
+      return `
+        <div class="product-card" onclick="window.location.href='/product.html?id=${product._id}'" style="cursor:pointer;">
+          <div class="product-img-wrapper" style="height:250px; display:flex; align-items:center; justify-content:center; overflow:hidden; padding:15px; background:#fff;">
+            <img src="${firstImg}" alt="${product.name}" style="width:100%; height:200px; object-fit:contain;" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">
+          </div>
+          <div class="product-info">
+            <div class="product-category">${product.category}</div>
+            <h3 class="product-title" style="font-family:var(--font-serif);">${product.name}</h3>
+            <div class="product-price">
+              ${priceHtml}
+            </div>
+            <div class="product-actions" style="margin-top:15px;">
+              <button class="btn btn-luxury" style="padding:10px; width:100%; font-size:0.8rem;" onclick="event.stopPropagation(); addToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}', '${shadeName}')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error("Related products error:", err);
   }
 }

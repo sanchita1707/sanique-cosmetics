@@ -5,9 +5,9 @@ let cart = JSON.parse(localStorage.getItem('sanique_cart')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
+  initFloatingActions();
   initTheme();
   initCartDrawer();
-  initFloatingActions();
   initChatConsultant();
   updateCartBadge();
 });
@@ -224,14 +224,8 @@ function renderCartDrawerItems() {
     const lineTotal = item.price * item.quantity;
     subtotal += lineTotal;
 
-    // Elegant package render as backup if image is missing
-    const imgHtml = item.image && item.image.startsWith('/assets') ? 
-      `<div class="cart-item-img">
-         <div class="cosmetic-render" style="width:30px; height:45px; transform:scale(0.8);">
-           <div class="cosmetic-render-label" style="font-size:0.3rem; top:12px;">SANIQUE</div>
-         </div>
-       </div>` : 
-      `<div class="cart-item-img"><img src="${item.image}" alt="${item.name}"></div>`;
+    const imgUrl = item.image ? item.image : '/assets/images/products/default-product.jpg';
+    const imgHtml = `<div class="cart-item-img"><img src="${imgUrl}" alt="${item.name}" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';"></div>`;
 
     html += `
       <div class="cart-item">
@@ -380,4 +374,13 @@ function generateExpertResponse(query) {
     return "You can use code 'SANIQUE10' for 10% off your purchase, or 'FESTIVE500' on orders above ₹2,500. Additionally, as a member, you'll earn 10% cashpoints on checkout!";
   }
   return "That sounds wonderful! To give you a customized skin or makeup regimen, try launching our camera-based AI Skin Analysis scanner on the homepage or complete the Beauty Quiz.";
+}
+
+// Global user logout
+function userLogout() {
+  localStorage.removeItem('sanique_token');
+  localStorage.removeItem('sanique_isAdmin');
+  localStorage.removeItem('sanique_wishlist');
+  showToast("Logged out successfully", "success");
+  setTimeout(() => window.location.href = '/index.html', 1000);
 }
