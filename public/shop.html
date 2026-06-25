@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Shop luxury cosmetics online. Find foundations, lipsticks, and serums at Sanique Cosmetics. Use smart search, filters, and compared tools.">
+  <meta name="description"
+    content="Shop luxury cosmetics online. Find foundations, lipsticks, and serums at Sanique Cosmetics. Use smart search, filters, and compared tools.">
   <title>Shop Collections | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/components.css">
 </head>
+
 <body>
 
   <!-- Header -->
@@ -53,20 +56,23 @@
   </div>
 
   <main style="max-width:1400px; margin:100px auto 0; padding:40px 5%;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; flex-wrap:wrap; gap:20px;">
+    <div class="shop-top">
       <div>
         <h1 style="font-size:2.2rem; font-family:var(--font-serif);">Discover Beauty</h1>
         <p style="color:var(--text-secondary); font-size:0.9rem;">Clean formulas crafted for all skin profiles.</p>
       </div>
-      
-      <!-- Smart & Voice Search controls -->
-      <div style="display:flex; gap:10px; width:450px; max-width:100%;">
+
+      <div class="search-sort">
         <div style="position:relative; flex-grow:1;">
-          <input type="text" id="shop-search" placeholder="Search lipsticks, foundations..." style="width:100%; padding:12px 40px 12px 20px; border-radius:30px; border:1px solid var(--border-color); outline:none; background:var(--card-bg); color:var(--text-primary);">
-          <button id="voice-search-btn" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;" title="Voice Search"><i class="fas fa-microphone"></i></button>
+          <input type="text" id="shop-search" placeholder="Search lipsticks, foundations..."
+            style="width:100%; padding:12px 40px 12px 20px; border-radius:30px; border:1px solid var(--border-color); outline:none; background:var(--card-bg); color:var(--text-primary);">
+          <button id="voice-search-btn"
+            style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer;"
+            title="Voice Search"><i class="fas fa-microphone"></i></button>
         </div>
-        
-        <select id="shop-sort" style="padding:12px 20px; border-radius:30px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-primary); outline:none; font-size:0.85rem;">
+
+        <select id="shop-sort"
+          style="padding:12px 20px; border-radius:30px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-primary); outline:none; font-size:0.85rem;">
           <option value="">Sort By</option>
           <option value="newest">Newest Arrivals</option>
           <option value="price-low">Price: Low to High</option>
@@ -77,14 +83,18 @@
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns: 280px 1fr; gap:40px;">
+    <div class="shop-layout">
       <!-- Sidebar Filters -->
-      <aside style="background:var(--card-bg); border:1px solid var(--border-color); padding:25px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color); height:fit-content; position:sticky; top:120px;">
-        <h3 style="font-size:1.1rem; color:var(--rose-gold); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px; text-transform:uppercase;">Filters</h3>
-        
+      <aside class="shop-sidebar">
+        style="font-size:1.1rem; color:var(--rose-gold); margin-bottom:20px; border-bottom:1px solid
+        var(--border-color); padding-bottom:8px; text-transform:uppercase;">
+        Filters</h3>
+
         <div style="margin-bottom:25px;">
-          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">Category</h4>
-          <select id="filter-category" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">
+            Category</h4>
+          <select id="filter-category"
+            style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
             <option value="">All Categories</option>
             <option value="Lipsticks">Lipsticks</option>
             <option value="Foundations">Foundations</option>
@@ -98,8 +108,10 @@
         </div>
 
         <div style="margin-bottom:25px;">
-          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">Price Range</h4>
-          <select id="filter-price" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">
+            Price Range</h4>
+          <select id="filter-price"
+            style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
             <option value="">All Prices</option>
             <option value="0-500">Under ₹500</option>
             <option value="500-1000">₹500 - ₹1,000</option>
@@ -109,8 +121,10 @@
         </div>
 
         <div style="margin-bottom:25px;">
-          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">Rating</h4>
-          <select id="filter-rating" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+          <h4 style="font-size:0.85rem; text-transform:uppercase; margin-bottom:10px; color:var(--text-secondary);">
+            Rating</h4>
+          <select id="filter-rating"
+            style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
             <option value="">All Ratings</option>
             <option value="4.8">4.8 & Above ★</option>
             <option value="4.5">4.5 & Above ★</option>
@@ -118,7 +132,8 @@
           </select>
         </div>
 
-        <p style="font-size:0.75rem; color:var(--text-secondary); text-align:center;">Showing Indian Currency pricing in INR (₹).</p>
+        <p style="font-size:0.75rem; color:var(--text-secondary); text-align:center;">Showing Indian Currency pricing in
+          INR (₹).</p>
       </aside>
 
       <!-- Products Grid -->
@@ -131,7 +146,8 @@
     <div class="footer-container">
       <div class="footer-column">
         <h2>SANIQUE</h2>
-        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations.</p>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color
+          diversity, and modern formulations.</p>
       </div>
       <div class="footer-column">
         <h3>Collections</h3>
@@ -155,4 +171,5 @@
   <script src="/js/main.js"></script>
   <script src="/js/shop.js"></script>
 </body>
+
 </html>
