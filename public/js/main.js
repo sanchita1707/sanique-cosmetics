@@ -202,7 +202,7 @@ function updateCartBadge() {
 function renderCartDrawerItems() {
   const cartBody = document.querySelector('.cart-drawer-body');
   const cartSubtotal = document.getElementById('cart-subtotal');
-  
+
   if (!cartBody) return;
 
   if (cart.length === 0) {
@@ -280,7 +280,7 @@ function initFloatingActions() {
 // Simulated Luxury Chatbot Advisor ("Sasha")
 function initChatConsultant() {
   const chatToggle = document.getElementById('chat-toggle');
-  
+
   const chatBox = document.createElement('div');
   chatBox.className = 'chat-consultant-box';
   chatBox.id = 'chat-consultant-box';
@@ -322,7 +322,7 @@ function initChatConsultant() {
 
   const sendBtn = document.getElementById('chat-send');
   const chatInput = document.getElementById('chat-input');
-  
+
   if (sendBtn && chatInput) {
     const handleSend = () => {
       const text = chatInput.value.trim();
@@ -383,4 +383,22 @@ function userLogout() {
   localStorage.removeItem('sanique_wishlist');
   showToast("Logged out successfully", "success");
   setTimeout(() => window.location.href = '/index.html', 1000);
+}
+// =======================
+// Mobile Menu
+// =======================
+
+// ======================
+// Mobile Menu
+// ======================
+
+const menuBtn = document.getElementById("mobile-menu-toggle");
+const navLinks = document.querySelector(".nav-links");
+
+if (menuBtn && navLinks) {
+
+  menuBtn.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
 }
