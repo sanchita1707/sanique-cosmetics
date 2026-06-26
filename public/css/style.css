@@ -1531,3 +1531,40 @@ footer {
   }
 
 }
+
+/* ==========================
+   SHOP LAYOUT
+========================== */
+
+.shop-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-sort {
+  display: flex;
+  gap: 10px;
+  width: 450px;
+  max-width: 100%;
+}
+
+.shop-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+}
+
+.shop-sidebar {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 15px var(--shadow-color);
+  height: fit-content;
+  position: sticky;
+  top: 120px;
+}
