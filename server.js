@@ -1,8 +1,13 @@
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('./backend/config/db');
+
+console.log("Mongo URI Loaded:", process.env.MONGO_URI);
 
 // Connect to MongoDB
 connectDB();
