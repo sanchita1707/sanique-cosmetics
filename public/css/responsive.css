@@ -82,6 +82,11 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
   .shop-layout {
     grid-template-columns: 220px 1fr !important;
     gap: var(--space-md) !important;
@@ -104,6 +109,11 @@
 
   .section {
     padding: 40px 5% !important;
+  }
+
+  .category-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 
   .hero-slide .hero-title {
@@ -204,6 +214,11 @@
   .product-grid.list-view .product-img-wrapper {
     width: 100% !important;
     height: 200px !important;
+  }
+
+  .scanner-section-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
   }
 }
 

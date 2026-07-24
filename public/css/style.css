@@ -71,7 +71,7 @@ main {
   text-align: center;
   color: var(--grey);
   font-size: 0.95rem;
-  margin-bottom: var(--space-xl);
+  margin-bottom: 40px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -203,4 +203,247 @@ a:focus-visible {
 .skip-to-content:focus-visible {
   top: 20px;
   outline: 2px solid var(--charcoal);
+}
+
+/* =========================================================================
+   14. LUXURY FLOATING CHATBOT SYSTEM
+   ========================================================================= */
+.floating-actions {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 999;
+}
+
+.float-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--charcoal);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.float-btn:hover {
+  background: var(--rose-gold);
+  color: var(--white);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.chat-consultant-box {
+  position: fixed;
+  bottom: 95px;
+  right: 30px;
+  width: 360px;
+  height: 480px;
+  max-width: calc(100vw - 60px);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(30px);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.chat-consultant-box.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, var(--rose-gold), var(--charcoal));
+  color: var(--white);
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.chat-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--rose-gold-glow);
+  border: 1.5px solid var(--gold);
+}
+
+.chat-header-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: block;
+}
+
+.chat-header-status {
+  font-size: 0.7rem;
+  color: var(--success);
+  font-weight: 500;
+}
+
+.chat-close {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.chat-close:hover {
+  opacity: 0.8;
+}
+
+.chat-body {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chat-msg {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  font-family: var(--font-sans);
+  text-align: left;
+}
+
+.chat-msg.consultant {
+  background: var(--bg-primary);
+  color: var(--charcoal);
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.chat-msg.customer {
+  background: var(--rose-gold);
+  color: var(--white);
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-footer {
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 10px;
+  background: var(--bg-secondary);
+}
+
+.chat-input {
+  flex-grow: 1;
+  padding: 10px 18px;
+  border-radius: 24px;
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  outline: none;
+  background: var(--bg-primary);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+}
+
+.chat-send-btn {
+  background: var(--rose-gold);
+  color: var(--white);
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.chat-send-btn:hover {
+  transform: scale(1.05);
+}
+
+/* =========================================================================
+   11. PREMIUM INSTAGRAM LOOKBOOK GALLERY
+   ========================================================================= */
+.instagram-item {
+  position: relative;
+  border-radius: var(--radius-images);
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.instagram-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.instagram-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 28, 28, 0.4);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 5;
+  backdrop-filter: blur(4px);
+}
+
+.instagram-item:hover img {
+  transform: scale(1.08);
+}
+
+.instagram-item:hover .instagram-overlay {
+  opacity: 1;
+}
+
+/* =========================================================================
+   5. AI SKIN SCANNER SECTION GRID
+   ========================================================================= */
+.scanner-section-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
 }
