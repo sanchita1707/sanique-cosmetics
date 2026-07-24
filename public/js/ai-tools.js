@@ -53,6 +53,18 @@ function openSkinAnalysisModal() {
       </div>
     `;
     document.body.appendChild(modal);
+  } else {
+    // Reset scanner state for retries
+    const scanBtn = document.getElementById('skin-scan-btn');
+    const results = document.getElementById('skin-results-section');
+    if (scanBtn) {
+      scanBtn.style.display = 'block';
+      scanBtn.disabled = false;
+      scanBtn.textContent = 'Scan My Skin';
+    }
+    if (results) {
+      results.style.display = 'none';
+    }
   }
 
   modal.classList.add('active');

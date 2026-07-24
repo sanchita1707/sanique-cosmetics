@@ -48,8 +48,8 @@ img {
 }
 
 main {
-  margin-top: 110px; /* Offset for sticky header */
-  min-height: calc(100vh - 110px);
+  margin-top: 0;
+  min-height: 100vh;
 }
 
 /* Section layouts */
@@ -446,4 +446,141 @@ a:focus-visible {
   align-items: center;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+/* =========================================================================
+   LUXURY GENERAL MODAL SYSTEM
+   ========================================================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(28, 28, 28, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2000;
+}
+
+.modal-overlay.active .modal-container {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary);
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--charcoal);
+  cursor: pointer;
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  color: var(--rose-gold);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  max-height: calc(85vh - 80px);
+}
+
+/* AI Skin Scanner Specific Animations and Camera Wrappers */
+.scanner-animation-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 330px;
+  background: #000;
+  border-radius: var(--radius-images);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.scanner-results {
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.scanner-metric-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-inputs);
+  padding: 15px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.scanner-metric-value {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--rose-gold);
+}
+
+.scanner-metric-title {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--grey);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }

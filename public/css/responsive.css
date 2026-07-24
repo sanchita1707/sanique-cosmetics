@@ -78,6 +78,23 @@
     height: 280px !important;
   }
 
+  .hero-slide .floating-product {
+    width: 100px !important;
+    height: 150px !important;
+  }
+
+  .hero-slide .floating-product-secondary {
+    width: 75px !important;
+    height: 115px !important;
+    bottom: 20px !important;
+    right: 5px !important;
+  }
+
+  .hero-slide .floating-shadow {
+    width: 100px !important;
+    bottom: 10px !important;
+  }
+
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
   }
