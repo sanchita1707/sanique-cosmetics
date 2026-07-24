@@ -6,51 +6,137 @@
   <meta name="description" content="Track your Sanique Cosmetics shipment delivery progress in real-time.">
   <title>Track Order | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
-  <!-- Header -->
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
+
+  <!-- Sticky Header Announcement and Glassmorphism Navbar -->
   <header>
+    <div class="header-top">
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
+    </div>
     <div class="navbar">
-      <div class="menu-toggle" id="mobile-menu-toggle"><span></span><span></span><span></span></div>
-      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique</a>
       <nav class="nav-links">
         <a href="/index.html" class="nav-item">Home</a>
-        <a href="/shop.html" class="nav-item">Shop</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem; margin-left:3px;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
         <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="#" class="nav-item" onclick="openSkinAnalysisModal()">AI Skin Scanner</a>
+        <a href="/about.html" class="nav-item">About</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
       </nav>
       <div class="nav-icons">
-        <a href="/login.html" class="nav-btn" id="user-btn"><i class="fas fa-user"></i></a>
-        <a href="/wishlist.html" class="nav-btn"><i class="far fa-heart"></i></a>
-        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+        <div class="nav-search-container">
+          <input type="text" class="nav-search-input" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button class="nav-btn" id="navbar-search-btn" title="Search"><i class="fas fa-search"></i></button>
+          
+          <div class="search-suggestions-panel" id="search-suggestions-panel">
+            <div class="suggestions-section">
+              <h4>Recent Searches</h4>
+              <div class="recent-searches-list" id="recent-searches-list">
+                <!-- Loaded dynamically by search.js -->
+              </div>
+            </div>
+            <div class="suggestions-section" style="margin-top: 15px;">
+              <h4>Trending Suggestions</h4>
+              <div class="trending-tags">
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Lipsticks')">Lipsticks</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Foundations')">Foundations</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Serums')">Serums</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Glow')">Glow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/login.html" class="nav-btn" id="user-btn" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count">0</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Cart Drawer Overlay -->
+  <!-- Mobile Drawer Menu Overlay and Container -->
+  <div class="mobile-nav-drawer">
+    <a href="/index.html" class="mobile-nav-link">Home</a>
+    <a href="/shop.html" class="mobile-nav-link">Shop All</a>
+    <a href="/shop.html?category=Lipsticks" class="mobile-nav-link">Lips</a>
+    <a href="/shop.html?category=Foundations" class="mobile-nav-link">Face</a>
+    <a href="/shop.html?category=Serums" class="mobile-nav-link">Skincare</a>
+    <a href="/categories.html" class="mobile-nav-link">Beauty Quiz</a>
+    <a href="/about.html" class="mobile-nav-link">About</a>
+    <a href="/contact.html" class="mobile-nav-link">Contact</a>
+  </div>
+  <div class="drawer-overlay"></div>
+
+  <!-- Cart Drawer Overlay & Container -->
   <div class="cart-drawer-overlay" id="cart-overlay"></div>
   <div class="cart-drawer" id="cart-drawer">
     <div class="cart-drawer-header">
       <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
       <button class="cart-close-btn" id="cart-close">&times;</button>
     </div>
-    <div class="cart-drawer-body"></div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
     <div class="cart-drawer-footer">
-      <div class="cart-summary-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
-      <a href="/cart.html" class="btn btn-primary cart-checkout-btn">View Full Cart</a>
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--grey); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
     </div>
   </div>
 
-  <main style="max-width:850px; margin:100px auto 0; padding:60px 5%;">
-    <div style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:40px; box-shadow:0 10px 30px var(--shadow-color); text-align:center; position:relative;">
-      <h1 style="font-size:2.2rem; font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px;">Order Tracking Portal</h1>
-      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:30px;">Track your shipment status instantly using your Order ID or Tracking ID.</p>
+  <main id="main-content" tabindex="-1" style="max-width:850px; margin:110px auto 0; padding:60px 5%;">
+    <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:40px; box-shadow:var(--shadow-sm); text-align:center; position:relative;">
+      <h1 style="font-size:2.2rem; font-family:var(--font-serif); color:var(--charcoal); margin-bottom:10px; font-weight:600;">Order Tracking Portal</h1>
+      <p style="color:var(--grey); font-size:0.9rem; margin-bottom:30px; font-family:var(--font-sans);">Track your shipment status instantly using your Order ID or Tracking ID.</p>
 
       <!-- Search Input Container -->
       <div style="display:flex; max-width:500px; margin:0 auto 30px; gap:10px;">
-        <input type="text" id="track-search-input" placeholder="e.g. SAN1001 or SQ12345678IN" style="flex-grow:1; padding:12px 20px; border-radius:30px; border:1px solid var(--border-color); outline:none; background:var(--bg-primary); color:var(--text-primary); font-size:0.9rem;">
-        <button onclick="searchTracking()" class="btn btn-luxury" style="padding:12px 25px; border-radius:30px; font-size:0.85rem;"><i class="fas fa-search"></i> Trace</button>
+        <input type="text" id="track-search-input" placeholder="e.g. SAN1001 or SQ12345678IN" style="border-radius: 30px;">
+        <button onclick="searchTracking()" class="btn btn-luxury" style="padding:12px 28px; border-radius:30px; font-size:0.85rem;"><i class="fas fa-search"></i> Trace</button>
       </div>
 
       <!-- Tracking Results Content (Hidden by default) -->
@@ -58,15 +144,15 @@
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; flex-wrap:wrap; gap:10px;">
           <div>
-            <h3 style="font-family:var(--font-sans); font-size:1.1rem; font-weight:700;">Order ID: <span id="res-order-id" style="color:var(--rose-gold);">SAN1001</span></h3>
-            <span style="font-size:0.8rem; color:var(--text-secondary);">Tracking ID: <strong id="res-tracking-id">SQ12345678IN</strong></span>
+            <h3 style="font-family:var(--font-sans); font-size:1.1rem; font-weight:700; color:var(--charcoal); margin:0;">Order ID: <span id="res-order-id" style="color:var(--rose-gold);">SAN1001</span></h3>
+            <span style="font-size:0.8rem; color:var(--grey); font-family:var(--font-sans);">Tracking ID: <strong id="res-tracking-id">SQ12345678IN</strong></span>
           </div>
           <div>
             <span class="status-badge" id="res-status-badge" style="padding:6px 15px; font-size:0.8rem;">CONFIRMED</span>
           </div>
         </div>
 
-        <!-- 5-Status Responsive Timeline -->
+        <!-- Timeline -->
         <div class="tracking-timeline">
           <div class="timeline-line"></div>
           <div class="timeline-progress" id="tracking-progress-bar"></div>
@@ -101,14 +187,14 @@
         <!-- Delivery Details -->
         <div style="border-top:1px solid var(--border-color); padding-top:25px; display:grid; grid-template-columns: 1.2fr 1fr; gap:30px; margin-bottom:30px;">
           <div>
-            <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px;">Shipping Details:</h4>
-            <p id="res-customer-name" style="font-weight:600; font-size:0.95rem; margin-bottom:4px;"></p>
-            <p id="res-address" style="font-size:0.9rem; line-height:1.5; color:var(--text-secondary);"></p>
+            <h4 style="color:var(--grey); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px; font-family:var(--font-sans);">Shipping Details:</h4>
+            <p id="res-customer-name" style="font-weight:600; font-size:0.95rem; margin-bottom:4px; font-family:var(--font-sans); color:var(--charcoal);"></p>
+            <p id="res-address" style="font-size:0.9rem; line-height:1.5; color:var(--grey); font-family:var(--font-sans);"></p>
           </div>
           <div>
-            <h4 style="color:var(--text-secondary); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px;">Order Summary:</h4>
-            <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
-              Payment Method: <strong id="res-payment-method" style="color:var(--text-primary);">COD</strong><br>
+            <h4 style="color:var(--grey); text-transform:uppercase; font-size:0.75rem; margin-bottom:8px; font-weight:700; letter-spacing:0.5px; font-family:var(--font-sans);">Order Summary:</h4>
+            <p style="font-size:0.9rem; line-height:1.6; color:var(--grey); font-family:var(--font-sans);">
+              Payment Method: <strong id="res-payment-method" style="color:var(--charcoal);">COD</strong><br>
               Payment Status: <span id="res-payment-status" class="status-badge" style="font-size:0.7rem; padding:2px 8px; margin-left:5px;">Pending</span><br>
               Total Bill: <strong id="res-amount" style="color:var(--rose-gold); font-size:1.1rem; display:inline-block; margin-top:5px;">₹0</strong>
             </p>
@@ -116,15 +202,15 @@
         </div>
 
         <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:30px;">
-          <a href="/dashboard.html" class="btn btn-primary" style="padding:10px 25px; font-size:0.8rem;">Go To Dashboard</a>
+          <a href="/dashboard.html" class="btn btn-luxury" style="padding:10px 25px; font-size:0.8rem;">Go To Dashboard</a>
           <a id="invoice-download-btn" href="#" class="btn btn-outline" style="padding:10px 25px; font-size:0.8rem;"><i class="fas fa-download"></i> Download Invoice</a>
         </div>
 
       </div>
 
       <!-- Welcome/Idle placeholder -->
-      <div id="tracking-idle-box" style="padding:40px 0; color:var(--text-secondary);">
-        <i class="fas fa-map-marker-alt" style="font-size:4rem; color:var(--rose-gold-glow); margin-bottom:15px; display:block;"></i>
+      <div id="tracking-idle-box" style="padding:40px 0; color:var(--grey); font-family:var(--font-sans); font-size:0.95rem;">
+        <i class="fas fa-map-marker-alt" style="font-size:3.5rem; color:var(--rose-gold); margin-bottom:15px; display:block;"></i>
         <p>Please enter your 7-character Order ID (e.g., SAN1001) or 12-character Tracking ID (e.g., SQ12345678IN) to search.</p>
       </div>
 
@@ -133,13 +219,55 @@
 
   <!-- Footer -->
   <footer>
-    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations crafted in Milan.</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html?category=Lipsticks">Lips Collection</a></li>
+          <li><a href="/shop.html?category=Foundations">Foundations</a></li>
+          <li><a href="/shop.html?category=Serums">Serums & Oils</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Secure Shopping</h3>
+        <p>We secure transactions using 256-bit encryption. Pay safely using cards, net banking, or UPI.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa" title="Visa"></i>
+          <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fab fa-cc-amex" title="American Express"></i>
+          <i class="fas fa-wallet" title="UPI / Net Banking"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
+    </div>
   </footer>
 
-  <script src="/js/main.js"></script>
+  <!-- Scripts -->
+  <script src="/js/main.js" defer></script>
+  <script src="/js/navbar.js" defer></script>
+  <script src="/js/search.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Check query string
       const urlParams = new URLSearchParams(window.location.search);
       const query = urlParams.get('id');
       if (query) {
@@ -172,7 +300,6 @@
 
         const order = await res.json();
 
-        // Render Values
         document.getElementById('tracking-idle-box').style.display = 'none';
         document.getElementById('tracking-results-box').style.display = 'block';
 
@@ -180,7 +307,6 @@
         document.getElementById('res-tracking-id').textContent = order.trackingId || order.trackingNumber || 'N/A';
         document.getElementById('res-customer-name').textContent = order.customerName;
         
-        // Address formatted
         if (typeof order.shippingAddress === 'object') {
           document.getElementById('res-address').innerHTML = `
             ${order.shippingAddress.street || ''}<br>
@@ -192,14 +318,12 @@
 
         document.getElementById('res-payment-method').textContent = order.paymentMethod;
         
-        // Payment Badge
         const pStatus = document.getElementById('res-payment-status');
         pStatus.textContent = order.paymentStatus;
         pStatus.className = `status-badge status-${order.paymentStatus.toLowerCase()}`;
 
         document.getElementById('res-amount').textContent = `₹${(order.totalAmount || order.amount).toLocaleString('en-IN')}`;
         
-        // Invoice Download button
         const invoiceBtn = document.getElementById('invoice-download-btn');
         if (invoiceBtn) {
           invoiceBtn.onclick = (e) => {
@@ -208,12 +332,10 @@
           };
         }
 
-        // Status Badge
         const statusBadge = document.getElementById('res-status-badge');
         statusBadge.textContent = order.orderStatus.toUpperCase();
         statusBadge.className = `status-badge status-${order.orderStatus.toLowerCase() === 'pending' || order.orderStatus.toLowerCase() === 'confirmed' ? 'ordered' : order.orderStatus.toLowerCase()}`;
 
-        // Render Timeline Progress
         const nodes = ['confirmed', 'packed', 'shipped', 'outfordelivery', 'delivered'];
         nodes.forEach(n => {
           document.getElementById(`node-${n}`).classList.remove('active', 'completed');

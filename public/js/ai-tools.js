@@ -1,6 +1,7 @@
 // Sanique Cosmetics AI Tools Script
 
 let webcamStream = null;
+let tryOnAnimationFrameId = null;
 
 // =========================================================================
 // 1. AI Skin Analyzer
@@ -213,6 +214,10 @@ function updateTryOnOpacity(val) {
 function closeTryOnModal() {
   const modal = document.getElementById('try-on-modal');
   if (modal) modal.classList.remove('active');
+  if (tryOnAnimationFrameId) {
+    cancelAnimationFrame(tryOnAnimationFrameId);
+    tryOnAnimationFrameId = null;
+  }
   stopWebcam();
 }
 
@@ -223,7 +228,6 @@ function initTryOnCanvasLoop() {
   if (!video || !canvas) return;
 
   const ctx = canvas.getContext('2d');
-  let animationFrameId;
 
   const loop = () => {
     if (video.paused || video.ended) return;
@@ -233,11 +237,7 @@ function initTryOnCanvasLoop() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Apply color highlights on coordinates
-    // In standard production this uses tensorflow models.
-    // For our luxury mock experience, we draw overlay blends:
     if (currentProduct.category === 'Lipsticks') {
-      // Lips shape coordinates
       ctx.beginPath();
       ctx.fillStyle = activeTryOnColor;
       ctx.globalAlpha = tryOnOpacity;
@@ -245,14 +245,12 @@ function initTryOnCanvasLoop() {
       const cx = canvas.width / 2;
       const cy = canvas.height * 0.65;
       
-      // Upper lips curve
       ctx.moveTo(cx - 50, cy);
       ctx.quadraticCurveTo(cx - 25, cy - 18, cx - 12, cy - 8);
       ctx.quadraticCurveTo(cx, cy - 12, cx + 12, cy - 8);
       ctx.quadraticCurveTo(cx + 25, cy - 18, cx + 50, cy);
       ctx.quadraticCurveTo(cx, cy + 10, cx - 50, cy);
 
-      // Lower lips curve
       ctx.moveTo(cx - 50, cy);
       ctx.quadraticCurveTo(cx, cy + 28, cx + 50, cy);
       ctx.quadraticCurveTo(cx, cy + 6, cx - 50, cy);
@@ -260,27 +258,23 @@ function initTryOnCanvasLoop() {
       ctx.fill();
       ctx.closePath();
     } else if (currentProduct.category === 'Blush') {
-      // Blush cheeks highlights
       const cx = canvas.width / 2;
       const cy = canvas.height * 0.52;
 
       ctx.globalAlpha = tryOnOpacity;
       ctx.fillStyle = activeTryOnColor;
 
-      // Left cheek blush
       ctx.beginPath();
       ctx.arc(cx - 90, cy, 32, 0, 2 * Math.PI);
       ctx.fill();
       ctx.closePath();
 
-      // Right cheek blush
       ctx.beginPath();
       ctx.arc(cx + 90, cy, 32, 0, 2 * Math.PI);
       ctx.fill();
       ctx.closePath();
     } else if (currentProduct.category === 'Foundations') {
-      // Face layer highlight
-      ctx.globalAlpha = tryOnOpacity * 0.4; // subtle
+      ctx.globalAlpha = tryOnOpacity * 0.4;
       ctx.fillStyle = activeTryOnColor;
       ctx.beginPath();
       ctx.arc(canvas.width / 2, canvas.height / 2, 130, 0, 2 * Math.PI);
@@ -288,8 +282,8 @@ function initTryOnCanvasLoop() {
       ctx.closePath();
     }
 
-    ctx.globalAlpha = 1.0; // reset
-    animationFrameId = requestAnimationFrame(loop);
+    ctx.globalAlpha = 1.0;
+    tryOnAnimationFrameId = requestAnimationFrame(loop);
   };
 
   video.addEventListener('play', loop);

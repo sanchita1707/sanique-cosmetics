@@ -1,0 +1,131 @@
+/* Premium Clean Footer - Sanique Cosmetics */
+
+footer {
+  background: var(--charcoal);
+  color: #B2A29D;
+  padding: 80px 5% 40px;
+  border-top: 1.5px solid var(--gold-glow);
+  font-family: var(--font-sans);
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-column h2 {
+  font-family: var(--font-serif);
+  color: var(--white);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.footer-column h2 span {
+  color: var(--rose-gold);
+}
+
+.footer-column h3 {
+  font-family: var(--font-serif);
+  color: var(--gold);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.footer-column p {
+  line-height: 1.8;
+  font-size: 0.85rem;
+  color: #B2A29D;
+  margin-bottom: 16px;
+}
+
+.footer-column p i {
+  color: var(--rose-gold);
+  margin-right: 8px;
+}
+
+.footer-links a {
+  display: block;
+  font-size: 0.85rem;
+  padding: 8px 0;
+  color: #B2A29D;
+  transition: var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--white);
+  padding-left: 6px;
+}
+
+/* Newsletter Input within Footer context */
+.newsletter-form {
+  display: flex;
+  margin-top: 18px;
+  position: relative;
+}
+
+/* Social & Secure Payments */
+.footer-social-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: var(--space-sm);
+}
+
+.social-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #B2A29D;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.social-icon:hover {
+  background: var(--rose-gold);
+  color: var(--white);
+  transform: translateY(-3px);
+  border-color: var(--rose-gold);
+}
+
+.footer-payments {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.footer-payments i {
+  font-size: 1.6rem;
+  color: #B2A29D;
+  transition: var(--transition);
+}
+
+.footer-payments i:hover {
+  color: var(--white);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 32px;
+  font-size: 0.75rem;
+  color: #8A7A75;
+  letter-spacing: 0.5px;
+}

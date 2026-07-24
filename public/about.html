@@ -6,54 +6,200 @@
   <meta name="description" content="Discover the story behind Sanique Cosmetics. Formulated in Milan, designed for luxury beauty enthusiasts.">
   <title>Our Heritage | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
+
+  <!-- Sticky Header Announcement and Glassmorphism Navbar -->
   <header>
-    <div class="header-top">Complimentary Shipping on Luxury Orders Above ₹1,500</div>
+    <div class="header-top">
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
+    </div>
     <div class="navbar">
-      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique</a>
       <nav class="nav-links">
         <a href="/index.html" class="nav-item">Home</a>
-        <a href="/shop.html" class="nav-item">Shop</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem; margin-left:3px;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
         <a href="/categories.html" class="nav-item">Categories</a>
-        <a href="/about.html" class="nav-item">Our Story</a>
+        <a href="#" class="nav-item" onclick="openSkinAnalysisModal()">AI Skin Scanner</a>
+        <a href="/about.html" class="nav-item active">About</a>
         <a href="/contact.html" class="nav-item">Contact</a>
       </nav>
       <div class="nav-icons">
-        <a href="/login.html" class="nav-btn"><i class="fas fa-user"></i></a>
-        <a href="#" class="nav-btn" id="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+        <div class="nav-search-container">
+          <input type="text" class="nav-search-input" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button class="nav-btn" id="navbar-search-btn" title="Search"><i class="fas fa-search"></i></button>
+          
+          <div class="search-suggestions-panel" id="search-suggestions-panel">
+            <div class="suggestions-section">
+              <h4>Recent Searches</h4>
+              <div class="recent-searches-list" id="recent-searches-list">
+                <!-- Loaded dynamically by search.js -->
+              </div>
+            </div>
+            <div class="suggestions-section" style="margin-top: 15px;">
+              <h4>Trending Suggestions</h4>
+              <div class="trending-tags">
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Lipsticks')">Lipsticks</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Foundations')">Foundations</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Serums')">Serums</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Glow')">Glow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/login.html" class="nav-btn" id="user-btn" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count">0</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <main style="max-width:1000px; margin:100px auto 0; padding:60px 5%;">
-    <span style="display:block; text-align:center; text-transform:uppercase; color:var(--rose-gold); letter-spacing:2px; font-weight:600;">The Sanique Philosophy</span>
-    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin:10px 0 30px;">Crafting Clean Royal Cosmetics</h1>
+  <!-- Mobile Drawer Menu Overlay and Container -->
+  <div class="mobile-nav-drawer">
+    <a href="/index.html" class="mobile-nav-link">Home</a>
+    <a href="/shop.html" class="mobile-nav-link">Shop All</a>
+    <a href="/shop.html?category=Lipsticks" class="mobile-nav-link">Lips</a>
+    <a href="/shop.html?category=Foundations" class="mobile-nav-link">Face</a>
+    <a href="/shop.html?category=Serums" class="mobile-nav-link">Skincare</a>
+    <a href="/categories.html" class="mobile-nav-link">Beauty Quiz</a>
+    <a href="/about.html" class="mobile-nav-link">About</a>
+    <a href="/contact.html" class="mobile-nav-link">Contact</a>
+  </div>
+  <div class="drawer-overlay"></div>
+
+  <!-- Cart Drawer Overlay & Container -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--grey); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
+    </div>
+  </div>
+
+  <main id="main-content" tabindex="-1" style="max-width:1100px; margin:110px auto 0; padding:60px 5%;">
+    <span style="display:block; text-align:center; text-transform:uppercase; color:var(--rose-gold); letter-spacing:3px; font-weight:700; font-family:var(--font-sans); font-size:0.8rem; margin-bottom:12px;">The Sanique Philosophy</span>
+    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin:0 auto 30px; font-weight:600; color:var(--charcoal); max-width: 600px; line-height:1.2;">Crafting Clean Royal Cosmetics</h1>
     
-    <p style="font-size:1.1rem; line-height:1.8; color:var(--text-secondary); text-align:center; margin-bottom:45px;">
+    <p style="font-size:1.05rem; line-height:1.8; color:var(--grey); text-align:center; margin-bottom:50px; font-family:var(--font-sans); max-width:800px; margin-left:auto; margin-right:auto;">
       Sanique Cosmetics was founded with a singular vision: to bridge the gap between heavy, traditional makeup formulations and modern, clean skincare science. Our products do not mask your skin — they nourish it.
     </p>
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:40px; margin-bottom:50px;">
-      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-        <h3 style="font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:12px; font-size:1.3rem;">Italian Formulations</h3>
-        <p style="font-size:0.95rem; line-height:1.6; color:var(--text-secondary);">
+      <div class="product-card" style="padding:36px; display:flex; flex-direction:column; gap:12px;">
+        <h3 style="font-family:var(--font-serif); color:var(--rose-gold); font-size:1.3rem; font-weight:600; margin:0;">Italian Formulations</h3>
+        <p style="font-size:0.95rem; line-height:1.7; color:var(--grey); margin:0; font-family:var(--font-sans);">
           Our laboratories in Milan partner with leading cosmetic chemists to create lightweight textures, rich micro-milled pigments, and long-stay emulsifiers certified for skin safety.
         </p>
       </div>
-      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-        <h3 style="font-family:var(--font-serif); color:var(--gold); margin-bottom:12px; font-size:1.3rem;">Indian Heritage Values</h3>
-        <p style="font-size:0.95rem; line-height:1.6; color:var(--text-secondary);">
+      <div class="product-card" style="padding:36px; display:flex; flex-direction:column; gap:12px;">
+        <h3 style="font-family:var(--font-serif); color:var(--rose-gold); font-size:1.3rem; font-weight:600; margin:0;">Indian Heritage Values</h3>
+        <p style="font-size:0.95rem; line-height:1.7; color:var(--grey); margin:0; font-family:var(--font-sans);">
           From deep crimson reds to golden bronze tones, we build custom shade palettes meticulously matched for diverse Indian complexions and warm weather conditions.
         </p>
       </div>
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations crafted in Milan.</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html?category=Lipsticks">Lips Collection</a></li>
+          <li><a href="/shop.html?category=Foundations">Foundations</a></li>
+          <li><a href="/shop.html?category=Serums">Serums & Oils</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Secure Shopping</h3>
+        <p>We secure transactions using 256-bit encryption. Pay safely using cards, net banking, or UPI.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa" title="Visa"></i>
+          <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fab fa-cc-amex" title="American Express"></i>
+          <i class="fas fa-wallet" title="UPI / Net Banking"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
+    </div>
   </footer>
-  <script src="/js/main.js"></script>
+
+  <!-- Scripts -->
+  <script src="/js/main.js" defer></script>
+  <script src="/js/navbar.js" defer></script>
+  <script src="/js/search.js" defer></script>
 </body>
 </html>

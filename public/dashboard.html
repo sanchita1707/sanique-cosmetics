@@ -6,102 +6,250 @@
   <meta name="description" content="Manage your skincare routine, track skin progress, and view order history at Sanique Cosmetics.">
   <title>User Dashboard | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
+
+  <!-- Sticky Header Announcement and Glassmorphism Navbar -->
   <header>
+    <div class="header-top">
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
+    </div>
     <div class="navbar">
-      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique</a>
       <nav class="nav-links">
         <a href="/index.html" class="nav-item">Home</a>
-        <a href="/shop.html" class="nav-item">Shop</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem; margin-left:3px;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
         <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="#" class="nav-item" onclick="openSkinAnalysisModal()">AI Skin Scanner</a>
+        <a href="/about.html" class="nav-item">About</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
       </nav>
       <div class="nav-icons">
-        <button class="nav-btn" onclick="userLogout()" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+        <div class="nav-search-container">
+          <input type="text" class="nav-search-input" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button class="nav-btn" id="navbar-search-btn" title="Search"><i class="fas fa-search"></i></button>
+          
+          <div class="search-suggestions-panel" id="search-suggestions-panel">
+            <div class="suggestions-section">
+              <h4>Recent Searches</h4>
+              <div class="recent-searches-list" id="recent-searches-list">
+                <!-- Loaded dynamically by search.js -->
+              </div>
+            </div>
+            <div class="suggestions-section" style="margin-top: 15px;">
+              <h4>Trending Suggestions</h4>
+              <div class="trending-tags">
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Lipsticks')">Lipsticks</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Foundations')">Foundations</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Serums')">Serums</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Glow')">Glow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="nav-btn" onclick="userLogout()" title="Logout" style="background:none; border:none; cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count">0</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
+  <!-- Mobile Drawer Menu Overlay and Container -->
+  <div class="mobile-nav-drawer">
+    <a href="/index.html" class="mobile-nav-link">Home</a>
+    <a href="/shop.html" class="mobile-nav-link">Shop All</a>
+    <a href="/shop.html?category=Lipsticks" class="mobile-nav-link">Lips</a>
+    <a href="/shop.html?category=Foundations" class="mobile-nav-link">Face</a>
+    <a href="/shop.html?category=Serums" class="mobile-nav-link">Skincare</a>
+    <a href="/categories.html" class="mobile-nav-link">Beauty Quiz</a>
+    <a href="/about.html" class="mobile-nav-link">About</a>
+    <a href="/contact.html" class="mobile-nav-link">Contact</a>
+  </div>
+  <div class="drawer-overlay"></div>
+
+  <!-- Cart Drawer Overlay & Container -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--grey); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
+    </div>
+  </div>
+
+  <main id="main-content" tabindex="-1" style="max-width:1300px; margin:110px auto 0; padding:60px 5%;">
     <!-- Top Details Profile banner -->
     <section class="loyalty-card">
       <div class="loyalty-header">
         <div>
-          <h1 id="dash-user-name" style="font-family:var(--font-serif); font-size:2.4rem; color:var(--white);">Customer Name</h1>
-          <p id="dash-user-email" style="font-size:0.95rem; color:var(--soft-pink);"></p>
+          <h1 id="dash-user-name" style="font-family:var(--font-serif); font-size:2.4rem; color:var(--white); font-weight:600; margin:0 0 5px 0;">Customer Name</h1>
+          <p id="dash-user-email" style="font-size:0.95rem; color:var(--soft-pink); margin:0; font-family:var(--font-sans);"></p>
         </div>
         <div class="vip-badge" id="dash-vip-level">Bronze Member</div>
       </div>
-      <div>
+      <div style="margin-top:20px;">
         <div class="loyalty-score" id="dash-points">0</div>
-        <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--soft-pink);">Loyalty Reward Balance (₹1 Discount = 1 Point)</p>
+        <p style="font-size:0.8rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--soft-pink); font-family:var(--font-sans); margin:4px 0 0 0;">Loyalty Reward Balance (₹1 Discount = 1 Point)</p>
       </div>
     </section>
 
     <!-- Routine Checklist & Skin Progress -->
-    <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:40px; margin-bottom:50px; flex-wrap:wrap;">
+    <div class="dashboard-split" style="display:flex; gap:40px; margin-top:40px; margin-bottom:50px;">
       
       <!-- Skincare Routine Checklist -->
-      <section style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
-        <h2 style="font-family:var(--font-serif); margin-bottom:5px; color:var(--rose-gold);">Beauty Routine Planner</h2>
-        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Complete your morning and night steps. Checkmarks persist locally.</p>
+      <section class="product-card" style="flex:1.1; padding:32px;">
+        <h2 style="font-family:var(--font-serif); margin:0 0 4px 0; color:var(--rose-gold); font-size:1.5rem; font-weight:600;">Beauty Routine Planner</h2>
+        <p style="color:var(--grey); font-size:0.85rem; margin-bottom:24px; font-family:var(--font-sans);">Complete your morning and night steps. Checkmarks persist locally.</p>
         
-        <div class="routine-grid">
+        <div class="routine-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
           <div class="routine-column">
-            <h3><i class="fas fa-sun"></i> Morning Steps</h3>
-            <div class="routine-checklist" id="routine-morning-list"></div>
+            <h3 style="font-size:1.1rem; font-family:var(--font-serif); font-weight:600; margin-top:0; color:var(--charcoal);"><i class="fas fa-sun" style="color:var(--rose-gold); margin-right:6px;"></i> Morning</h3>
+            <div class="routine-checklist" id="routine-morning-list" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;"></div>
           </div>
           <div class="routine-column">
-            <h3><i class="fas fa-moon"></i> Evening Steps</h3>
-            <div class="routine-checklist" id="routine-night-list"></div>
+            <h3 style="font-size:1.1rem; font-family:var(--font-serif); font-weight:600; margin-top:0; color:var(--charcoal);"><i class="fas fa-moon" style="color:var(--rose-gold); margin-right:6px;"></i> Night</h3>
+            <div class="routine-checklist" id="routine-night-list" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;"></div>
           </div>
         </div>
-        <button class="btn btn-luxury" style="width:100%; margin-top:20px; font-size:0.8rem;" onclick="showToast('Skincare routine progress saved!','success')">Save Progress Checklist</button>
+        <button class="btn btn-luxury" style="width:100%; margin-top:24px; padding:12px;" onclick="showToast('Skincare routine progress saved!','success')">Save Progress Checklist</button>
       </section>
 
       <!-- Skincare Journal & Uploads -->
-      <section style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
-        <h2 style="font-family:var(--font-serif); margin-bottom:5px; color:var(--gold);">Skin Progress Tracker</h2>
-        <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Log camera snapshots to track your texture improvements.</p>
+      <section class="product-card" style="flex:1; padding:32px;">
+        <h2 style="font-family:var(--font-serif); margin:0 0 4px 0; color:var(--rose-gold); font-size:1.5rem; font-weight:600;">Skin Progress Tracker</h2>
+        <p style="color:var(--grey); font-size:0.85rem; margin-bottom:24px; font-family:var(--font-sans);">Log camera snapshots to track your texture improvements.</p>
         
         <div style="text-align:center;">
-          <video id="tracker-video" style="width:100%; height:200px; object-fit:cover; border-radius:8px; display:none; background:#000; border:2px solid var(--rose-gold); margin-bottom:15px;" autoplay playsinline></video>
+          <video id="tracker-video" style="width:100%; height:200px; object-fit:cover; border-radius:12px; display:none; background:#000; border:2px solid var(--rose-gold); margin-bottom:15px;" autoplay playsinline></video>
           
-          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
-            <select id="tracker-condition-select" style="padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem;">
+          <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+            <select id="tracker-condition-select" style="cursor: pointer;">
               <option value="Glowing Texture">Glowing / Radiant Skin</option>
               <option value="Dry Patches">Dry / Irritated Patches</option>
               <option value="Oily Breakouts">Oily / Active Breakouts</option>
             </select>
-            <input type="text" id="tracker-notes-input" placeholder="Notes (e.g. Day 4: Skin feels hydrated)" style="padding:10px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); font-size:0.85rem;">
+            <input type="text" id="tracker-notes-input" placeholder="Notes (e.g. Day 4: Skin feels hydrated)">
           </div>
 
-          <button class="btn btn-luxury" id="btn-start-tracker-cam" style="width:100%;"><i class="fas fa-camera"></i> Launch Progress Camera</button>
-          <button class="btn btn-primary" id="btn-capture-tracker" style="display:none; width:100%; background:var(--success);">Record Snapshot Log</button>
+          <button class="btn btn-luxury" id="btn-start-tracker-cam" style="width:100%; padding:12px;"><i class="fas fa-camera" style="margin-right:6px;"></i> Launch Progress Camera</button>
+          <button class="btn btn-primary" id="btn-capture-tracker" style="display:none; width:100%; padding:12px; background:var(--success);">Record Snapshot Log</button>
         </div>
       </section>
     </div>
 
     <!-- Tracker Journal Log List -->
     <section style="margin-bottom:50px;">
-      <h2 style="font-family:var(--font-serif); margin-bottom:20px;">Your Skincare Journals</h2>
+      <h2 style="font-family:var(--font-serif); margin-bottom:20px; font-weight:600; font-size:1.8rem; color:var(--charcoal);">Your Skincare Journals</h2>
       <div class="tracker-journal-grid" id="tracker-journal-grid"></div>
     </section>
 
     <!-- Order History List -->
     <section>
-      <h2 style="font-family:var(--font-serif); margin-bottom:20px;">Your Orders & Invoices</h2>
+      <h2 style="font-family:var(--font-serif); margin-bottom:20px; font-weight:600; font-size:1.8rem; color:var(--charcoal);">Your Orders & Invoices</h2>
       <div id="order-history-list"></div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations crafted in Milan.</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html?category=Lipsticks">Lips Collection</a></li>
+          <li><a href="/shop.html?category=Foundations">Foundations</a></li>
+          <li><a href="/shop.html?category=Serums">Serums & Oils</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Secure Shopping</h3>
+        <p>We secure transactions using 256-bit encryption. Pay safely using cards, net banking, or UPI.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa" title="Visa"></i>
+          <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fab fa-cc-amex" title="American Express"></i>
+          <i class="fas fa-wallet" title="UPI / Net Banking"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
+    </div>
   </footer>
 
-  <script src="/js/main.js"></script>
-  <script src="/js/dashboard.js"></script>
+  <!-- Scripts -->
+  <script src="/js/main.js" defer></script>
+  <script src="/js/dashboard.js" defer></script>
+  <script src="/js/navbar.js" defer></script>
+  <script src="/js/search.js" defer></script>
 </body>
 </html>

@@ -1,125 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Secure Checkout at Sanique. Pay using Razorpay card gate, UPI, or cash on delivery.">
+  <meta name="description" content="Secure Checkout at Sanique. Pay using Razorpay card gate, UPI, or cash on delivery.">
   <title>Checkout | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
+
+  <!-- Sticky Header Announcement and Glassmorphism Navbar -->
   <header>
+    <div class="header-top">
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
+    </div>
     <div class="navbar">
-      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique</a>
       <nav class="nav-links">
         <a href="/index.html" class="nav-item">Home</a>
-        <a href="/shop.html" class="nav-item">Shop</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem; margin-left:3px;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
+        <a href="/categories.html" class="nav-item">Categories</a>
+        <a href="#" class="nav-item" onclick="openSkinAnalysisModal()">AI Skin Scanner</a>
+        <a href="/about.html" class="nav-item">About</a>
+        <a href="/contact.html" class="nav-item">Contact</a>
       </nav>
+      <div class="nav-icons">
+        <div class="nav-search-container">
+          <input type="text" class="nav-search-input" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button class="nav-btn" id="navbar-search-btn" title="Search"><i class="fas fa-search"></i></button>
+          
+          <div class="search-suggestions-panel" id="search-suggestions-panel">
+            <div class="suggestions-section">
+              <h4>Recent Searches</h4>
+              <div class="recent-searches-list" id="recent-searches-list">
+                <!-- Loaded dynamically by search.js -->
+              </div>
+            </div>
+            <div class="suggestions-section" style="margin-top: 15px;">
+              <h4>Trending Suggestions</h4>
+              <div class="trending-tags">
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Lipsticks')">Lipsticks</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Foundations')">Foundations</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Serums')">Serums</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Glow')">Glow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/login.html" class="nav-btn" id="user-btn" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count">0</span>
+        </a>
+      </div>
     </div>
   </header>
 
-  <main style="max-width:1200px; margin:100px auto 0; padding:60px 5%;">
-    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:40px;">Checkout Details
-    </h1>
+  <!-- Mobile Drawer Menu Overlay and Container -->
+  <div class="mobile-nav-drawer">
+    <a href="/index.html" class="mobile-nav-link">Home</a>
+    <a href="/shop.html" class="mobile-nav-link">Shop All</a>
+    <a href="/shop.html?category=Lipsticks" class="mobile-nav-link">Lips</a>
+    <a href="/shop.html?category=Foundations" class="mobile-nav-link">Face</a>
+    <a href="/shop.html?category=Serums" class="mobile-nav-link">Skincare</a>
+    <a href="/categories.html" class="mobile-nav-link">Beauty Quiz</a>
+    <a href="/about.html" class="mobile-nav-link">About</a>
+    <a href="/contact.html" class="mobile-nav-link">Contact</a>
+  </div>
+  <div class="drawer-overlay"></div>
 
-    <form id="checkout-form" style="display:grid; grid-template-columns: 1.3fr 1fr; gap:50px; flex-wrap:wrap;">
+  <!-- Cart Drawer Overlay & Container -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--grey); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
+    </div>
+  </div>
+
+  <main id="main-content" tabindex="-1" style="max-width:1200px; margin:110px auto 0; padding:60px 5%;">
+    <h1 style="font-size:2.6rem; font-family:var(--font-serif); text-align:center; margin-bottom:40px; font-weight:600; color:var(--charcoal);">Checkout Details</h1>
+
+    <form id="checkout-form" class="checkout-container" style="display:flex; gap:40px;">
       <!-- Left: Shipping & Payments -->
-      <section style="display:flex; flex-direction:column; gap:30px;">
+      <section class="checkout-billing" style="flex:1.3; display:flex; flex-direction:column; gap:24px;">
         <!-- Shipping Address -->
-        <div
-          style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-          <h3
-            style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
-            Shipping Address</h3>
-          <div style="display:flex; flex-direction:column; gap:12px;">
-            <input type="text" id="checkout-street" placeholder="Flat No, Apartment, Street Address" required
-              style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
-            <div style="display:flex; gap:10px;">
-              <input type="text" id="checkout-city" placeholder="City" required
-                style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
-              <input type="text" id="checkout-state" placeholder="State" required
-                style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
-              <input type="text" id="checkout-zip" placeholder="ZIP Code" required
-                style="flex:1; padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:32px; border-radius:var(--radius-cards); box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:var(--font-serif); font-size:1.3rem; margin-bottom:20px; font-weight:600;">Shipping Address</h3>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div class="form-group" style="margin:0;">
+              <label>Street Address</label>
+              <input type="text" id="checkout-street" placeholder="Flat No, Apartment, Street Address" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin:0;">
+                <label>City</label>
+                <input type="text" id="checkout-city" placeholder="City" required>
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>State</label>
+                <input type="text" id="checkout-state" placeholder="State" required>
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label>ZIP Code</label>
+                <input type="text" id="checkout-zip" placeholder="ZIP Code" required>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Payment Method -->
-        <div
-          style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-          <h3
-            style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
-            Select Payment Method</h3>
-          <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:20px;">
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:32px; border-radius:var(--radius-cards); box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:var(--font-serif); font-size:1.3rem; margin-bottom:20px; font-weight:600;">Select Payment Method</h3>
+          <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
             <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-              <input type="radio" name="paymentMethod" value="COD" id="pay-cod" checked
-                style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <input type="radio" name="paymentMethod" value="COD" id="pay-cod" checked>
               <strong>Cash On Delivery (COD)</strong>
             </label>
             <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-              <input type="radio" name="paymentMethod" value="UPI" id="pay-upi"
-                style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <input type="radio" name="paymentMethod" value="UPI" id="pay-upi">
               <strong>UPI Scan QR Code</strong>
             </label>
             <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-              <input type="radio" name="paymentMethod" value="Razorpay" id="pay-razorpay"
-                style="accent-color:var(--rose-gold); width:18px; height:18px;">
+              <input type="radio" name="paymentMethod" value="Razorpay" id="pay-razorpay">
               <strong>Credit / Debit Card (Razorpay Gate)</strong>
             </label>
           </div>
-          <!-- Details Rendered dynamically by checkout.js -->
+          
           <div id="payment-method-details"></div>
-
         </div>
       </section>
 
       <!-- Right: Summary & Points -->
-      <section style="display:flex; flex-direction:column; gap:30px;">
-        <!-- Loyalty points container -->
+      <section class="checkout-summary" style="flex:1; display:flex; flex-direction:column; gap:24px;">
         <div id="loyalty-redemption-container"></div>
 
         <!-- Coupon input -->
-        <div
-          style="background:var(--card-bg); border:1px solid var(--border-color); padding:30px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-          <h3 style="font-family:var(--font-serif); margin-bottom:15px;">Coupon Code</h3>
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:32px; border-radius:var(--radius-cards); box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:var(--font-serif); font-size:1.25rem; margin-bottom:12px; font-weight:600;">Coupon Code</h3>
           <div style="display:flex; gap:10px;">
-            <input type="text" id="coupon-code-input" placeholder="e.g. SANIQUE10"
-              style="padding:10px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary); text-transform:uppercase; flex-grow:1;">
-            <button type="button" id="apply-coupon-btn" class="btn btn-primary"
-              style="padding:10px 20px; font-size:0.8rem;">Apply</button>
+            <input type="text" id="coupon-code-input" placeholder="e.g. SANIQUE10" style="text-transform:uppercase;">
+            <button type="button" id="apply-coupon-btn" class="btn btn-primary" style="padding:12px 24px; font-size:0.75rem;">Apply</button>
           </div>
         </div>
 
         <!-- Grand Total Breakdown -->
-        <div
-          style="background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--border-radius); padding:30px; box-shadow:0 4px 15px var(--shadow-color);">
-          <h3
-            style="font-family:var(--font-serif); margin-bottom:20px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
-            Order Details</h3>
-          <div id="checkout-summary-items" style="margin-bottom:15px;"></div>
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:32px; box-shadow:var(--shadow-sm);">
+          <h3 style="font-family:var(--font-serif); font-size:1.3rem; margin-bottom:20px; font-weight:600;">Order Details</h3>
+          
+          <div id="checkout-summary-items" style="margin-bottom:16px; display:flex; flex-direction:column; gap:10px;"></div>
 
-          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:var(--charcoal);">
             <span>Subtotal</span>
             <span id="checkout-subtotal">₹0</span>
           </div>
-          <div
-            style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#E05D5D;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:var(--error);">
             <span>Coupon Discount</span>
             <span id="checkout-discount">- ₹0</span>
           </div>
-          <div
-            style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#E05D5D;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:var(--error);">
             <span>Loyalty Points Redeemed</span>
             <span id="checkout-points-discount">- ₹0</span>
           </div>
 
-          <div
-            style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.3rem; color:var(--rose-gold); border-top:1px solid var(--border-color); padding-top:15px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.3rem; color:var(--rose-gold); border-top:1px solid var(--border-color); padding-top:16px; margin-bottom:20px;">
             <span>Grand Total</span>
             <span id="checkout-grand-total">₹0</span>
           </div>
@@ -130,13 +224,56 @@
     </form>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations crafted in Milan.</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html?category=Lipsticks">Lips Collection</a></li>
+          <li><a href="/shop.html?category=Foundations">Foundations</a></li>
+          <li><a href="/shop.html?category=Serums">Serums & Oils</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Secure Shopping</h3>
+        <p>We secure transactions using 256-bit encryption. Pay safely using cards, net banking, or UPI.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa" title="Visa"></i>
+          <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fab fa-cc-amex" title="American Express"></i>
+          <i class="fas fa-wallet" title="UPI / Net Banking"></i>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
+    </div>
   </footer>
 
-  <script src="/js/main.js"></script>
-  <script src="/js/checkout.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Scripts -->
+  <script src="/js/main.js" defer></script>
+  <script src="/js/checkout.js" defer></script>
+  <script src="/js/navbar.js" defer></script>
+  <script src="/js/search.js" defer></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
 </body>
-
 </html>

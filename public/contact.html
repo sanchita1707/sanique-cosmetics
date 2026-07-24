@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,37 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Contact Sanique Cosmetics. Visit our boutique store in Ghatkopar East, Mumbai, Maharashtra, India or connect with our beauty experts.">
   <title>Contact Us | Sanique Cosmetics</title>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
 
+  <!-- Sticky Header Announcement and Glassmorphism Navbar -->
   <header>
     <div class="header-top">
-      Complimentary Shipping on Luxury Orders Above ₹1,500
+      Complimentary Shipping on Luxury Orders Above ₹1,500 | Earn 10% Cashpoints
     </div>
-
     <div class="navbar">
-      <a href="/index.html" class="brand-logo">
-        Sanique<span>.</span>
-      </a>
-
+      <div class="menu-toggle" id="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <a href="/index.html" class="brand-logo">Sanique</a>
       <nav class="nav-links">
         <a href="/index.html" class="nav-item">Home</a>
-        <a href="/shop.html" class="nav-item">Shop</a>
+        <div class="mega-menu-trigger">
+          <a href="/shop.html" class="nav-item">Shop <i class="fas fa-chevron-down" style="font-size:0.75rem; margin-left:3px;"></i></a>
+          <!-- Mega Menu -->
+          <div class="mega-menu">
+            <div class="mega-menu-column">
+              <h3>Lips</h3>
+              <a href="/shop.html?category=Lipsticks">Lipsticks</a>
+              <a href="/shop.html?category=Lipsticks">Lip Liners</a>
+              <a href="/shop.html?category=Lipsticks">Lip Gloss</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Face & Eyes</h3>
+              <a href="/shop.html?category=Foundations">Foundations</a>
+              <a href="/shop.html?category=Concealers">Concealers</a>
+              <a href="/shop.html?category=Blush">Blush & Highlighter</a>
+              <a href="/shop.html?category=Eyeshadow%20Palettes">Eyeshadow Palettes</a>
+            </div>
+            <div class="mega-menu-column">
+              <h3>Skincare</h3>
+              <a href="/shop.html?category=Serums">Serums & Oils</a>
+              <a href="/shop.html?category=Moisturizers">Moisturizers</a>
+              <a href="/shop.html?category=Sunscreens">SPF Sunscreens</a>
+              <a href="/shop.html?category=Face%20Wash">Cleansers</a>
+            </div>
+          </div>
+        </div>
         <a href="/categories.html" class="nav-item">Categories</a>
-        <a href="/about.html" class="nav-item">Our Story</a>
-        <a href="/contact.html" class="nav-item">Contact</a>
+        <a href="#" class="nav-item" onclick="openSkinAnalysisModal()">AI Skin Scanner</a>
+        <a href="/about.html" class="nav-item">About</a>
+        <a href="/contact.html" class="nav-item active">Contact</a>
       </nav>
-
       <div class="nav-icons">
-        <a href="/login.html" class="nav-btn">
-          <i class="fas fa-user"></i>
-        </a>
-
-        <a href="#" class="nav-btn" id="cart-btn">
+        <div class="nav-search-container">
+          <input type="text" class="nav-search-input" id="navbar-search-input" placeholder="Search products..." autocomplete="off">
+          <button class="nav-btn" id="navbar-search-btn" title="Search"><i class="fas fa-search"></i></button>
+          
+          <div class="search-suggestions-panel" id="search-suggestions-panel">
+            <div class="suggestions-section">
+              <h4>Recent Searches</h4>
+              <div class="recent-searches-list" id="recent-searches-list">
+                <!-- Loaded dynamically by search.js -->
+              </div>
+            </div>
+            <div class="suggestions-section" style="margin-top: 15px;">
+              <h4>Trending Suggestions</h4>
+              <div class="trending-tags">
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Lipsticks')">Lipsticks</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Foundations')">Foundations</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Serums')">Serums</span>
+                <span class="trending-tag" onclick="triggerSuggestedSearch('Glow')">Glow</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/login.html" class="nav-btn" id="user-btn" title="Account"><i class="fas fa-user"></i></a>
+        <a href="/wishlist.html" class="nav-btn" title="Wishlist"><i class="far fa-heart"></i></a>
+        <a href="#" class="nav-btn" id="cart-btn" title="Shopping Cart">
           <i class="fas fa-shopping-bag"></i>
           <span class="cart-count">0</span>
         </a>
@@ -44,120 +94,141 @@
     </div>
   </header>
 
-  <main style="max-width:1100px; margin:100px auto 0; padding:60px 5%;">
+  <!-- Mobile Drawer Menu Overlay and Container -->
+  <div class="mobile-nav-drawer">
+    <a href="/index.html" class="mobile-nav-link">Home</a>
+    <a href="/shop.html" class="mobile-nav-link">Shop All</a>
+    <a href="/shop.html?category=Lipsticks" class="mobile-nav-link">Lips</a>
+    <a href="/shop.html?category=Foundations" class="mobile-nav-link">Face</a>
+    <a href="/shop.html?category=Serums" class="mobile-nav-link">Skincare</a>
+    <a href="/categories.html" class="mobile-nav-link">Beauty Quiz</a>
+    <a href="/about.html" class="mobile-nav-link">About</a>
+    <a href="/contact.html" class="mobile-nav-link">Contact</a>
+  </div>
+  <div class="drawer-overlay"></div>
 
-    <h1 style="font-size:2.8rem; font-family:var(--font-serif); text-align:center; margin-bottom:10px;">
-      Connect With Sanique
-    </h1>
+  <!-- Cart Drawer Overlay & Container -->
+  <div class="cart-drawer-overlay" id="cart-overlay"></div>
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2 style="font-family:var(--font-serif); font-size:1.3rem;">Your Shopping Bag</h2>
+      <button class="cart-close-btn" id="cart-close">&times;</button>
+    </div>
+    <div class="cart-drawer-body">
+      <!-- Items loaded dynamically by main.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal" style="font-weight:bold;">₹0</span>
+      </div>
+      <p style="font-size:0.75rem; color:var(--grey); margin-bottom:15px;">Shipping & taxes computed at checkout.</p>
+      <a href="/cart.html" class="btn btn-primary cart-checkout-btn" style="background:var(--charcoal); margin-bottom:10px;">View Full Cart</a>
+      <a href="/checkout.html" class="btn btn-luxury cart-checkout-btn">Checkout Now</a>
+    </div>
+  </div>
 
-    <p style="text-align:center; color:var(--text-secondary); margin-bottom:40px;">
-      Have questions about ingredients, shade selections, or tracking orders?
-    </p>
+  <main id="main-content" tabindex="-1" style="max-width:1100px; margin:110px auto 0; padding:60px 5%;">
+    <h1 style="font-size:2.6rem; font-family:var(--font-serif); text-align:center; margin-bottom:10px; font-weight:600; color:var(--charcoal);">Connect With Sanique</h1>
+    <p style="text-align:center; color:var(--grey); margin-bottom:40px; font-family:var(--font-sans); font-size:0.95rem;">Have questions about ingredients, shade selections, or tracking orders?</p>
 
     <div style="display:grid; grid-template-columns:1fr 1.2fr; gap:50px;">
-
       <!-- Left Side -->
       <section style="display:flex; flex-direction:column; gap:25px;">
-
         <!-- Boutique Store -->
-        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:25px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-
-          <h3 style="font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px;">
-            Boutique Store
-          </h3>
-
-          <p style="font-size:0.95rem; color:var(--text-secondary); line-height:1.8;">
-            <strong>SANIQUE COSMETICS</strong><br>
-
+        <div class="product-card" style="padding:28px;">
+          <h3 style="font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px; font-weight:600; font-size:1.3rem; margin-top:0;">Boutique Store</h3>
+          <p style="font-size:0.95rem; color:var(--grey); line-height:1.7; font-family:var(--font-sans); margin-bottom:10px;">
+            <strong>SANIQUE COSMETICS BOUTIQUE</strong><br>
             Shop No. 12, Ground Floor,<br>
-
             R Odeon Mall,<br>
-
             Near Ghatkopar Railway Station,<br>
-
             Ghatkopar East,<br>
-
             Mumbai - 400077,<br>
-
             Maharashtra, India
           </p>
-
-          <span style="font-size:0.9rem; color:var(--text-primary); display:block; margin-top:10px;">
+          <span style="font-size:0.9rem; color:var(--charcoal); display:block; font-family:var(--font-sans); font-weight:600;">
             Phone: +91 83694 37880
           </span>
-
         </div>
 
         <!-- Virtual Assistance -->
-        <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:25px; border-radius:var(--border-radius); box-shadow:0 4px 15px var(--shadow-color);">
-
-          <h3 style="font-family:var(--font-serif); color:var(--gold); margin-bottom:10px;">
-            Virtual Assistance
-          </h3>
-
-          <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:15px;">
+        <div class="product-card" style="padding:28px;">
+          <h3 style="font-family:var(--font-serif); color:var(--rose-gold); margin-bottom:10px; font-weight:600; font-size:1.3rem; margin-top:0;">Virtual Assistance</h3>
+          <p style="font-size:0.9rem; color:var(--grey); margin-bottom:16px; font-family:var(--font-sans); line-height:1.6;">
             Need live recommendations? Launch our chat assistant Sasha to connect instantly.
           </p>
-
-          <button class="btn btn-luxury">
-            Open Live Chat
-          </button>
-
+          <button class="btn btn-luxury" style="padding: 10px 24px; font-size: 0.8rem;">Open Live Chat</button>
         </div>
-
       </section>
 
       <!-- Contact Form -->
-      <section style="background:var(--card-bg); border:1px solid var(--border-color); padding:35px; border-radius:var(--border-radius); box-shadow:0 10px 30px var(--shadow-color);">
-
-        <h3 style="font-family:var(--font-serif); margin-bottom:20px;">
-          Send a Message
-        </h3>
-
-        <form
-          onsubmit="event.preventDefault(); showToast('Message sent! Our beauty editor will email you back.','success'); this.reset();"
-          style="display:flex; flex-direction:column; gap:15px;">
-
-          <input
-            type="text"
-            placeholder="Your Name"
-            required
-            style="padding:12px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
-
-          <input
-            type="email"
-            placeholder="Your Email"
-            required
-            style="padding:12px 15px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-primary); color:var(--text-primary);">
-
-          <textarea
-            placeholder="Your Message..."
-            required
-            style="padding:12px 15px; border-radius:6px; border:1px solid var(--border-color); height:140px; background:var(--bg-primary); color:var(--text-primary);"></textarea>
-
-          <button
-            type="submit"
-            class="btn btn-primary"
-            style="width:100%;">
-            Submit Inquiry
-          </button>
-
+      <section style="background:var(--bg-secondary); border:1px solid var(--border-color); padding:35px; border-radius:var(--radius-cards); box-shadow:var(--shadow-sm);">
+        <h3 style="font-family:var(--font-serif); margin-bottom:20px; font-weight:600; font-size:1.3rem; color:var(--charcoal);">Send a Message</h3>
+        <form onsubmit="event.preventDefault(); showToast('Message sent! Our beauty editor will email you back.','success'); this.reset();" style="display:flex; flex-direction:column; gap:16px;">
+          <div class="form-group" style="margin:0;">
+            <input type="text" placeholder="Your Name" required>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <input type="email" placeholder="Your Email" required>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <textarea placeholder="Your Message..." required style="height:140px;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-luxury" style="width:100%; padding:14px;">Submit Inquiry</button>
         </form>
-
       </section>
-
     </div>
-
   </main>
 
+  <!-- Footer -->
   <footer>
+    <div class="footer-container">
+      <div class="footer-column">
+        <h2>SANIQUE</h2>
+        <p>A global hallmark in clean beauty formulation. We create skin-loving cosmetics celebrating luxury, color diversity, and modern formulations crafted in Milan.</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ghatkopar East, Mumbai, Maharashtra 400077, India</p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h3>Collections</h3>
+        <ul class="footer-links">
+          <li><a href="/shop.html?category=Lipsticks">Lips Collection</a></li>
+          <li><a href="/shop.html?category=Foundations">Foundations</a></li>
+          <li><a href="/shop.html?category=Serums">Serums & Oils</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Customer Care</h3>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Live Chat Help</a></li>
+          <li><a href="/dashboard.html">Order Status</a></li>
+          <li><a href="/about.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h3>Secure Shopping</h3>
+        <p>We secure transactions using 256-bit encryption. Pay safely using cards, net banking, or UPI.</p>
+        <div class="footer-payments">
+          <i class="fab fa-cc-visa" title="Visa"></i>
+          <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+          <i class="fab fa-cc-amex" title="American Express"></i>
+          <i class="fas fa-wallet" title="UPI / Net Banking"></i>
+        </div>
+      </div>
+    </div>
     <div class="footer-bottom">
-      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.
+      &copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.
     </div>
   </footer>
 
-  <script src="/js/main.js"></script>
-
+  <!-- Scripts -->
+  <script src="/js/main.js" defer></script>
+  <script src="/js/navbar.js" defer></script>
+  <script src="/js/search.js" defer></script>
 </body>
 </html>
-```

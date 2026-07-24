@@ -1,13 +1,14 @@
-// Sanique Cosmetics Shop Script
+// Sanique Cosmetics Shop Catalog Script
 
 let allProducts = [];
 let comparedProducts = JSON.parse(localStorage.getItem('sanique_compare')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
   initShopFilters();
-  initSmartSearch();
+  initSmartAutocompleteSearch();
   initVoiceSearch();
   initCompareSystem();
+  initViewLayoutToggle();
   fetchProducts();
 });
 
@@ -16,48 +17,62 @@ async function fetchProducts() {
   const productContainer = document.getElementById('shop-product-grid');
   if (!productContainer) return;
 
-  productContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding: 50px 0;"><i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--rose-gold);"></i><p style="margin-top:10px;">Curating luxury products...</p></div>';
+  productContainer.innerHTML = getSkeletonCardsHtml(6);
 
   try {
-    // Read query strings
     const urlParams = new URLSearchParams(window.location.search);
     const category = urlParams.get('category') || '';
     const search = urlParams.get('search') || '';
 
-    // Put search values in DOM inputs
     const searchInput = document.getElementById('shop-search');
     if (searchInput && search) searchInput.value = search;
 
     const categorySelect = document.getElementById('filter-category');
     if (categorySelect && category) categorySelect.value = category;
 
-    // Fetch all products to allow full, dynamic client-side filtering
     const res = await fetch('/api/products');
     allProducts = await res.json();
 
     applyFilters();
   } catch (error) {
     console.error("Error loading products:", error);
-    productContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #E05D5D;">Failed to load products. Please check server connection.</p>';
+    productContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--error);">Failed to load products. Please check server connection.</p>';
   }
 }
 
-// Render Products Grid
+// Skeleton Cards
+function getSkeletonCardsHtml(count = 6) {
+  return Array(count).fill(`
+    <div class="skeleton-card">
+      <div class="skeleton-img skeleton-shimmer"></div>
+      <div class="skeleton-line skeleton-shimmer short"></div>
+      <div class="skeleton-line skeleton-shimmer"></div>
+      <div class="skeleton-line skeleton-shimmer half"></div>
+      <div class="skeleton-btn skeleton-shimmer"></div>
+    </div>
+  `).join('');
+}
+
+// Render Products Grid & List (Step 7 Card redone)
 function renderProducts(products) {
   const container = document.getElementById('shop-product-grid');
-
   if (!container) return;
 
   if (products.length === 0) {
-    container.innerHTML =
-      '<h2 style="grid-column: 1/-1; text-align:center; padding: 50px 0; font-family: var(--font-serif); color: var(--text-secondary);">No Products Found</h2>';
+    container.innerHTML = `
+      <div style="grid-column: 1/-1; text-align:center; padding: 60px 0; color: var(--grey);">
+        <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 12px; color: var(--rose-gold);"></i>
+        <h2 style="font-family: var(--font-serif); font-size:1.5rem; color: var(--charcoal); margin-bottom: 8px;">No Products Found</h2>
+        <p style="font-size: 0.9rem;">Try selecting a different filter option or clear your search.</p>
+      </div>
+    `;
     return;
   }
 
   container.innerHTML = products.map(product => {
     const firstImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/assets/images/products/default-product.jpg';
     
-    // Badges logic
+    // Discount percent calculations
     let badgeHtml = '';
     const hasDiscount = product.discountPrice && product.discountPrice < product.price;
     if (hasDiscount) {
@@ -69,19 +84,17 @@ function renderProducts(products) {
     if (product.stock === 0) {
       stockBadgeHtml = `<span class="product-badge" style="background:#E05D5D; left:auto; right:15px;">Out of Stock</span>`;
     } else if (product.stock > 0 && product.stock <= 5) {
-      stockBadgeHtml = `<span class="product-badge" style="background:#D4AC0D; left:auto; right:15px;">Only ${product.stock} Left</span>`;
+      stockBadgeHtml = `<span class="product-badge" style="background:#E2BA96; left:auto; right:15px;">Only ${product.stock} Left</span>`;
     }
 
-    // Wishlist button state
     const isWished = isProductInWishlist(product._id);
     const wishlistClass = isWished ? 'wishlist-btn active' : 'wishlist-btn';
     const wishlistIcon = isWished ? 'fas fa-heart' : 'far fa-heart';
 
-    // Compare button state
     const isCompared = comparedProducts.includes(product._id);
     const compareClass = isCompared ? 'compare-btn active' : 'compare-btn';
 
-    // Ratings stars
+    // Stars
     const ratingVal = product.rating || 0;
     const fullStars = Math.floor(ratingVal);
     const halfStar = ratingVal % 1 >= 0.5 ? 1 : 0;
@@ -91,7 +104,6 @@ function renderProducts(products) {
     if (halfStar) starsHtml += '<i class="fas fa-star-half-alt"></i>';
     for (let i = 0; i < emptyStars; i++) starsHtml += '<i class="far fa-star"></i>';
 
-    // Price display
     let priceHtml = '';
     if (hasDiscount) {
       priceHtml = `
@@ -102,7 +114,6 @@ function renderProducts(products) {
       priceHtml = `<span class="price-actual">₹${product.price.toLocaleString('en-IN')}</span>`;
     }
 
-    // Shades selection (shade bubbles)
     let shadesHtml = '';
     let selectedShadeName = '';
     if (product.shades && product.shades.length > 0) {
@@ -123,8 +134,8 @@ function renderProducts(products) {
     const cartPrice = product.discountPrice || product.price;
     const isOutOfStock = product.stock === 0;
     const cartBtnHtml = isOutOfStock ? 
-      `<button class="btn btn-add-cart" disabled style="background:#bdc3c7; cursor:not-allowed;">Out of Stock</button>` :
-      `<button class="btn btn-add-cart" onclick="triggerAddToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}', '${selectedShadeName.replace(/'/g, "\\'")}')">Add to Cart</button>`;
+      `<button class="btn-add-cart" disabled style="background:#bdc3c7; cursor:not-allowed;">Out of Stock</button>` :
+      `<button class="btn-add-cart" onclick="triggerAddToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}', '${selectedShadeName.replace(/'/g, "\\'")}')">Add to Cart</button>`;
 
     return `
       <div class="product-card" data-id="${product._id}">
@@ -133,17 +144,23 @@ function renderProducts(products) {
         <button class="${wishlistClass}" onclick="toggleWishlistItem('${product._id}', this)" title="Add to Wishlist">
           <i class="${wishlistIcon}"></i>
         </button>
-        <button class="${compareClass}" onclick="toggleCompareProduct('${product._id}')" title="Compare Product">
+        <button class="${compareClass}" style="position: absolute; top: 60px; right: 15px; width: 42px; height: 42px; border-radius: 50%; background: var(--white); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--grey); cursor: pointer; z-index: 10; box-shadow: var(--shadow-sm); transition: var(--transition);" onclick="toggleCompareProduct('${product._id}')" title="Compare Product">
           <i class="fas fa-exchange-alt"></i>
         </button>
         
-        <div class="product-img-wrapper" onclick="window.location.href='/product.html?id=${product._id}'" style="cursor:pointer;">
-          <img src="${firstImg}" alt="${product.name}" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';">
+        <div class="product-img-wrapper" onclick="window.location.href='/product.html?id=${product._id}'">
+          <img src="${firstImg}" alt="${product.name}" onerror="this.onerror=null; this.src='/assets/images/products/default-product.jpg';" loading="lazy">
+          <div class="product-img-overlay">
+            <button class="img-quickview-btn" onclick="event.stopPropagation(); openQuickView('${product._id}')">
+              <i class="fas fa-eye"></i> Quick View
+            </button>
+          </div>
         </div>
         
         <div class="product-info">
+          <div class="product-brand">SANIQUE Milan</div>
           <div class="product-category">${product.category}</div>
-          <h3 class="product-title" onclick="window.location.href='/product.html?id=${product._id}'" style="cursor:pointer; font-family:var(--font-serif);">${product.name}</h3>
+          <h3 class="product-title" onclick="window.location.href='/product.html?id=${product._id}'">${product.name}</h3>
           
           <div class="product-rating">
             ${starsHtml}
@@ -166,30 +183,14 @@ function renderProducts(products) {
   }).join('');
 }
 
-
-// Helpers for cosmetic packaging styling
-function getCategoryGradient(cat) {
-  switch (cat) {
-    case 'Lipsticks': return '#9B111E, #2C0C0E';
-    case 'Foundations': return '#EAD2C2, #B99379';
-    case 'Serums': return 'rgba(255,255,255,0.4), rgba(183, 110, 121, 0.6)';
-    case 'Sunscreens': return '#F9EBEA, #D4AC0D';
-    case 'Face Wash': return '#E8F8F5, #73C6B6';
-    case 'Makeup Kits': return '#2C2C2C, #B76E79';
-    default: return '#F8E8EE, #B76E79';
-  }
-}
-
 function selectCardShade(elem, name) {
   const card = elem.closest('.product-card');
   card.querySelectorAll('.shade-bubble').forEach(s => s.classList.remove('active'));
   elem.classList.add('active');
 
-  // Re-bind click value on cart button
   const cartBtn = card.querySelector('.btn-add-cart');
   if (cartBtn) {
     const origOnclick = cartBtn.getAttribute('onclick');
-    // Replace the last parameter (shade name)
     const newOnclick = origOnclick.substring(0, origOnclick.lastIndexOf("'")) + name + "')";
     cartBtn.setAttribute('onclick', newOnclick);
   }
@@ -199,7 +200,6 @@ function triggerAddToCart(id, name, price, img, shade) {
   addToCart(id, name, price, img, shade);
 }
 
-// Wishlist Helpers
 function isProductInWishlist(id) {
   const wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
   return wish.includes(id);
@@ -253,7 +253,6 @@ function applyFilters() {
 
   let filtered = [...allProducts];
 
-  // Search query input (instant filtering)
   if (searchInput && searchInput.value) {
     const query = searchInput.value.toLowerCase().trim();
     filtered = filtered.filter(p =>
@@ -263,12 +262,10 @@ function applyFilters() {
     );
   }
 
-  // Category
   if (categorySelect && categorySelect.value) {
     filtered = filtered.filter(p => p.category === categorySelect.value);
   }
 
-  // Price Range
   if (priceSelect && priceSelect.value) {
     const [min, max] = priceSelect.value.split('-').map(Number);
     filtered = filtered.filter(p => {
@@ -281,13 +278,11 @@ function applyFilters() {
     });
   }
 
-  // Rating Filter
   if (ratingSelect && ratingSelect.value) {
     const minRating = Number(ratingSelect.value);
     filtered = filtered.filter(p => p.rating >= minRating);
   }
 
-  // Sorting
   if (sortingSelect && sortingSelect.value) {
     const sortVal = sortingSelect.value;
     if (sortVal === 'price-low') {
@@ -322,9 +317,8 @@ function initShopFilters() {
   }
 }
 
-
-// Smart search suggestions autocomplete
-function initSmartSearch() {
+// Autocomplete recommendations inside shop catalog
+function initSmartAutocompleteSearch() {
   const searchInput = document.getElementById('shop-search');
   if (!searchInput) return;
 
@@ -335,15 +329,15 @@ function initSmartSearch() {
     top: 100%;
     left: 0;
     width: 100%;
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-top: none;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 16px 16px;
     z-index: 100;
     max-height: 200px;
     overflow-y: auto;
     display: none;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md);
   `;
   searchInput.parentElement.style.position = 'relative';
   searchInput.parentElement.appendChild(suggestBox);
@@ -362,7 +356,7 @@ function initSmartSearch() {
     }
 
     suggestBox.innerHTML = matches.map(m => `
-      <div class="suggest-item" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);" onclick="window.location.href='/product.html?id=${m._id}'">
+      <div class="suggest-item" style="padding: 12px 18px; cursor: pointer; border-bottom: 1px solid var(--border-color); font-size:0.85rem;" onclick="window.location.href='/product.html?id=${m._id}'">
         <strong>${m.name}</strong> <span style="font-size:0.75rem; color: var(--rose-gold); float:right;">${m.category}</span>
       </div>
     `).join('');
@@ -370,7 +364,6 @@ function initSmartSearch() {
     suggestBox.style.display = 'block';
   });
 
-  // Hide suggestion list when clicked outside
   document.addEventListener('click', (e) => {
     if (e.target !== searchInput) suggestBox.style.display = 'none';
   });
@@ -385,7 +378,7 @@ function initVoiceSearch() {
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    voiceBtn.style.display = 'none'; // hide if not supported
+    voiceBtn.style.display = 'none';
     return;
   }
 
@@ -405,7 +398,6 @@ function initVoiceSearch() {
     voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
     showToast(`Searching for: "${transcript}"`, "success");
 
-    // Trigger list filtering
     const matched = allProducts.filter(p => p.name.toLowerCase().includes(transcript.toLowerCase()) || p.category.toLowerCase().includes(transcript.toLowerCase()));
     renderProducts(matched);
   });
@@ -423,21 +415,19 @@ function initVoiceSearch() {
 
 // Side-by-Side Product Comparison logic
 function initCompareSystem() {
-  // Add compared tray container
   let tray = document.querySelector('.compare-tray');
   if (!tray) {
     tray = document.createElement('div');
     tray.className = 'compare-tray';
     tray.id = 'compare-tray';
     tray.innerHTML = `
-      <div style="font-weight:600; font-size:0.9rem;">Compare Products:</div>
+      <div style="font-weight:600; font-size:0.9rem; color: var(--charcoal);">Compare Products:</div>
       <div class="compare-tray-items" id="compare-tray-items"></div>
-      <button class="btn btn-luxury" style="padding: 6px 15px; font-size: 0.75rem;" onclick="openComparisonModal()">Compare Now</button>
+      <button class="btn btn-luxury" style="padding: 6px 16px; font-size: 0.75rem;" onclick="openComparisonModal()">Compare Now</button>
     `;
     document.body.appendChild(tray);
   }
 
-  // Add comparison modal
   let modal = document.querySelector('#compare-modal');
   if (!modal) {
     modal = document.createElement('div');
@@ -475,7 +465,6 @@ function toggleCompareProduct(id) {
   localStorage.setItem('sanique_compare', JSON.stringify(comparedProducts));
   renderCompareTray();
   
-  // Update card compare buttons visually
   const cards = document.querySelectorAll('.product-card');
   cards.forEach(card => {
     const cardId = card.getAttribute('data-id');
@@ -565,4 +554,29 @@ function openComparisonModal() {
 function closeCompareModal() {
   const modal = document.getElementById('compare-modal');
   if (modal) modal.classList.remove('active');
+}
+
+// Layout List View / Grid View toggle implementation
+function initViewLayoutToggle() {
+  const gridBtn = document.getElementById('grid-view-btn');
+  const listBtn = document.getElementById('list-view-btn');
+  const productGrid = document.getElementById('shop-product-grid');
+
+  if (gridBtn && listBtn && productGrid) {
+    gridBtn.addEventListener('click', () => {
+      productGrid.classList.remove('list-view');
+      gridBtn.classList.add('active');
+      gridBtn.style.color = 'var(--rose-gold)';
+      listBtn.classList.remove('active');
+      listBtn.style.color = '';
+    });
+
+    listBtn.addEventListener('click', () => {
+      productGrid.classList.add('list-view');
+      listBtn.classList.add('active');
+      listBtn.style.color = 'var(--rose-gold)';
+      gridBtn.classList.remove('active');
+      gridBtn.style.color = '';
+    });
+  }
 }

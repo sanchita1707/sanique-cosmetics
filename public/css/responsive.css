@@ -1,0 +1,232 @@
+/* Responsive Framework Breakpoints - Sanique Cosmetics */
+
+/* Desktop & Large Screens */
+@media (min-width: 1400px) {
+  .navbar,
+  .section,
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+/* Laptops & Medium Viewports */
+@media (max-width: 1200px) {
+  .navbar {
+    padding: 15px 4%;
+  }
+
+  .section {
+    padding: 60px 4%;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .hero-slider-container {
+    height: 600px;
+  }
+
+  .hero-slide .hero-title {
+    font-size: 3.2rem !important;
+  }
+}
+
+/* Tablets (under 992px) */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 12px 5%;
+  }
+
+  .nav-links {
+    display: none; /* Controlled by toggle drawer script */
+  }
+
+  .menu-toggle {
+    display: flex !important;
+  }
+
+  .hero-slider-container {
+    height: auto;
+    padding: 140px 5% 60px;
+  }
+
+  .hero-slide {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .hero-slide .hero-content {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-slide .hero-title {
+    font-size: 2.8rem !important;
+  }
+
+  .hero-slide .hero-image-render {
+    position: relative !important;
+    transform: none !important;
+    margin: 0 auto;
+    width: 280px !important;
+    height: 280px !important;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shop-layout {
+    grid-template-columns: 220px 1fr !important;
+    gap: var(--space-md) !important;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Small Tablets & Mobile (under 768px) */
+@media (max-width: 768px) {
+  main {
+    margin-top: 80px !important;
+  }
+
+  .section {
+    padding: 40px 5% !important;
+  }
+
+  .hero-slide .hero-title {
+    font-size: 2.2rem !important;
+  }
+
+  .hero-slide .hero-description {
+    font-size: 0.9rem !important;
+  }
+
+  .section-title {
+    font-size: 1.8rem !important;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+
+  .cart-drawer {
+    width: 100vw !important;
+    right: -100vw !important;
+  }
+
+  .before-after-wrapper {
+    aspect-ratio: 1/1 !important;
+  }
+
+  /* Structural tabular checkouts stacked vertically */
+  .checkout-container,
+  .cart-container {
+    flex-direction: column !important;
+    gap: var(--space-md) !important;
+  }
+
+  .checkout-billing,
+  .checkout-summary,
+  .cart-items,
+  .cart-summary-card {
+    width: 100% !important;
+  }
+
+  .shop-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .shop-sidebar {
+    position: static !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  .shop-top {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .search-sort {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* AI Skin Analysis Results stack vertically */
+  .scanner-results {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .tryon-workspace {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tryon-camera-wrapper {
+    aspect-ratio: 1/1 !important;
+  }
+
+  .sticky-purchase-panel {
+    padding: 10px 4% !important;
+  }
+
+  .sticky-panel-container {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* Related grids become 1 column */
+  .product-grid.list-view .product-card {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .product-grid.list-view .product-img-wrapper {
+    width: 100% !important;
+    height: 200px !important;
+  }
+}
+
+/* Very Small Mobile viewports */
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .admin-metrics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .btn {
+    padding: 12px 24px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .brand-logo {
+    font-size: 1.4rem !important;
+  }
+
+  .nav-icons {
+    gap: 10px !important;
+  }
+}

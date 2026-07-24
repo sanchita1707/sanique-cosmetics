@@ -1,0 +1,362 @@
+/* Catalog & Product Details Layouts - Sanique Cosmetics */
+
+/* 1. Catalog Grid Layouts */
+.shop-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+}
+
+.shop-sidebar {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  border-radius: var(--radius-cards);
+  box-shadow: var(--shadow-sm);
+  height: fit-content;
+  position: sticky;
+  top: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.shop-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-sort {
+  display: flex;
+  gap: 12px;
+  width: 460px;
+  max-width: 100%;
+}
+
+/* 2. Catalog List View Toggle overrides */
+.product-grid.list-view {
+  grid-template-columns: 1fr !important;
+  gap: 24px;
+}
+
+.product-grid.list-view .product-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 30px;
+  padding: 24px;
+}
+
+.product-grid.list-view .product-img-wrapper {
+  width: 250px !important;
+  height: 250px !important;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.product-grid.list-view .product-info {
+  flex-grow: 1;
+}
+
+/* 3. Product Single Details Workspace */
+.product-detail-workspace {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 60px;
+  margin-bottom: var(--space-xl);
+}
+
+.details-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.details-main-img {
+  aspect-ratio: 1;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-images);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.details-main-img img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  transition: var(--transition);
+}
+
+.details-main-img img:hover {
+  transform: scale(1.05);
+}
+
+.details-thumbnails {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.thumb-wrapper {
+  width: 65px;
+  height: 65px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  padding: 4px;
+  transition: var(--transition);
+}
+
+.thumb-wrapper:hover,
+.thumb-wrapper.active {
+  border-color: var(--rose-gold);
+  transform: translateY(-2px);
+}
+
+/* Accordion detail tabs */
+.details-tabs-header {
+  border-bottom: 1.5px solid var(--border-color);
+  display: flex;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.details-tab-title {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--grey);
+  padding-bottom: 8px;
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  transition: var(--transition);
+}
+
+.details-tab-title.active {
+  color: var(--rose-gold);
+  border-bottom-color: var(--rose-gold);
+}
+
+.details-tabs-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  padding: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* 4. Safety Audit & Frequently Bought */
+.details-split-cards {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  margin-bottom: var(--space-xl);
+}
+
+.safety-check-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-secondary);
+  padding: 12px 18px;
+  border-radius: var(--radius-inputs);
+  border: 1px solid var(--border-color);
+  margin-bottom: 10px;
+}
+
+.safety-badge {
+  font-family: var(--font-btn);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Frequently Bought Bundle */
+.bundle-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 5. Sticky Add-to-Cart purchase panel */
+.sticky-purchase-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.03);
+  padding: 16px 8%;
+  z-index: 990;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sticky-purchase-panel.active {
+  transform: translateY(0);
+}
+
+.sticky-panel-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.sticky-panel-product {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.sticky-panel-product img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  background: var(--white);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 3px;
+}
+
+.sticky-panel-product h4 {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--charcoal);
+}
+
+.sticky-panel-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* 6. Quick View Modal */
+.quickview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(28, 28, 28, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+
+.quickview-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quickview-container {
+  background: var(--bg-primary);
+  width: 90%;
+  max-width: 900px;
+  border-radius: var(--radius-cards);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  max-height: 90vh;
+  transform: scale(0.96) translateY(12px);
+  transition: var(--transition);
+  position: relative;
+}
+
+.quickview-overlay.active .quickview-container {
+  transform: scale(1) translateY(0);
+}
+
+.quickview-media {
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  height: 100%;
+}
+
+.quickview-media img {
+  max-width: 90%;
+  max-height: 380px;
+  object-fit: contain;
+}
+
+.quickview-details {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 90vh;
+  gap: 14px;
+}
+
+/* Reviews List Styles */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 50px;
+}
+
+.review-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.review-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-author {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.review-date {
+  font-size: 0.75rem;
+  color: var(--grey);
+}

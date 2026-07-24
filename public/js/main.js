@@ -4,7 +4,7 @@
 let cart = JSON.parse(localStorage.getItem('sanique_cart')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  initNavbar();
+  initUserAccountButton();
   initFloatingActions();
   initTheme();
   initCartDrawer();
@@ -39,50 +39,14 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
-// Navbar operations
-function initNavbar() {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
-
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      if (navLinks.classList.contains('active')) {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '100%';
-        navLinks.style.left = '0';
-        navLinks.style.width = '100%';
-        navLinks.style.background = 'var(--bg-glass)';
-        navLinks.style.padding = '20px';
-        navLinks.style.zIndex = '999';
-      } else {
-        navLinks.style.display = 'none';
-      }
-    });
-  }
-
-  // Header background fade on scroll
-  const header = document.querySelector('header');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      header.style.padding = '8px 5%';
-      header.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-    } else {
-      header.style.padding = '15px 5%';
-      header.style.boxShadow = '0 4px 30px var(--shadow-color)';
-    }
-  });
-
-  // Render Logged-in/Logged-out buttons
+// User button click route checker
+function initUserAccountButton() {
   const token = localStorage.getItem('sanique_token');
   const userBtn = document.getElementById('user-btn');
   if (userBtn) {
     userBtn.addEventListener('click', (e) => {
       e.preventDefault();
       if (token) {
-        // Redirect to dashboard or admin
         const isAdmin = localStorage.getItem('sanique_isAdmin') === 'true';
         window.location.href = isAdmin ? '/admin.html' : '/dashboard.html';
       } else {
@@ -207,10 +171,10 @@ function renderCartDrawerItems() {
 
   if (cart.length === 0) {
     cartBody.innerHTML = `
-      <div style="text-align:center; padding: 50px 0; color: var(--text-secondary);">
-        <i class="fas fa-shopping-bag" style="font-size: 3rem; margin-bottom: 15px; color: var(--rose-gold);"></i>
-        <p>Your luxury cart is empty.</p>
-        <a href="/shop.html" class="btn btn-outline" style="margin-top:20px; font-size:0.8rem;">Browse Products</a>
+      <div style="text-align:center; padding: 40px 0; color: var(--grey);">
+        <i class="fas fa-shopping-bag" style="font-size: 2.5rem; margin-bottom: 12px; color: var(--rose-gold);"></i>
+        <p>Your shopping bag is empty.</p>
+        <a href="/shop.html" class="btn btn-outline" style="margin-top:16px; font-size:0.75rem; padding: 8px 16px;">Browse Products</a>
       </div>
     `;
     if (cartSubtotal) cartSubtotal.textContent = '₹0';
@@ -253,14 +217,17 @@ function renderCartDrawerItems() {
 
 // Floating button triggers
 function initFloatingActions() {
-  const floatingActions = document.createElement('div');
-  floatingActions.className = 'floating-actions';
-  floatingActions.innerHTML = `
-    <button class="float-btn" id="theme-toggle" title="Toggle Light/Dark Theme"><i class="fas fa-moon"></i></button>
-    <button class="float-btn" id="chat-toggle" title="Consult Beauty Expert"><i class="fas fa-comments"></i></button>
-    <button class="float-btn" id="scroll-top" title="Scroll to Top" style="display:none;"><i class="fas fa-arrow-up"></i></button>
-  `;
-  document.body.appendChild(floatingActions);
+  let floatingActions = document.querySelector('.floating-actions');
+  if (!floatingActions) {
+    floatingActions = document.createElement('div');
+    floatingActions.className = 'floating-actions';
+    floatingActions.innerHTML = `
+      <button class="float-btn" id="theme-toggle" title="Toggle Light/Dark Theme"><i class="fas fa-moon"></i></button>
+      <button class="float-btn" id="chat-toggle" title="Consult Beauty Expert"><i class="fas fa-comments"></i></button>
+      <button class="float-btn" id="scroll-top" title="Scroll to Top" style="display:none;"><i class="fas fa-arrow-up"></i></button>
+    `;
+    document.body.appendChild(floatingActions);
+  }
 
   // Scroll to Top trigger
   const scrollTopBtn = document.getElementById('scroll-top');
@@ -270,7 +237,7 @@ function initFloatingActions() {
     } else {
       scrollTopBtn.style.display = 'none';
     }
-  });
+  }, { passive: true });
 
   scrollTopBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -281,31 +248,34 @@ function initFloatingActions() {
 function initChatConsultant() {
   const chatToggle = document.getElementById('chat-toggle');
 
-  const chatBox = document.createElement('div');
-  chatBox.className = 'chat-consultant-box';
-  chatBox.id = 'chat-consultant-box';
-  chatBox.innerHTML = `
-    <div class="chat-header">
-      <div class="chat-header-info">
-        <div class="chat-avatar"></div>
-        <div>
-          <span class="chat-header-title">Sasha</span>
-          <span class="chat-header-status">Sanique Beauty Advisor</span>
+  let chatBox = document.getElementById('chat-consultant-box');
+  if (!chatBox) {
+    chatBox = document.createElement('div');
+    chatBox.className = 'chat-consultant-box';
+    chatBox.id = 'chat-consultant-box';
+    chatBox.innerHTML = `
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar"></div>
+          <div>
+            <span class="chat-header-title">Sasha</span>
+            <span class="chat-header-status">Sanique Beauty Advisor</span>
+          </div>
+        </div>
+        <button class="chat-close" id="chat-close">&times;</button>
+      </div>
+      <div class="chat-body" id="chat-body">
+        <div class="chat-msg consultant">
+          Hello! I am Sasha, your personal Sanique Beauty Expert. Whether you need help finding your perfect foundation shade, choosing skincare serums, or creating a bridal routine, I am here for you!
         </div>
       </div>
-      <button class="chat-close" id="chat-close">&times;</button>
-    </div>
-    <div class="chat-body" id="chat-body">
-      <div class="chat-msg consultant">
-        Hello! I am Sasha, your personal Sanique Beauty Expert. Whether you need help finding your perfect foundation shade, choosing skincare serums, or creating a bridal routine, I am here for you!
+      <div class="chat-footer">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Ask Sasha anything...">
+        <button class="chat-send-btn" id="chat-send"><i class="fas fa-paper-plane"></i></button>
       </div>
-    </div>
-    <div class="chat-footer">
-      <input type="text" class="chat-input" id="chat-input" placeholder="Ask Sasha anything...">
-      <button class="chat-send-btn" id="chat-send"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  `;
-  document.body.appendChild(chatBox);
+    `;
+    document.body.appendChild(chatBox);
+  }
 
   if (chatToggle) {
     chatToggle.addEventListener('click', () => {
@@ -331,7 +301,6 @@ function initChatConsultant() {
       appendChatMessage(text, 'customer');
       chatInput.value = '';
 
-      // Set typing indicator
       setTimeout(() => {
         const response = generateExpertResponse(text);
         appendChatMessage(response, 'consultant');
@@ -384,21 +353,181 @@ function userLogout() {
   showToast("Logged out successfully", "success");
   setTimeout(() => window.location.href = '/index.html', 1000);
 }
-// =======================
-// Mobile Menu
-// =======================
 
-// ======================
-// Mobile Menu
-// ======================
+// ==========================================
+// LUXURY QUICK VIEW SYSTEM
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  initQuickViewModal();
+});
 
-const menuBtn = document.getElementById("mobile-menu-toggle");
-const navLinks = document.querySelector(".nav-links");
+function initQuickViewModal() {
+  const overlay = document.getElementById('quick-view-overlay');
+  const closeBtn = document.getElementById('quick-view-close');
 
-if (menuBtn && navLinks) {
-
-  menuBtn.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
-
+  if (closeBtn && overlay) {
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
+    });
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+      }
+    });
+  }
 }
+
+// Global Quick View Trigger
+async function openQuickView(productId) {
+  const overlay = document.getElementById('quick-view-overlay');
+  if (!overlay) return;
+
+  try {
+    // Show loading state
+    document.getElementById('qv-title').textContent = "Curating details...";
+    document.getElementById('qv-image').src = '/assets/images/products/default-product.jpg';
+    document.getElementById('qv-category').textContent = "";
+    document.getElementById('qv-rating').innerHTML = "";
+    document.getElementById('qv-price').innerHTML = "";
+    document.getElementById('qv-description').textContent = "";
+    document.getElementById('qv-shades').innerHTML = "";
+    document.getElementById('qv-actions').innerHTML = "";
+
+    overlay.classList.add('active');
+
+    // Fetch product details from endpoint
+    const response = await fetch(`/api/products/${productId}`);
+    if (!response.ok) throw new Error("Product fetch failed");
+    const product = await response.json();
+
+    // Populate elements
+    document.getElementById('qv-image').src = product.images?.[0] || '/assets/images/products/default-product.jpg';
+    document.getElementById('qv-image').alt = product.name;
+    document.getElementById('qv-category').textContent = product.category;
+    document.getElementById('qv-title').textContent = product.name;
+    document.getElementById('qv-description').textContent = product.description || "A luxury beauty formulation crafted with premium organic botanical ingredients and engineered for professional results.";
+
+    // Render ratings stars
+    const ratingVal = product.rating || 0;
+    const fullStars = Math.floor(ratingVal);
+    const halfStar = ratingVal % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+    let starsHtml = '';
+    for (let i = 0; i < fullStars; i++) starsHtml += '<i class="fas fa-star"></i>';
+    if (halfStar) starsHtml += '<i class="fas fa-star-half-alt"></i>';
+    for (let i = 0; i < emptyStars; i++) starsHtml += '<i class="far fa-star"></i>';
+    starsHtml += `<span style="color:var(--grey); margin-left: 8px;">(${product.reviewsCount || 0} reviews)</span>`;
+    document.getElementById('qv-rating').innerHTML = starsHtml;
+
+    // Render pricing details
+    const hasDiscount = product.discountPrice && product.discountPrice < product.price;
+    let priceHtml = '';
+    if (hasDiscount) {
+      priceHtml = `
+        <span class="price-actual">₹${product.discountPrice.toLocaleString('en-IN')}</span>
+        <span class="price-mrp" style="margin-left: 10px; text-decoration: line-through; color: var(--grey);">₹${product.price.toLocaleString('en-IN')}</span>
+      `;
+    } else {
+      priceHtml = `<span class="price-actual">₹${product.price.toLocaleString('en-IN')}</span>`;
+    }
+    document.getElementById('qv-price').innerHTML = priceHtml;
+
+    // Render shades bubble selector
+    let selectedShadeName = '';
+    if (product.shades && product.shades.length > 0) {
+      selectedShadeName = product.shades[0].name;
+      const shadesHtml = product.shades.map((shade, sIdx) => `
+        <span class="shade-bubble ${sIdx === 0 ? 'active' : ''}" 
+              style="background-color: ${shade.hex}; width:20px; height:20px; border-radius:50%; display:inline-block; border:1px solid rgba(0,0,0,0.15); cursor:pointer;" 
+              title="${shade.name}" 
+              onclick="selectQuickViewShade(this, '${shade.name.replace(/'/g, "\\'")}')">
+        </span>
+      `).join('');
+      
+      document.getElementById('qv-shades').innerHTML = `
+        <div style="font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; text-transform: uppercase; color: var(--charcoal);">Select Shade</div>
+        <div style="display:flex; gap:8px;">${shadesHtml}</div>
+        <div id="qv-selected-shade-label" style="font-size:0.75rem; color:var(--grey); margin-top:8px;">Shade: ${selectedShadeName}</div>
+      `;
+    }
+
+    // Add buttons
+    const cartPrice = product.discountPrice || product.price;
+    const isOutOfStock = product.stock === 0;
+    const firstImg = product.images?.[0] || '/assets/images/products/default-product.jpg';
+    
+    const cartBtnHtml = isOutOfStock ? 
+      `<button class="btn btn-add-cart" disabled style="background:#bdc3c7; cursor:not-allowed; flex: 1.5;">Out of Stock</button>` :
+      `<button class="btn btn-add-cart" style="flex: 1.5;" onclick="triggerQuickViewAddToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}')">Add to Cart</button>`;
+    
+    document.getElementById('qv-actions').innerHTML = `
+      ${cartBtnHtml}
+      <button class="btn btn-quick-view" style="flex: 1; border:1px solid rgba(28,28,28,0.2);" onclick="window.location.href='/product.html?id=${product._id}'">Details</button>
+    `;
+
+  } catch (error) {
+    console.error("Error loading quick view:", error);
+    document.getElementById('qv-title').textContent = "Failed to load product details.";
+  }
+}
+
+// Global functions for Quick View shade & cart handlers
+window.selectQuickViewShade = function(el, shadeName) {
+  const bubbles = el.parentNode.querySelectorAll('.shade-bubble');
+  bubbles.forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  
+  const label = document.getElementById('qv-selected-shade-label');
+  if (label) {
+    label.textContent = `Shade: ${shadeName}`;
+  }
+};
+
+window.triggerQuickViewAddToCart = function(id, name, price, img) {
+  let shadeName = '';
+  const activeBubble = document.querySelector('#qv-shades .shade-bubble.active');
+  if (activeBubble) {
+    shadeName = activeBubble.getAttribute('title') || '';
+  }
+  
+  if (typeof addToCart === 'function') {
+    addToCart(id, name, price, img, shadeName);
+    const overlay = document.getElementById('quick-view-overlay');
+    if (overlay) overlay.classList.remove('active');
+  }
+};
+
+// Page Transition Interceptor
+document.addEventListener('DOMContentLoaded', () => {
+  const transitionOverlay = document.createElement('div');
+  transitionOverlay.className = 'page-transition-overlay';
+  transitionOverlay.innerHTML = '<div class="luxury-spinner"></div>';
+  document.body.appendChild(transitionOverlay);
+
+  // Fade out overlay on load
+  setTimeout(() => {
+    transitionOverlay.classList.add('fade-out');
+    setTimeout(() => transitionOverlay.remove(), 500);
+  }, 100);
+
+  // Intercept links for exit animation
+  document.querySelectorAll('a').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:') || link.getAttribute('target') === '_blank') {
+      return;
+    }
+    if (href.startsWith('/') || href.includes(window.location.hostname)) {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const exitOverlay = document.createElement('div');
+        exitOverlay.className = 'page-transition-overlay exit-active';
+        exitOverlay.innerHTML = '<div class="luxury-spinner"></div>';
+        document.body.appendChild(exitOverlay);
+        
+        setTimeout(() => {
+          window.location.href = href;
+        }, 300);
+      });
+    }
+  });
+});

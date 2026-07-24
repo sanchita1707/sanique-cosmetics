@@ -83,7 +83,7 @@ function renderSkinTrackerJournal(tracker) {
 
   container.innerHTML = tracker.map(log => `
     <div class="tracker-journal-card">
-      <img src="${log.image}" alt="Skin progress scan">
+      <img src="${log.image}" alt="Skin progress scan" loading="lazy">
       <div class="tracker-journal-body">
         <span class="tracker-journal-date">${new Date(log.date).toLocaleDateString('en-IN')}</span>
         <div class="tracker-journal-condition">${log.skinCondition}</div>

@@ -1,0 +1,72 @@
+/* Design System Variables - Sanique Cosmetics */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Brand Luxury Colors */
+  --bg-primary: #FDF8F6;
+  --bg-secondary: #FFFFFF;
+  --white: #FFFFFF;
+  --rose-gold: #C46A84;
+  --gold: #D4AF37;
+  --charcoal: #1C1C1C;
+  --grey: #6B7280;
+  --border-color: #ECECEC;
+  
+  /* Semi-transparent variations for glowing highlights */
+  --rose-gold-glow: rgba(196, 106, 132, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.15);
+  --bg-glass: rgba(253, 248, 246, 0.85);
+  
+  /* Status Colors */
+  --success: #6E9B7B;
+  --warning: #E2BA96;
+  --error: #E05D5D;
+  --success-glow: rgba(110, 155, 123, 0.1);
+
+  /* Typography Scale */
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Poppins', sans-serif;
+  --font-btn: 'Montserrat', sans-serif;
+
+  /* Spacing Scale (no random margins) */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-xxl: 64px;
+  --space-giant: 96px;
+
+  /* Border Radii */
+  --radius-cards: 20px;
+  --radius-buttons: 30px;
+  --radius-inputs: 16px;
+  --radius-images: 24px;
+
+  /* Shadows - Soft Premium (no heavy dark shadows) */
+  --shadow-sm: 0 4px 12px rgba(196, 106, 132, 0.03);
+  --shadow-md: 0 10px 30px rgba(196, 106, 132, 0.05);
+  --shadow-lg: 0 20px 50px rgba(196, 106, 132, 0.08);
+  --shadow-glass: 0 8px 32px 0 rgba(196, 106, 132, 0.04);
+
+  /* Transitions */
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1C1C1C;
+  --white: #FFFFFF;
+  --charcoal: #F5F5F5;
+  --grey: #9CA3AF;
+  --border-color: #2C2C2C;
+  
+  --rose-gold-glow: rgba(196, 106, 132, 0.25);
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --bg-glass: rgba(18, 18, 18, 0.85);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.4);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}

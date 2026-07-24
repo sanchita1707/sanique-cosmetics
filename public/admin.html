@@ -6,64 +6,69 @@
   <meta name="description" content="Sanique Cosmetics Admin Portal. Monitor revenues, update catalog items, and process orders.">
   <title>Admin Dashboard | Sanique Cosmetics</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preload" href="/css/variables.css" as="style">
+  <link rel="preload" href="/css/style.css" as="style">
+  <link rel="preload" href="/css/navbar.css" as="style">
+  <link rel="preload" href="/css/buttons.css" as="style">
+  <link rel="preload" href="/css/responsive.css" as="style">
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/components.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to Content</a>
   <!-- Header -->
   <header>
-    <div class="navbar">
-      <a href="/index.html" class="brand-logo">Sanique<span>.</span></a>
-      <span style="font-family:var(--font-serif); font-size:1.1rem; color:var(--rose-gold); font-weight:bold; letter-spacing:1px;">ADMIN PORTAL</span>
+    <div class="navbar" style="backdrop-filter: blur(10px); background: rgba(253, 248, 246, 0.85); box-shadow: var(--shadow-sm);">
+      <a href="/index.html" class="brand-logo">Sanique</a>
+      <h1 style="font-family:var(--font-serif); font-size:1.1rem; color:var(--rose-gold); font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin:0; display:inline;">Admin Portal</h1>
       <div class="nav-icons">
-        <button class="nav-btn" onclick="userLogout()" title="Logout" style="font-size:1.1rem; background:none; border:none; color:var(--text-primary); cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <button class="btn btn-luxury" onclick="userLogout()" style="padding: 8px 16px; font-size:0.75rem;"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </div>
     </div>
   </header>
 
-  <main style="max-width:1300px; margin:100px auto 0; padding:40px 5%;">
+  <main id="main-content" tabindex="-1" style="max-width:1300px; margin:110px auto 0; padding:40px 5%;">
     
     <!-- Tab navigation -->
     <section style="margin-bottom:35px;">
       <div style="border-bottom:1px solid var(--border-color); display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="admin-tab-btn active" data-target="admin-dashboard-tab">Dashboard</button>
-        <button class="admin-tab-btn" data-target="admin-products-tab">Products</button>
-        <button class="admin-tab-btn" data-target="admin-orders-tab">Orders</button>
-        <button class="admin-tab-btn" data-target="admin-payments-tab">Payments</button>
-        <button class="admin-tab-btn" data-target="admin-customers-tab">Customers</button>
+        <button class="admin-tab-btn active" data-target="admin-dashboard-tab" style="padding: 10px 20px; font-family: var(--font-serif); background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; border-bottom: 2px solid var(--rose-gold); transition: var(--transition);">Dashboard</button>
+        <button class="admin-tab-btn" data-target="admin-products-tab" style="padding: 10px 20px; font-family: var(--font-serif); background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 500; border-bottom: 2px solid transparent; color: var(--grey); transition: var(--transition);">Products</button>
+        <button class="admin-tab-btn" data-target="admin-orders-tab" style="padding: 10px 20px; font-family: var(--font-serif); background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 500; border-bottom: 2px solid transparent; color: var(--grey); transition: var(--transition);">Orders</button>
+        <button class="admin-tab-btn" data-target="admin-payments-tab" style="padding: 10px 20px; font-family: var(--font-serif); background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 500; border-bottom: 2px solid transparent; color: var(--grey); transition: var(--transition);">Payments</button>
+        <button class="admin-tab-btn" data-target="admin-customers-tab" style="padding: 10px 20px; font-family: var(--font-serif); background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 500; border-bottom: 2px solid transparent; color: var(--grey); transition: var(--transition);">Customers</button>
       </div>
     </section>
 
     <!-- Tab content 1: Dashboard Analytics -->
     <section id="admin-dashboard-tab" class="admin-tab-content">
       <!-- Metrics Boxes -->
-      <div class="admin-metrics-grid">
-        <div class="admin-metric-card">
-          <div class="admin-metric-num" id="metric-total-sales">₹0</div>
-          <div class="admin-metric-label">Total Revenue</div>
+      <div class="admin-metrics-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom:30px;">
+        <div class="admin-metric-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:24px; box-shadow:var(--shadow-sm);">
+          <div class="admin-metric-num" id="metric-total-sales" style="font-size:1.8rem; font-family:var(--font-sans); font-weight:700; color:var(--rose-gold);">₹0</div>
+          <div class="admin-metric-label" style="font-size:0.75rem; text-transform:uppercase; color:var(--grey); margin-top:5px; font-family:var(--font-sans);">Total Revenue</div>
         </div>
-        <div class="admin-metric-card">
-          <div class="admin-metric-num" id="metric-total-orders">0</div>
-          <div class="admin-metric-label">Orders Handled</div>
+        <div class="admin-metric-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:24px; box-shadow:var(--shadow-sm);">
+          <div class="admin-metric-num" id="metric-total-orders" style="font-size:1.8rem; font-family:var(--font-sans); font-weight:700; color:var(--rose-gold);">0</div>
+          <div class="admin-metric-label" style="font-size:0.75rem; text-transform:uppercase; color:var(--grey); margin-top:5px; font-family:var(--font-sans);">Orders Handled</div>
         </div>
-        <div class="admin-metric-card">
-          <div class="admin-metric-num" id="metric-total-products">0</div>
-          <div class="admin-metric-label">Catalog Products</div>
+        <div class="admin-metric-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:24px; box-shadow:var(--shadow-sm);">
+          <div class="admin-metric-num" id="metric-total-products" style="font-size:1.8rem; font-family:var(--font-sans); font-weight:700; color:var(--rose-gold);">0</div>
+          <div class="admin-metric-label" style="font-size:0.75rem; text-transform:uppercase; color:var(--grey); margin-top:5px; font-family:var(--font-sans);">Catalog Products</div>
         </div>
-        <div class="admin-metric-card">
-          <div class="admin-metric-num" id="metric-total-customers">0</div>
-          <div class="admin-metric-label">Total Customers</div>
+        <div class="admin-metric-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:24px; box-shadow:var(--shadow-sm);">
+          <div class="admin-metric-num" id="metric-total-customers" style="font-size:1.8rem; font-family:var(--font-sans); font-weight:700; color:var(--rose-gold);">0</div>
+          <div class="admin-metric-label" style="font-size:0.75rem; text-transform:uppercase; color:var(--grey); margin-top:5px; font-family:var(--font-sans);">Total Customers</div>
         </div>
       </div>
 
       <!-- Visual Charts -->
-      <div class="charts-grid">
-        <div class="chart-card">
-          <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--rose-gold);">Sales Performance (Timeline)</h3>
+      <div class="charts-grid" style="display:grid; grid-template-columns:1.5fr 1fr; gap:30px;">
+        <div class="chart-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:30px;">
+          <h3 style="font-family:var(--font-serif); margin-bottom:20px; font-weight:600; color:var(--charcoal); font-size:1.25rem;">Sales Performance (Timeline)</h3>
           <canvas id="chart-revenue" style="width:100%; height:220px;"></canvas>
         </div>
-        <div class="chart-card" style="display:flex; flex-direction:column; align-items:center;">
-          <h3 style="font-family:var(--font-serif); margin-bottom:15px; color:var(--gold); width:100%;">Category Sales Split</h3>
+        <div class="chart-card" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-cards); padding:30px; display:flex; flex-direction:column; align-items:center;">
+          <h3 style="font-family:var(--font-serif); margin-bottom:20px; font-weight:600; color:var(--charcoal); font-size:1.25rem; width:100%;">Category Sales Split</h3>
           <canvas id="chart-category" style="width:180px; height:180px;"></canvas>
         </div>
       </div>
@@ -71,20 +76,20 @@
 
     <!-- Tab content 2: Products CRUD -->
     <section id="admin-products-tab" class="admin-tab-content" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
-        <h2 style="font-family:var(--font-serif); font-size:1.5rem;">Product Catalog CRUD</h2>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+        <h2 style="font-family:var(--font-serif); font-size:1.6rem; font-weight:600;">Product Catalog CRUD</h2>
         <button class="btn btn-luxury" onclick="openProductEditModal()"><i class="fas fa-plus"></i> Add New Product</button>
       </div>
-      <div class="admin-table-container">
-        <table class="admin-table">
+      <div class="admin-table-container" style="background: var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; overflow-x:auto;">
+        <table class="admin-table" style="width:100%; border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>Product Details</th>
-              <th>MRP Price</th>
-              <th>Discount Price</th>
-              <th>Inventory</th>
-              <th>Rating</th>
-              <th>Actions</th>
+            <tr style="border-bottom:2px solid var(--border-color); text-align:left; color:var(--grey); font-size:0.75rem; text-transform:uppercase;">
+              <th style="padding:16px;">Product Details</th>
+              <th style="padding:16px;">MRP Price</th>
+              <th style="padding:16px;">Discount Price</th>
+              <th style="padding:16px;">Inventory</th>
+              <th style="padding:16px;">Rating</th>
+              <th style="padding:16px;">Actions</th>
             </tr>
           </thead>
           <tbody id="admin-products-tbody"></tbody>
@@ -94,17 +99,17 @@
 
     <!-- Tab content 3: Orders Status Control -->
     <section id="admin-orders-tab" class="admin-tab-content" style="display:none;">
-      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Order Delivery Status Control</h2>
-      <div class="admin-table-container">
-        <table class="admin-table">
+      <h2 style="font-family:var(--font-serif); font-size:1.6rem; margin-bottom:24px; font-weight:600;">Order Delivery Status Control</h2>
+      <div class="admin-table-container" style="background: var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; overflow-x:auto;">
+        <table class="admin-table" style="width:100%; border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>Order ID / Tracking ID</th>
-              <th>Recipient</th>
-              <th>Final Bill</th>
-              <th>Payment Status</th>
-              <th>Order Progress</th>
-              <th>Invoice</th>
+            <tr style="border-bottom:2px solid var(--border-color); text-align:left; color:var(--grey); font-size:0.75rem; text-transform:uppercase;">
+              <th style="padding:16px;">Order ID / Tracking ID</th>
+              <th style="padding:16px;">Recipient</th>
+              <th style="padding:16px;">Final Bill</th>
+              <th style="padding:16px;">Payment Status</th>
+              <th style="padding:16px;">Order Progress</th>
+              <th style="padding:16px;">Invoice</th>
             </tr>
           </thead>
           <tbody id="admin-orders-tbody"></tbody>
@@ -114,17 +119,17 @@
 
     <!-- Tab content 4: Payments Logs -->
     <section id="admin-payments-tab" class="admin-tab-content" style="display:none;">
-      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Transaction Payment Logs</h2>
-      <div class="admin-table-container">
-        <table class="admin-table">
+      <h2 style="font-family:var(--font-serif); font-size:1.6rem; margin-bottom:24px; font-weight:600;">Transaction Payment Logs</h2>
+      <div class="admin-table-container" style="background: var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; overflow-x:auto;">
+        <table class="admin-table" style="width:100%; border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>Payment Transaction ID</th>
-              <th>Order ID</th>
-              <th>Amount Paid</th>
-              <th>Method</th>
-              <th>Status</th>
-              <th>Logged Date</th>
+            <tr style="border-bottom:2px solid var(--border-color); text-align:left; color:var(--grey); font-size:0.75rem; text-transform:uppercase;">
+              <th style="padding:16px;">Payment Transaction ID</th>
+              <th style="padding:16px;">Order ID</th>
+              <th style="padding:16px;">Amount Paid</th>
+              <th style="padding:16px;">Method</th>
+              <th style="padding:16px;">Status</th>
+              <th style="padding:16px;">Logged Date</th>
             </tr>
           </thead>
           <tbody id="admin-payments-tbody"></tbody>
@@ -134,17 +139,17 @@
 
     <!-- Tab content 5: Customers -->
     <section id="admin-customers-tab" class="admin-tab-content" style="display:none;">
-      <h2 style="font-family:var(--font-serif); font-size:1.5rem; margin-bottom:20px;">Registered Loyalty Customers</h2>
-      <div class="admin-table-container">
-        <table class="admin-table">
+      <h2 style="font-family:var(--font-serif); font-size:1.6rem; margin-bottom:24px; font-weight:600;">Registered Loyalty Customers</h2>
+      <div class="admin-table-container" style="background: var(--bg-secondary); border:1px solid var(--border-color); border-radius:12px; overflow-x:auto;">
+        <table class="admin-table" style="width:100%; border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>Customer Name</th>
-              <th>Email</th>
-              <th>Mobile</th>
-              <th>Loyalty points</th>
-              <th>VIP Tier</th>
-              <th>Default Address</th>
+            <tr style="border-bottom:2px solid var(--border-color); text-align:left; color:var(--grey); font-size:0.75rem; text-transform:uppercase;">
+              <th style="padding:16px;">Customer Name</th>
+              <th style="padding:16px;">Email</th>
+              <th style="padding:16px;">Mobile</th>
+              <th style="padding:16px;">Loyalty points</th>
+              <th style="padding:16px;">VIP Tier</th>
+              <th style="padding:16px;">Default Address</th>
             </tr>
           </thead>
           <tbody id="admin-customers-tbody"></tbody>
@@ -154,11 +159,32 @@
 
   </main>
 
-  <footer>
-    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved.</div>
+  <!-- Footer -->
+  <footer style="margin-top: 80px;">
+    <div class="footer-bottom">&copy; 2026 Sanique Cosmetics Private Limited. All Rights Reserved. Formulation crafted in Milan.</div>
   </footer>
 
-  <script src="/js/main.js"></script>
-  <script src="/js/admin.js"></script>
+  <script src="/js/main.js" defer></script>
+  <script src="/js/admin.js" defer></script>
+  <script>
+    // Simple tab switching logic helper
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.borderBottom = '2px solid transparent';
+          b.style.color = 'var(--grey)';
+        });
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.style.display = 'none');
+        
+        btn.classList.add('active');
+        btn.style.borderBottom = '2px solid var(--rose-gold)';
+        btn.style.color = 'var(--charcoal)';
+        const target = btn.getAttribute('data-target');
+        const targetEl = document.getElementById(target);
+        if (targetEl) targetEl.style.display = 'block';
+      });
+    });
+  </script>
 </body>
 </html>
