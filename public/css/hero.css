@@ -229,3 +229,316 @@
   0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
   100% { transform: scale(1.1) translate(5px, -5px); opacity: 1; }
 }
+
+/* ==========================================================================
+   Luxury Cosmetic 3D CSS Mockups
+   ========================================================================== */
+
+.floating-mockup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: luxuryFloat 6s infinite ease-in-out;
+  transform-style: preserve-3d;
+  z-index: 5;
+}
+
+.luxury-glow-backdrop {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, var(--blush-glow) 0%, rgba(250, 247, 245, 0) 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: -1;
+  animation: glowPulse 5s infinite ease-in-out alternate;
+  pointer-events: none;
+}
+
+/* Glass Reflective Sheen Effect */
+.glossy-sheen {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 48%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0.2) 52%, transparent 60%);
+  background-size: 300% 100%;
+  background-position: 150% 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  animation: sheenMove 6s infinite linear;
+}
+
+@keyframes sheenMove {
+  0% { background-position: 150% 0; }
+  100% { background-position: -50% 0; }
+}
+
+@keyframes luxuryFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(1.5deg); }
+}
+
+@keyframes glowPulse {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  100% { transform: scale(1.08); opacity: 1.0; }
+}
+
+/* Lipstick Mockup */
+.lipstick-mockup {
+  position: relative;
+  width: 100px;
+  height: 250px;
+  transform-style: preserve-3d;
+  margin-right: 20px;
+}
+
+.lipstick-base {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  width: 80px;
+  height: 120px;
+  background: linear-gradient(90deg, #121212 0%, #3a3a3a 30%, #121212 70%, #050505 100%);
+  border-radius: 6px;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.15), 0 12px 30px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #1f1f1f;
+}
+
+.lipstick-base::after {
+  content: 'SANIQUE';
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  transform: rotate(-90deg);
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.lipstick-ring {
+  position: absolute;
+  bottom: 120px;
+  left: 18px;
+  width: 64px;
+  height: 12px;
+  background: linear-gradient(90deg, #b89752 0%, #f3e5ab 30%, #b89752 70%, #8c6e30 100%);
+  border-radius: 1px;
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.3);
+  z-index: 3;
+}
+
+.lipstick-inner {
+  position: absolute;
+  bottom: 132px;
+  left: 22px;
+  width: 56px;
+  height: 50px;
+  background: linear-gradient(90deg, #b89752 0%, #f3e5ab 30%, #b89752 70%, #8c6e30 100%);
+  z-index: 1;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+}
+
+.lipstick-bullet {
+  position: absolute;
+  bottom: 182px;
+  left: 22px;
+  width: 56px;
+  height: 70px;
+  background: linear-gradient(90deg, #8a0f1b 0%, #d62828 35%, #8a0f1b 75%, #54060e 100%);
+  border-radius: 20px 20px 0 0;
+  clip-path: polygon(0% 100%, 100% 100%, 100% 30%, 0% 0%);
+  z-index: 2;
+  box-shadow: inset -3px 3px 10px rgba(255,255,255,0.2), inset 3px -3px 10px rgba(0,0,0,0.4);
+}
+
+.lipstick-cap-mockup {
+  position: absolute;
+  top: 50px;
+  right: -30px;
+  width: 80px;
+  height: 130px;
+  background: linear-gradient(90deg, #121212 0%, #3a3a3a 30%, #121212 70%, #050505 100%);
+  border-radius: 6px;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.15), 0 15px 35px rgba(0,0,0,0.3);
+  transform: rotate(22deg) translateZ(10px);
+  border: 1px solid #1f1f1f;
+}
+
+.lipstick-cap-mockup::before {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #b89752, #f3e5ab, #b89752);
+}
+
+
+/* Foundation Mockup */
+.foundation-mockup {
+  position: relative;
+  width: 110px;
+  height: 240px;
+}
+
+.foundation-bottle {
+  position: absolute;
+  bottom: 0;
+  width: 96px;
+  height: 155px;
+  background: linear-gradient(90deg, rgba(234, 210, 194, 0.92) 0%, rgba(255, 237, 224, 0.96) 30%, rgba(234, 210, 194, 0.92) 70%, rgba(185, 147, 121, 0.92) 100%);
+  border-radius: 12px 12px 18px 18px;
+  box-shadow: inset 0 0 15px rgba(255,255,255,0.65), inset -3px -3px 10px rgba(0,0,0,0.05), 0 12px 28px rgba(217, 138, 154, 0.12);
+  border: 1px solid rgba(255,255,255,0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.foundation-bottle::before {
+  content: 'SANIQUE\nGLOW FLUID';
+  white-space: pre-wrap;
+  text-align: center;
+  color: var(--charcoal);
+  font-family: var(--font-serif);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  line-height: 1.5;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.foundation-pump {
+  position: absolute;
+  bottom: 155px;
+  left: 26px;
+  width: 44px;
+  height: 22px;
+  background: linear-gradient(90deg, #b89752 0%, #f3e5ab 30%, #b89752 70%, #8c6e30 100%);
+  border-radius: 3px 3px 0 0;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.3);
+}
+
+.foundation-nozzle {
+  position: absolute;
+  bottom: 168px;
+  left: 21px;
+  width: 14px;
+  height: 8px;
+  background: linear-gradient(90deg, #b89752, #8c6e30);
+  border-radius: 2px;
+}
+
+.foundation-cap {
+  position: absolute;
+  bottom: 177px;
+  left: 15px;
+  width: 66px;
+  height: 60px;
+  background: linear-gradient(90deg, #121212 0%, #3a3a3a 30%, #121212 70%, #050505 100%);
+  border-radius: 6px 6px 3px 3px;
+  box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 8px 16px rgba(0,0,0,0.15);
+  border: 1px solid #1f1f1f;
+}
+
+
+/* Serum Mockup */
+.serum-mockup {
+  position: relative;
+  width: 100px;
+  height: 240px;
+}
+
+.serum-bottle {
+  position: absolute;
+  bottom: 0;
+  width: 86px;
+  height: 140px;
+  background: linear-gradient(90deg, rgba(115, 198, 182, 0.72) 0%, rgba(162, 232, 221, 0.82) 30%, rgba(115, 198, 182, 0.72) 70%, rgba(17, 122, 101, 0.72) 100%);
+  border-radius: 18px;
+  box-shadow: inset 0 0 12px rgba(255,255,255,0.7), inset -3px -3px 8px rgba(0,0,0,0.05), 0 12px 28px rgba(17, 122, 101, 0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.serum-bottle::before {
+  content: 'SANIQUE\nBOTANICALS';
+  white-space: pre-wrap;
+  text-align: center;
+  color: var(--charcoal);
+  font-family: var(--font-serif);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.serum-pipette {
+  position: absolute;
+  bottom: 18px;
+  left: 39px;
+  width: 8px;
+  height: 115px;
+  background: rgba(255,255,255,0.45);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.65);
+  box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
+  z-index: -1;
+}
+
+.serum-collar {
+  position: absolute;
+  bottom: 140px;
+  left: 20px;
+  width: 46px;
+  height: 26px;
+  background: linear-gradient(90deg, #b89752 0%, #f3e5ab 30%, #b89752 70%, #8c6e30 100%);
+  border-radius: 3px 3px 1px 1px;
+  box-shadow: inset 0 0 4px rgba(255,255,255,0.3);
+  z-index: 2;
+}
+
+.serum-bulb {
+  position: absolute;
+  bottom: 166px;
+  left: 24px;
+  width: 38px;
+  height: 40px;
+  background: linear-gradient(90deg, #f5f5f5 0%, #ffffff 40%, #e0e0e0 70%, #cccccc 100%);
+  border-radius: 14px 14px 3px 3px;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+  z-index: 1;
+}
+
+
+/* Media Queries for Hero Scalings */
+@media (max-width: 1024px) {
+  .floating-mockup-wrapper {
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-mockup-wrapper {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-mockup-wrapper {
+    transform: scale(0.55);
+  }
+  .hero-image-render {
+    height: 300px;
+  }
+}
+

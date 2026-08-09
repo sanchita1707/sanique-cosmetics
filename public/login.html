@@ -249,6 +249,14 @@
       }
     }
 
+    // Check URL parameters to show register form if requested
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('register') === 'true') {
+        toggleAuthForm(true);
+      }
+    });
+
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
@@ -265,6 +273,7 @@
         if (res.status === 200) {
           localStorage.setItem('sanique_token', data.token);
           localStorage.setItem('sanique_isAdmin', data.isAdmin);
+          localStorage.setItem('sanique_user_name', data.name);
           localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
           
           showToast("Welcome back to Sanique!", "success");
@@ -300,6 +309,7 @@
         if (res.status === 201) {
           localStorage.setItem('sanique_token', data.token);
           localStorage.setItem('sanique_isAdmin', data.isAdmin);
+          localStorage.setItem('sanique_user_name', data.name);
           
           showToast("Welcome! Earned 100 loyalty registration points.", "success");
           setTimeout(() => {

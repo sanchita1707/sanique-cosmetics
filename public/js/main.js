@@ -4,7 +4,7 @@
 let cart = JSON.parse(localStorage.getItem('sanique_cart')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  initUserAccountButton();
+  updateNavbarUserState();
   initFloatingActions();
   initTheme();
   initCartDrawer();
@@ -39,20 +39,242 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
-// User button click route checker
-function initUserAccountButton() {
+// User Profile and Account Management
+function updateNavbarUserState() {
   const token = localStorage.getItem('sanique_token');
   const userBtn = document.getElementById('user-btn');
-  if (userBtn) {
-    userBtn.addEventListener('click', (e) => {
+  if (!userBtn) return;
+
+  let dropdown = document.getElementById('user-dropdown');
+  let wrapper = userBtn.closest('.user-menu-wrapper');
+
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'user-menu-wrapper';
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    userBtn.parentNode.insertBefore(wrapper, userBtn);
+    wrapper.appendChild(userBtn);
+  }
+
+  if (!dropdown) {
+    dropdown = document.createElement('div');
+    dropdown.className = 'user-dropdown';
+    dropdown.id = 'user-dropdown';
+    wrapper.appendChild(dropdown);
+  }
+
+  // Clone button to clear old event listeners safely
+  const newUserBtn = userBtn.cloneNode(true);
+  userBtn.replaceWith(newUserBtn);
+
+  if (token) {
+    // User is logged in
+    newUserBtn.innerHTML = '<i class="fas fa-user-check" style="color: var(--rose-gold);"></i>';
+    newUserBtn.title = "Manage Account";
+
+    const userName = localStorage.getItem('sanique_user_name') || 'Member';
+    const isAdmin = localStorage.getItem('sanique_isAdmin') === 'true';
+    const accountUrl = isAdmin ? '/admin.html' : '/dashboard.html';
+
+    dropdown.innerHTML = `
+      <div class="user-dropdown-header">Hi, ${userName}</div>
+      <a href="${accountUrl}" class="user-dropdown-item"><i class="fas fa-user-circle"></i> My Account</a>
+      <a href="/dashboard.html#order-history-list" class="user-dropdown-item"><i class="fas fa-box"></i> My Orders</a>
+      <div class="user-dropdown-item" id="dropdown-logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    `;
+
+    // Toggle dropdown
+    newUserBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      if (token) {
-        const isAdmin = localStorage.getItem('sanique_isAdmin') === 'true';
-        window.location.href = isAdmin ? '/admin.html' : '/dashboard.html';
-      } else {
-        window.location.href = '/login.html';
-      }
+      e.stopPropagation();
+      dropdown.classList.toggle('active');
     });
+
+    // Logout
+    const logoutBtn = dropdown.querySelector('#dropdown-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        localStorage.removeItem('sanique_token');
+        localStorage.removeItem('sanique_isAdmin');
+        localStorage.removeItem('sanique_user_name');
+        localStorage.removeItem('sanique_wishlist');
+
+        showToast("Logged out successfully", "success");
+        dropdown.classList.remove('active');
+        updateNavbarUserState();
+
+        // Redirect if on auth-protected page
+        const path = window.location.pathname;
+        if (path === '/dashboard.html' || path === '/admin.html' || path === '/wishlist.html' || path === '/checkout.html') {
+          setTimeout(() => window.location.href = '/index.html', 1000);
+        }
+      });
+    }
+
+    // Close dropdown click outside
+    if (!window.hasUserDropdownGlobalListener) {
+      document.addEventListener('click', (e) => {
+        const wrapper = document.querySelector('.user-menu-wrapper');
+        const dropdown = document.getElementById('user-dropdown');
+        if (dropdown && wrapper && !wrapper.contains(e.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+      window.hasUserDropdownGlobalListener = true;
+    }
+
+  } else {
+    // User is logged out
+    newUserBtn.innerHTML = '<i class="fas fa-user"></i>';
+    newUserBtn.title = "Account";
+    dropdown.innerHTML = '';
+    dropdown.classList.remove('active');
+
+    // Open modal
+    newUserBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLoginModal();
+    });
+  }
+}
+
+// Open Login Modal
+function openLoginModal() {
+  let modal = document.getElementById('luxury-login-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'luxury-modal-overlay';
+    modal.id = 'luxury-login-modal';
+    modal.innerHTML = `
+      <div class="luxury-modal-container">
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+        <div class="luxury-modal-content">
+          <h2 class="modal-title">Welcome to SANIQUE</h2>
+          <p class="modal-subtitle">Sign in to access your customized beauty suite.</p>
+          
+          <div id="modal-error-msg" class="form-error-msg" style="display:none; text-align:center; margin-bottom:15px; background:rgba(224,93,93,0.1); padding:10px; border-radius:8px;"></div>
+          
+          <form id="modal-login-form">
+            <div class="form-group">
+              <input type="email" id="modal-login-email" placeholder="Email Address" required autocomplete="email">
+            </div>
+            <div class="form-group password-group" style="position:relative;">
+              <input type="password" id="modal-login-password" placeholder="Password" required autocomplete="current-password">
+              <button type="button" class="password-toggle-btn" id="modal-password-toggle" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--grey); cursor:pointer; font-size:1rem; padding: 5px; display: flex; align-items: center; justify-content: center;">
+                <i class="far fa-eye"></i>
+              </button>
+            </div>
+            <div class="forgot-pwd-container" style="text-align:right; margin-bottom:15px;">
+              <a href="#" class="forgot-link" id="modal-forgot-link" style="font-size:0.75rem; color:var(--grey); text-decoration:none; font-family:var(--font-sans); transition: var(--transition);">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-luxury submit-btn" id="modal-login-submit" style="width:100%; justify-content:center; gap:8px;">
+              <span class="btn-text">Sign In</span>
+              <span class="btn-loader" style="display:none;"><i class="fas fa-spinner fa-spin"></i></span>
+            </button>
+          </form>
+          
+          <div class="modal-footer" style="text-align:center; margin-top:20px; font-size:0.85rem; color:var(--grey); font-family:var(--font-sans);">
+            <p>New to Sanique? <a href="/login.html?register=true" id="modal-register-link" style="color:var(--rose-gold); font-weight:600; text-decoration:none; transition: var(--transition);">Create Account</a></p>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Event listeners
+    const closeBtn = modal.querySelector('#modal-close-btn');
+    closeBtn.addEventListener('click', closeLoginModal);
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeLoginModal();
+    });
+
+    const toggleBtn = modal.querySelector('#modal-password-toggle');
+    const pwdInput = modal.querySelector('#modal-login-password');
+    toggleBtn.addEventListener('click', () => {
+      const isPwd = pwdInput.type === 'password';
+      pwdInput.type = isPwd ? 'text' : 'password';
+      toggleBtn.innerHTML = isPwd ? '<i class="far fa-eye-slash"></i>' : '<i class="far fa-eye"></i>';
+    });
+
+    const forgotLink = modal.querySelector('#modal-forgot-link');
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast("Password recovery link has been sent to your registered email.", "success");
+    });
+
+    const loginForm = modal.querySelector('#modal-login-form');
+    loginForm.addEventListener('submit', handleModalLoginSubmit);
+  }
+
+  const errorMsg = modal.querySelector('#modal-error-msg');
+  errorMsg.style.display = 'none';
+  modal.querySelector('#modal-login-email').value = '';
+  modal.querySelector('#modal-login-password').value = '';
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// Close Login Modal
+function closeLoginModal() {
+  const modal = document.getElementById('luxury-login-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+}
+
+// Handle Modal Submit
+async function handleModalLoginSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const email = form.querySelector('#modal-login-email').value;
+  const password = form.querySelector('#modal-login-password').value;
+  
+  const submitBtn = form.querySelector('#modal-login-submit');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoader = submitBtn.querySelector('.btn-loader');
+  const errorMsg = document.getElementById('modal-error-msg');
+
+  btnText.style.display = 'none';
+  btnLoader.style.display = 'inline-block';
+  submitBtn.disabled = true;
+  errorMsg.style.display = 'none';
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (res.status === 200) {
+      localStorage.setItem('sanique_token', data.token);
+      localStorage.setItem('sanique_isAdmin', data.isAdmin);
+      localStorage.setItem('sanique_user_name', data.name);
+      localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
+      
+      showToast("Welcome back to Sanique!", "success");
+      closeLoginModal();
+      updateNavbarUserState();
+    } else {
+      errorMsg.textContent = data.message || "Invalid credentials";
+      errorMsg.style.display = 'block';
+    }
+  } catch (err) {
+    console.error("Modal login error:", err);
+    errorMsg.textContent = "Server connection lost. Try again.";
+    errorMsg.style.display = 'block';
+  } finally {
+    btnText.style.display = 'inline-block';
+    btnLoader.style.display = 'none';
+    submitBtn.disabled = false;
   }
 }
 

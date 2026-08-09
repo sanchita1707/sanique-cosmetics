@@ -648,3 +648,180 @@ header.scrolled .header-top {
 [data-theme="dark"] .menu-toggle span {
   background-color: var(--white);
 }
+
+/* ==========================================================================
+   Luxury Login Modal & User Account Dropdown
+   ========================================================================== */
+
+/* 1. Account Dropdown Panel */
+.user-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 15px;
+  width: 210px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 1001;
+  animation: dropdownFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.user-dropdown.active {
+  display: flex;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-dropdown-header {
+  padding: 12px 20px 8px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--rose-gold);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.user-dropdown-item {
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  color: var(--charcoal);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.user-dropdown-item:hover {
+  background: var(--blush-glow);
+  color: var(--rose-gold);
+}
+
+.user-dropdown-item i {
+  color: var(--rose-gold);
+  width: 16px;
+  font-size: 0.95rem;
+}
+
+/* 2. Login Modal Overlay */
+.luxury-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(23, 23, 23, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.luxury-modal-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-cards);
+  width: 90%;
+  max-width: 440px;
+  padding: 40px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-modal-overlay.active .luxury-modal-container {
+  transform: translateY(0);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--grey);
+  cursor: pointer;
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.modal-close-btn:hover {
+  color: var(--rose-gold);
+  transform: scale(1.1);
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  color: var(--charcoal);
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--grey);
+  text-align: center;
+  margin-bottom: 24px;
+  font-family: var(--font-sans);
+}
+
+.forgot-link:hover {
+  color: var(--rose-gold) !important;
+  text-decoration: underline !important;
+}
+
+.btn-loader {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Dark mode dropdown overrides */
+[data-theme="dark"] .user-dropdown {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .user-dropdown-item {
+  color: var(--white);
+}
+
+[data-theme="dark"] .user-dropdown-item:hover {
+  background: rgba(217, 138, 154, 0.15);
+}
+
