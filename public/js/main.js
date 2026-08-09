@@ -1,5 +1,18 @@
 // Sanique Cosmetics Global Script
 
+// Global API URL resolver for local development and production
+window.getApiUrl = function(path) {
+  if (window.location.protocol === 'file:') {
+    return `http://localhost:5000${path}`;
+  }
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    if (window.location.port !== '5000') {
+      return `http://localhost:5000${path}`;
+    }
+  }
+  return path;
+};
+
 // Shopping Cart State
 let cart = JSON.parse(localStorage.getItem('sanique_cart')) || [];
 
@@ -248,23 +261,10 @@ async function handleModalLoginSubmit(e) {
   submitBtn.disabled = true;
   errorMsg.style.display = 'none';
 
-  // Dynamic API URL helper for local development (supports Live Server or filesystem)
-  const getApiUrl = (path) => {
-    if (window.location.protocol === 'file:') {
-      return `http://localhost:5000${path}`;
-    }
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      if (window.location.port !== '5000') {
-        return `http://localhost:5000${path}`;
-      }
-    }
-    return path;
-  };
-
   try {
     console.log("LOGIN REQUEST SENT");
     console.log("LOGIN API REQUEST STARTED");
-    const res = await fetch(getApiUrl('/api/auth/login'), {
+    const res = await fetch(window.getApiUrl('/api/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

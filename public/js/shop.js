@@ -1,7 +1,13 @@
 // Sanique Cosmetics Shop Catalog Script
 
 let allProducts = [];
-let comparedProducts = JSON.parse(localStorage.getItem('sanique_compare')) || [];
+let comparedProducts = [];
+try {
+  comparedProducts = JSON.parse(localStorage.getItem('sanique_compare')) || [];
+  if (!Array.isArray(comparedProducts)) comparedProducts = [];
+} catch (e) {
+  comparedProducts = [];
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   initShopFilters();
@@ -30,13 +36,16 @@ async function fetchProducts() {
     const categorySelect = document.getElementById('filter-category');
     if (categorySelect && category) categorySelect.value = category;
 
-    const res = await fetch('/api/products');
+    const res = await fetch(window.getApiUrl('/api/products'));
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     allProducts = await res.json();
 
     applyFilters();
   } catch (error) {
     console.error("Error loading products:", error);
-    productContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--error);">Failed to load products. Please check server connection.</p>';
+    productContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--error); font-weight: 500;">Unable to load products. Please try again.</p>';
   }
 }
 
@@ -184,6 +193,9 @@ function renderProducts(products) {
 
   if (window.initLuxuryRevealAnimations) {
     window.initLuxuryRevealAnimations();
+  } else {
+    // Fallback: If animations.js is not loaded, reveal cards immediately
+    container.querySelectorAll('.fade-up').forEach(el => el.classList.add('reveal'));
   }
 }
 
@@ -205,8 +217,12 @@ function triggerAddToCart(id, name, price, img, shade) {
 }
 
 function isProductInWishlist(id) {
-  const wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
-  return wish.includes(id);
+  try {
+    const wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
+    return Array.isArray(wish) && wish.includes(id);
+  } catch (e) {
+    return false;
+  }
 }
 
 async function toggleWishlistItem(id, button) {
@@ -218,7 +234,7 @@ async function toggleWishlistItem(id, button) {
   }
 
   try {
-    const res = await fetch('/api/auth/wishlist', {
+    const res = await fetch(window.getApiUrl('/api/auth/wishlist'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -228,7 +244,13 @@ async function toggleWishlistItem(id, button) {
     });
     const data = await res.json();
 
-    let wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
+    let wish = [];
+    try {
+      wish = JSON.parse(localStorage.getItem('sanique_wishlist')) || [];
+      if (!Array.isArray(wish)) wish = [];
+    } catch (e) {
+      wish = [];
+    }
     const index = wish.indexOf(id);
     if (index > -1) {
       wish.splice(index, 1);
