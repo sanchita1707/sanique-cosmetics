@@ -40,6 +40,21 @@
   </script>
 </head>
 <body>
+  <!-- Page Preloader -->
+  <div class="page-preloader" id="page-preloader">
+    <div class="preloader-content">
+      <h1 class="preloader-logo">SANIQUE</h1>
+      <div class="preloader-line"></div>
+    </div>
+  </div>
+
+  <!-- Background Decorative Glowing Blobs -->
+  <div class="luxury-bg-glows">
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+    <div class="glow-blob blob-3"></div>
+  </div>
+
   <a href="#main-content" class="skip-to-content">Skip to Content</a>
 
   <!-- Sticky Header Announcement and Glassmorphism Navbar -->
@@ -271,7 +286,8 @@
     </section>
 
     <!-- Section 2: Featured Categories -->
-    <section id="featured-categories-section" class="section fade-up" style="background: var(--bg-secondary); border-radius: 24px;">
+    <section id="featured-categories-section" class="section luxury-section fade-up">
+      <span class="section-eyebrow">Milan Runway</span>
       <h2 class="section-title">Featured Collections</h2>
       <p class="section-subtitle">Shop our signature curated lines crafted in Milan</p>
       
@@ -310,46 +326,48 @@
     </section>
 
     <!-- Section 3: Best Sellers -->
-    <section class="section fade-up">
+    <section class="section luxury-section fade-up">
+      <span class="section-eyebrow">Runway Favorites</span>
       <h2 class="section-title">The Best Sellers</h2>
       <p class="section-subtitle">Our most-loved creations curated by professional runway artists.</p>
       <div class="product-grid" id="best-sellers-grid"></div>
     </section>
 
     <!-- Section 4: New Arrivals -->
-    <section class="section fade-up" style="background: var(--bg-secondary); border-radius: 24px;">
+    <section class="section luxury-section fade-up">
+      <span class="section-eyebrow">Just Formulated</span>
       <h2 class="section-title">New Arrivals</h2>
       <p class="section-subtitle">Be the first to experience our latest Milan formulation launches.</p>
       <div class="product-grid" id="new-arrivals-grid"></div>
     </section>
 
     <!-- Section 5: AI Skin Scanner -->
-    <section class="section fade-up" style="background: var(--bg-secondary); padding: 80px 5%; border-radius: 24px; margin: 40px auto; border: 1px solid var(--border-color); max-width:1200px;">
+    <section class="section luxury-section fade-up" style="margin: 40px auto; max-width:1200px;">
       <div class="scanner-section-grid">
         <div>
-          <span style="color: var(--rose-gold); text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 15px; font-family: var(--font-sans);">AI Beauty Advisor</span>
+          <span class="section-eyebrow" style="text-align: left; display: inline-block; margin-bottom: 15px;">AI Beauty Advisor</span>
           <h2 style="font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; color: var(--charcoal);">Advanced AI Skin Health Scanner</h2>
           <p style="font-size: 0.95rem; line-height: 1.8; color: var(--grey); margin-bottom: 30px; font-family: var(--font-sans);">
             Reveal your skin's true classification. Our camera-based analysis measures hydration index, oil sebum, and pore conditions to formulate a targeted skincare regimen recommending exact pH-balanced products.
           </p>
           <button class="btn btn-luxury" onclick="openSkinAnalysisModal()"><i class="fas fa-camera" style="margin-right: 8px;"></i> Launch Skin Scanner</button>
         </div>
-        <div style="position: relative; display: flex; justify-content: center;">
-          <div style="background: var(--bg-primary); border-radius: 20px; border: 1px solid var(--border-color); padding: 30px; box-shadow: var(--shadow-md); width: 100%; max-width: 400px; text-align: center;">
-            <div style="width: 100%; height: 230px; background: #1C1C1C; border-radius: 12px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-              <i class="fas fa-user-shield" style="font-size: 4rem; color: rgba(255, 255, 255, 0.1);"></i>
-              <div class="scanner-beam" style="display:block;"></div>
+        <div class="scanner-preview-container">
+          <div class="scanner-preview-card">
+            <div class="camera-viewport">
+              <i class="fas fa-user-shield"></i>
+              <div class="scanner-beam"></div>
             </div>
-            <h4 style="font-family: var(--font-serif); margin-top: 20px; font-size: 1.15rem; color: var(--charcoal);">Hydration & Sebum Scan</h4>
-            <span style="font-size: 0.75rem; color: var(--rose-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-sans); margin-top: 4px; display: inline-block;">Ready for Camera Scan</span>
+            <h4>Hydration & Sebum Scan</h4>
+            <span class="scan-ready-indicator">Ready for Camera Scan</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Section 6: Customer Reviews -->
-    <section class="section fade-up">
-      <span style="display:block; text-align:center; color:var(--rose-gold); text-transform:uppercase; letter-spacing:3px; margin-bottom:10px; font-size:0.8rem; font-weight:700; font-family: var(--font-sans);">Testimonials</span>
+    <section class="section luxury-section fade-up">
+      <span class="section-eyebrow">Testimonials</span>
       <h2 class="section-title">What Our Society Says</h2>
       <p class="section-subtitle">Our most-loved creations curated by professional runway artists.</p>
       
@@ -416,8 +434,8 @@
     </section>
 
     <!-- Section 7: Instagram Gallery -->
-    <section class="section fade-up" style="background: var(--bg-secondary); border-radius: 24px;">
-      <span style="display:block; text-align:center; color:var(--rose-gold); text-transform:uppercase; letter-spacing:3px; margin-bottom:10px; font-size:0.8rem; font-weight:700; font-family: var(--font-sans);">#SaniqueSociety</span>
+    <section class="section luxury-section fade-up">
+      <span class="section-eyebrow">#SaniqueSociety</span>
       <h2 class="section-title">Shop The Runway Looks</h2>
       <p class="section-subtitle">Popular products flying off the shelves right now.</p>
       

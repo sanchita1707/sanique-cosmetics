@@ -21,46 +21,69 @@
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96) !important;
 }
 
 .btn-primary {
-  background: var(--charcoal);
+  background: linear-gradient(135deg, var(--blush), var(--soft-peach), var(--gold));
+  background-size: 200% auto;
   color: var(--white);
-  border: 1px solid var(--charcoal);
+  border: none;
+  box-shadow: 0 4px 12px var(--blush-glow);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary:hover {
-  background: var(--rose-gold);
-  border-color: var(--rose-gold);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  background-position: right center;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px var(--blush-glow), 0 0 10px rgba(214, 179, 106, 0.2);
 }
 
 .btn-outline {
-  background: transparent;
+  background: rgba(250, 247, 245, 0.4);
   color: var(--charcoal);
-  border: 1.5px solid var(--charcoal);
+  border: 1px solid rgba(23, 23, 23, 0.15);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-outline:hover {
-  background: var(--charcoal);
-  color: var(--white);
-  box-shadow: var(--shadow-sm);
+  background: rgba(250, 247, 245, 0.9);
+  color: var(--charcoal);
+  border-color: var(--blush);
+  box-shadow: 0 4px 12px var(--blush-glow);
   transform: translateY(-2px);
 }
 
 .btn-luxury {
-  background: linear-gradient(135deg, var(--rose-gold), var(--gold));
-  color: var(--white);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(135deg, var(--blush), var(--soft-peach), var(--gold));
   background-size: 200% auto;
+  color: var(--white);
+  box-shadow: 0 4px 15px var(--blush-glow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-luxury:hover {
   background-position: right center;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--blush-glow), 0 0 12px rgba(214, 179, 106, 0.2);
+}
+
+.btn-luxury::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+}
+
+.btn-luxury:hover::after {
+  left: 150%;
 }
 
 /* Close & Utility Buttons */
@@ -106,14 +129,23 @@
   color: var(--grey);
   cursor: pointer;
   z-index: 10;
-  transition: var(--transition);
   box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: scale(0.9) translateY(-5px);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover .wishlist-btn,
+.wishlist-btn.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .wishlist-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) !important;
   color: var(--rose-gold);
   border-color: var(--rose-gold-glow);
+  box-shadow: 0 4px 12px rgba(201, 107, 130, 0.15);
 }
 
 .wishlist-btn.active {

@@ -138,7 +138,7 @@ function renderProducts(products) {
       `<button class="btn-add-cart" onclick="triggerAddToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${cartPrice}, '${firstImg}', '${selectedShadeName.replace(/'/g, "\\'")}')">Add to Cart</button>`;
 
     return `
-      <div class="product-card" data-id="${product._id}">
+      <div class="product-card fade-up" data-id="${product._id}">
         ${badgeHtml}
         ${stockBadgeHtml}
         <button class="${wishlistClass}" onclick="toggleWishlistItem('${product._id}', this)" title="Add to Wishlist">
@@ -181,6 +181,10 @@ function renderProducts(products) {
       </div>
     `;
   }).join('');
+
+  if (window.initLuxuryRevealAnimations) {
+    window.initLuxuryRevealAnimations();
+  }
 }
 
 function selectCardShade(elem, name) {

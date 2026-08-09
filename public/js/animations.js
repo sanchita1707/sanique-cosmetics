@@ -4,21 +4,31 @@ document.addEventListener('DOMContentLoaded', () => {
   initLuxuryRevealAnimations();
 });
 
+// Dismiss preloader once fully loaded
+window.addEventListener('load', () => {
+  const preloader = document.getElementById('page-preloader');
+  if (preloader) {
+    preloader.classList.add('fade-out');
+    setTimeout(() => {
+      preloader.remove();
+    }, 600); // Wait for transition to complete
+  }
+});
+
 function initLuxuryRevealAnimations() {
-  const elementsToReveal = document.querySelectorAll('.fade-up, .fade-in');
+  const elementsToReveal = document.querySelectorAll('.fade-up:not(.reveal), .fade-in:not(.reveal)');
   
   if ('IntersectionObserver' in window) {
     const observerOptions = {
       root: null,
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
+      threshold: 0.1,
+      rootMargin: '0px 0px -30px 0px'
     };
 
     const revealObserver = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('reveal');
-          // Once revealed, no need to track it further
           observer.unobserve(entry.target);
         }
       });
@@ -26,7 +36,9 @@ function initLuxuryRevealAnimations() {
 
     elementsToReveal.forEach(el => revealObserver.observe(el));
   } else {
-    // Fallback: Reveal immediately if browser doesn't support IntersectionObserver
     elementsToReveal.forEach(el => el.classList.add('reveal'));
   }
 }
+
+// Expose globally for dynamic additions
+window.initLuxuryRevealAnimations = initLuxuryRevealAnimations;

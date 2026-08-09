@@ -1,10 +1,11 @@
 /* Premium Clean Footer - Sanique Cosmetics */
 
 footer {
-  background: var(--charcoal);
+  background: linear-gradient(180deg, var(--charcoal) 0%, #0c0c0c 100%);
   color: #B2A29D;
   padding: 80px 5% 40px;
-  border-top: 1.5px solid var(--gold-glow);
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--blush) 0%, var(--gold) 50%, var(--blush) 100%) 1;
   font-family: var(--font-sans);
 }
 
@@ -33,12 +34,15 @@ footer {
 
 .footer-column h3 {
   font-family: var(--font-serif);
-  color: var(--gold);
+  background: linear-gradient(90deg, var(--gold), var(--blush));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 1.05rem;
   font-weight: 600;
   margin-bottom: 24px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
+  display: inline-block;
 }
 
 .footer-column p {
@@ -58,12 +62,12 @@ footer {
   font-size: 0.85rem;
   padding: 8px 0;
   color: #B2A29D;
-  transition: var(--transition);
+  transition: all 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: var(--white);
-  padding-left: 6px;
+  color: var(--blush);
+  padding-left: 8px;
 }
 
 /* Newsletter Input within Footer context */
@@ -90,15 +94,15 @@ footer {
   justify-content: center;
   color: #B2A29D;
   font-size: 0.9rem;
-  transition: var(--transition);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s, color 0.3s;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .social-icon:hover {
-  background: var(--rose-gold);
+  background: var(--blush);
   color: var(--white);
-  transform: translateY(-3px);
-  border-color: var(--rose-gold);
+  transform: translateY(-5px) rotate(8deg);
+  border-color: var(--blush);
 }
 
 .footer-payments {

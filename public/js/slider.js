@@ -132,9 +132,9 @@ function initHeroParticles() {
       ctx.closePath();
       
       const goldGrad = ctx.createLinearGradient(-this.size, -this.size, this.size, this.size);
-      goldGrad.addColorStop(0, `rgba(212, 175, 55, ${this.opacity})`);
+      goldGrad.addColorStop(0, `rgba(214, 179, 106, ${this.opacity})`);
       goldGrad.addColorStop(0.5, `rgba(243, 219, 142, ${this.opacity * 1.2})`);
-      goldGrad.addColorStop(1, `rgba(187, 134, 45, ${this.opacity * 0.8})`);
+      goldGrad.addColorStop(1, `rgba(180, 146, 75, ${this.opacity * 0.8})`);
       
       ctx.fillStyle = goldGrad;
       ctx.shadowBlur = 4;
@@ -217,7 +217,7 @@ function initHeroParticles() {
       ctx.beginPath();
       ctx.arc(width * 0.75, height * 0.4, 300, 0, Math.PI * 2);
       const radGrad = ctx.createRadialGradient(width * 0.75, height * 0.4, 0, width * 0.75, height * 0.4, 300);
-      radGrad.addColorStop(0, 'rgba(196, 106, 132, 0.05)');
+      radGrad.addColorStop(0, 'rgba(217, 138, 154, 0.08)');
       radGrad.addColorStop(1, 'transparent');
       ctx.fillStyle = radGrad;
       ctx.fill();

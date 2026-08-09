@@ -132,6 +132,29 @@ function addToCart(productId, name, price, image, shade = "", quantity = 1) {
   updateCartBadge();
   openCartDrawer();
   showToast(`${name} added to cart`, 'success');
+
+  // Interactive button visual confirmation feedback
+  try {
+    if (window.event) {
+      const activeElem = window.event.currentTarget || window.event.target;
+      if (activeElem) {
+        const btn = activeElem.classList.contains('btn-add-cart') || activeElem.classList.contains('btn-luxury') || activeElem.tagName === 'BUTTON' ? activeElem : activeElem.closest('.btn-add-cart, .btn-luxury, button');
+        if (btn && !btn.classList.contains('added')) {
+          const originalHtml = btn.innerHTML;
+          btn.classList.add('added');
+          btn.innerHTML = '<i class="fas fa-check"></i> Added';
+          btn.disabled = true;
+          setTimeout(() => {
+            btn.classList.remove('added');
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+          }, 1500);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Cart button feedback animation error:", e);
+  }
 }
 
 function updateCartQuantity(productId, shade, change) {
@@ -159,7 +182,13 @@ function updateCartBadge() {
   const countBadge = document.querySelector('.cart-count');
   if (countBadge) {
     const total = cart.reduce((acc, item) => item.quantity + acc, 0);
+    const oldTotal = parseInt(countBadge.textContent) || 0;
     countBadge.textContent = total;
+    if (total !== oldTotal) {
+      countBadge.classList.remove('pulse');
+      void countBadge.offsetWidth; // Trigger reflow to restart animation
+      countBadge.classList.add('pulse');
+    }
   }
 }
 

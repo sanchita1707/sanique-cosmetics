@@ -61,7 +61,7 @@ function renderHomeGrid(elementId, items) {
     const firstImg = product.images?.[0] || '/assets/images/products/default-product.jpg';
 
     return `
-      <div class="product-card" onclick="window.location.href='/product.html?id=${product._id}'">
+      <div class="product-card fade-up" onclick="window.location.href='/product.html?id=${product._id}'">
         ${badgeHtml}
         <button class="wishlist-btn ${isWished?'active':''}" onclick="event.stopPropagation(); toggleWishlistItem('${product._id}', this)">
           <i class="${isWished?'fas':'far'} fa-heart"></i>
@@ -98,6 +98,10 @@ function renderHomeGrid(elementId, items) {
       </div>
     `;
   }).join('');
+
+  if (window.initLuxuryRevealAnimations) {
+    window.initLuxuryRevealAnimations();
+  }
 }
 
 // Helpers

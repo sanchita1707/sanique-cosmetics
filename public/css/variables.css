@@ -4,19 +4,22 @@
 
 :root {
   /* Brand Luxury Colors */
-  --bg-primary: #FDF8F6;
+  --bg-primary: #FAF7F5; /* Warm Ivory */
   --bg-secondary: #FFFFFF;
   --white: #FFFFFF;
-  --rose-gold: #C46A84;
-  --gold: #D4AF37;
-  --charcoal: #1C1C1C;
+  --blush: #D98A9A;
+  --rose-gold: #C96B82; /* Dusty Rose */
+  --soft-peach: #E7A06A;
+  --gold: #D6B36A; /* Champagne Gold */
+  --charcoal: #171717; /* Deep Black */
   --grey: #6B7280;
-  --border-color: #ECECEC;
+  --border-color: #EFEBE9; /* Soft Warm Border */
   
   /* Semi-transparent variations for glowing highlights */
-  --rose-gold-glow: rgba(196, 106, 132, 0.15);
-  --gold-glow: rgba(212, 175, 55, 0.15);
-  --bg-glass: rgba(253, 248, 246, 0.85);
+  --blush-glow: rgba(217, 138, 154, 0.15);
+  --rose-gold-glow: rgba(201, 107, 130, 0.15);
+  --gold-glow: rgba(214, 179, 106, 0.15);
+  --bg-glass: rgba(250, 247, 245, 0.85); /* Frosted Warm Ivory */
   
   /* Status Colors */
   --success: #6E9B7B;
@@ -39,16 +42,16 @@
   --space-giant: 96px;
 
   /* Border Radii */
-  --radius-cards: 20px;
+  --radius-cards: 24px; /* Refined from 20px */
   --radius-buttons: 30px;
   --radius-inputs: 16px;
   --radius-images: 24px;
 
   /* Shadows - Soft Premium (no heavy dark shadows) */
-  --shadow-sm: 0 4px 12px rgba(196, 106, 132, 0.03);
-  --shadow-md: 0 10px 30px rgba(196, 106, 132, 0.05);
-  --shadow-lg: 0 20px 50px rgba(196, 106, 132, 0.08);
-  --shadow-glass: 0 8px 32px 0 rgba(196, 106, 132, 0.04);
+  --shadow-sm: 0 4px 12px rgba(217, 138, 154, 0.04);
+  --shadow-md: 0 10px 30px rgba(217, 138, 154, 0.06);
+  --shadow-lg: 0 20px 50px rgba(217, 138, 154, 0.09);
+  --shadow-glass: 0 8px 32px 0 rgba(217, 138, 154, 0.05);
 
   /* Transitions */
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -62,8 +65,9 @@
   --grey: #9CA3AF;
   --border-color: #2C2C2C;
   
-  --rose-gold-glow: rgba(196, 106, 132, 0.25);
-  --gold-glow: rgba(212, 175, 55, 0.25);
+  --blush-glow: rgba(217, 138, 154, 0.25);
+  --rose-gold-glow: rgba(201, 107, 130, 0.25);
+  --gold-glow: rgba(214, 179, 106, 0.25);
   --bg-glass: rgba(18, 18, 18, 0.85);
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
