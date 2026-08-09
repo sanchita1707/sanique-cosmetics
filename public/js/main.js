@@ -232,6 +232,8 @@ function closeLoginModal() {
 // Handle Modal Submit
 async function handleModalLoginSubmit(e) {
   e.preventDefault();
+  console.log("LOGIN HANDLER STARTED");
+  console.log("LOGIN FORM SUBMIT TRIGGERED");
   const form = e.target;
   const email = form.querySelector('#modal-login-email').value;
   const password = form.querySelector('#modal-login-password').value;
@@ -246,23 +248,43 @@ async function handleModalLoginSubmit(e) {
   submitBtn.disabled = true;
   errorMsg.style.display = 'none';
 
+  // Dynamic API URL helper for local development (supports Live Server or filesystem)
+  const getApiUrl = (path) => {
+    if (window.location.protocol === 'file:') {
+      return `http://localhost:5000${path}`;
+    }
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      if (window.location.port !== '5000') {
+        return `http://localhost:5000${path}`;
+      }
+    }
+    return path;
+  };
+
   try {
-    const res = await fetch('/api/auth/login', {
+    console.log("LOGIN REQUEST SENT");
+    console.log("LOGIN API REQUEST STARTED");
+    const res = await fetch(getApiUrl('/api/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     });
+    console.log("LOGIN RESPONSE RECEIVED");
+    console.log("API response status:", res.status);
     const data = await res.json();
+    console.log("Parsed response:", data);
 
     if (res.status === 200) {
       localStorage.setItem('sanique_token', data.token);
       localStorage.setItem('sanique_isAdmin', data.isAdmin);
       localStorage.setItem('sanique_user_name', data.name);
       localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
+      console.log("LOGIN TOKEN SAVED");
       
       showToast("Welcome back to Sanique!", "success");
       closeLoginModal();
       updateNavbarUserState();
+      console.log("LOGIN REDIRECT STARTED"); // Modal updates state instead of page redirect
     } else {
       errorMsg.textContent = data.message || "Invalid credentials";
       errorMsg.style.display = 'block';

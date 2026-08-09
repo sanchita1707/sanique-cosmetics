@@ -261,28 +261,49 @@
       if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
+          console.log("LOGIN HANDLER STARTED");
+          console.log("LOGIN FORM SUBMIT TRIGGERED");
           const email = document.getElementById('login-email').value;
           const password = document.getElementById('login-password').value;
           const submitBtn = loginForm.querySelector('button[type="submit"]');
           const originalText = submitBtn.textContent;
+
+          // Dynamic API URL helper for local development (supports Live Server or filesystem)
+          const getApiUrl = (path) => {
+            if (window.location.protocol === 'file:') {
+              return `http://localhost:5000${path}`;
+            }
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              if (window.location.port !== '5000') {
+                return `http://localhost:5000${path}`;
+              }
+            }
+            return path;
+          };
 
           // Loading state
           submitBtn.textContent = 'SIGNING IN...';
           submitBtn.disabled = true;
 
           try {
-            const res = await fetch('/api/auth/login', {
+            console.log("LOGIN REQUEST SENT");
+            console.log("LOGIN API REQUEST STARTED");
+            const res = await fetch(getApiUrl('/api/auth/login'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ email, password })
             });
+            console.log("LOGIN RESPONSE RECEIVED");
+            console.log("API response status:", res.status);
             const data = await res.json();
+            console.log("Parsed response:", data);
 
             if (res.status === 200) {
               localStorage.setItem('sanique_token', data.token);
               localStorage.setItem('sanique_isAdmin', data.isAdmin);
               localStorage.setItem('sanique_user_name', data.name);
               localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
+              console.log("LOGIN TOKEN SAVED");
               
               if (typeof showToast === 'function') {
                 showToast("Welcome back to Sanique!", "success");
@@ -290,6 +311,7 @@
                 alert("Welcome back to Sanique!");
               }
 
+              console.log("LOGIN REDIRECT STARTED");
               setTimeout(() => {
                 const redirectParam = urlParams.get('redirect') || '';
                 if (redirectParam) window.location.href = '/' + redirectParam;
