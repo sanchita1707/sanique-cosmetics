@@ -193,10 +193,18 @@ function renderProducts(products) {
 
   if (window.initLuxuryRevealAnimations) {
     window.initLuxuryRevealAnimations();
-  } else {
-    // Fallback: If animations.js is not loaded, reveal cards immediately
-    container.querySelectorAll('.fade-up').forEach(el => el.classList.add('reveal'));
   }
+
+  // Safe fallback to guarantee visibility:
+  // We use requestAnimationFrame to ensure all product cards receive the 'reveal' class
+  // and become visible, regardless of whether the animation observer runs or succeeds.
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.fade-up').forEach(card => {
+      if (!card.classList.contains('reveal')) {
+        card.classList.add('reveal');
+      }
+    });
+  });
 }
 
 function selectCardShade(elem, name) {

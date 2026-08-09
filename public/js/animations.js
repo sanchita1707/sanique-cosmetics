@@ -16,6 +16,7 @@ window.addEventListener('load', () => {
 });
 
 function initLuxuryRevealAnimations() {
+  document.documentElement.classList.add('animations-active');
   const elementsToReveal = document.querySelectorAll('.fade-up:not(.reveal), .fade-in:not(.reveal)');
   
   if ('IntersectionObserver' in window) {

@@ -2,9 +2,14 @@
 
 /* 1. Page Entrance Reveals */
 .fade-up {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animations-active .fade-up:not(.reveal) {
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .fade-up.reveal {
@@ -13,8 +18,12 @@
 }
 
 .fade-in {
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.8s ease;
+}
+
+.animations-active .fade-in:not(.reveal) {
+  opacity: 0;
 }
 
 .fade-in.reveal {
@@ -312,9 +321,14 @@
 
 /* 6. Staggered Scroll Reveal */
 .fade-up-stagger > * {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animations-active .fade-up-stagger:not(.reveal) > * {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .fade-up-stagger.reveal > *:nth-child(1) { transition-delay: 0.05s; opacity: 1; transform: translateY(0); }
