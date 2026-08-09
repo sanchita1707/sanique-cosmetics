@@ -19,17 +19,32 @@ function openSkinAnalysisModal() {
           <button class="modal-close" onclick="closeSkinAnalysisModal()">&times;</button>
         </div>
         <div class="modal-body" style="text-align:center;">
-          <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
-            Position your face clearly in the camera grid. Our engine will check hydration, oil index, and pores.
-          </p>
-          <div class="scanner-animation-wrapper">
-            <video id="skin-video" class="scanner-video" autoplay playsinline></video>
-            <div id="skin-beam" class="scanner-beam"></div>
-            <canvas id="skin-capture-canvas" style="display:none;"></canvas>
+          <!-- 1. Permission & Launch Explanation view -->
+          <div id="skin-scanner-permission-view" style="padding: 20px 0;">
+            <div style="font-size: 3rem; color: var(--rose-gold); margin-bottom: 15px;"><i class="fas fa-camera"></i></div>
+            <h3 style="font-family: var(--font-serif); margin-bottom: 10px;">Camera Permission Request</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:20px; line-height: 1.5; max-width: 400px; margin-left: auto; margin-right: auto;">
+              Sanique AI Skin Scanner requires active camera permissions to analyze your skin tone, texture, oil levels, and hydration. The camera feed is processed locally and is never uploaded or saved.
+            </p>
+            <div id="scanner-error-container" class="form-error-msg" style="display:none; margin-bottom: 15px; text-align: center; color: var(--error);"></div>
+            <button class="btn btn-luxury" id="btn-launch-camera" style="width: 100%;" onclick="launchSkinScannerCamera()">LAUNCH SKIN SCANNER</button>
           </div>
-          <button class="btn btn-luxury" id="skin-scan-btn" style="margin-top:20px; width:100%;" onclick="startSkinScan()">Scan My Skin</button>
+
+          <!-- 2. Live Scanner view -->
+          <div id="skin-scanner-active-view" style="display:none;">
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:15px;">
+              Position your face clearly in the camera grid. Our engine will check hydration, oil index, and pores.
+            </p>
+            <div class="scanner-animation-wrapper">
+              <video id="skin-video" class="scanner-video" autoplay playsinline></video>
+              <div id="skin-beam" class="scanner-beam"></div>
+              <canvas id="skin-capture-canvas" style="display:none;"></canvas>
+            </div>
+            <button class="btn btn-luxury" id="skin-scan-btn" style="margin-top:20px; width:100%;" onclick="startSkinScan()">Scan My Skin</button>
+          </div>
           
-          <div id="skin-results-section" class="scanner-results">
+          <!-- 3. Results Section -->
+          <div id="skin-results-section" class="scanner-results" style="display:none;">
             <div class="scanner-metric-card">
               <div class="scanner-metric-value" id="metric-oil">42%</div>
               <div class="scanner-metric-title">Oil Index</div>
@@ -57,6 +72,17 @@ function openSkinAnalysisModal() {
     // Reset scanner state for retries
     const scanBtn = document.getElementById('skin-scan-btn');
     const results = document.getElementById('skin-results-section');
+    const permView = document.getElementById('skin-scanner-permission-view');
+    const activeView = document.getElementById('skin-scanner-active-view');
+    const errContainer = document.getElementById('scanner-error-container');
+
+    if (permView && activeView) {
+      permView.style.display = 'block';
+      activeView.style.display = 'none';
+    }
+    if (errContainer) {
+      errContainer.style.display = 'none';
+    }
     if (scanBtn) {
       scanBtn.style.display = 'block';
       scanBtn.disabled = false;
@@ -68,14 +94,84 @@ function openSkinAnalysisModal() {
   }
 
   modal.classList.add('active');
-  startWebcam('skin-video');
+}
+
+async function launchSkinScannerCamera() {
+  const permView = document.getElementById('skin-scanner-permission-view');
+  const activeView = document.getElementById('skin-scanner-active-view');
+  const errContainer = document.getElementById('scanner-error-container');
+  const launchBtn = document.getElementById('btn-launch-camera');
+
+  if (!permView || !activeView || !errContainer || !launchBtn) return;
+
+  errContainer.style.display = 'none';
+  launchBtn.disabled = true;
+  launchBtn.textContent = 'Requesting Camera Access...';
+
+  // Check support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    errContainer.textContent = "Webcam access is not supported by your browser. Please try on a modern browser.";
+    errContainer.style.display = 'block';
+    launchBtn.disabled = false;
+    launchBtn.textContent = 'LAUNCH SKIN SCANNER';
+    return;
+  }
+
+  try {
+    stopWebcam();
+    webcamStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: 640, height: 480 },
+      audio: false
+    });
+    
+    // Set video srcObject
+    const video = document.getElementById('skin-video');
+    if (video) {
+      video.srcObject = webcamStream;
+    }
+    
+    // Switch views
+    permView.style.display = 'none';
+    activeView.style.display = 'block';
+
+  } catch (err) {
+    console.error("Camera permission error:", err);
+    let errMsg = "Camera access is required for the skin scanner. Please allow camera access and try again.";
+    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+      errMsg = "Camera access is required for the skin scanner. Please allow camera access and try again.";
+    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+      errMsg = "No camera hardware detected on this device.";
+    } else {
+      errMsg = `Error: ${err.message || "Failed to start camera."}`;
+    }
+    errContainer.textContent = errMsg;
+    errContainer.style.display = 'block';
+  } finally {
+    launchBtn.disabled = false;
+    launchBtn.textContent = 'LAUNCH SKIN SCANNER';
+  }
 }
 
 function closeSkinAnalysisModal() {
   const modal = document.getElementById('skin-analysis-modal');
   if (modal) modal.classList.remove('active');
   stopWebcam();
+
+  // Reset UI views
+  const permView = document.getElementById('skin-scanner-permission-view');
+  const activeView = document.getElementById('skin-scanner-active-view');
+  const errContainer = document.getElementById('scanner-error-container');
+  if (permView && activeView) {
+    permView.style.display = 'block';
+    activeView.style.display = 'none';
+  }
+  if (errContainer) {
+    errContainer.style.display = 'none';
+  }
 }
+
+// Bind to window globally
+window.launchSkinScannerCamera = launchSkinScannerCamera;
 
 async function startSkinScan() {
   const video = document.getElementById('skin-video');
