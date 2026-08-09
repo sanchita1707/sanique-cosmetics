@@ -782,3 +782,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Export utility functions globally
+window.showToast = showToast;
+window.updateNavbarUserState = updateNavbarUserState;
+window.openLoginModal = openLoginModal;
+window.closeLoginModal = closeLoginModal;

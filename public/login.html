@@ -249,79 +249,138 @@
       }
     }
 
-    // Check URL parameters to show register form if requested
-    document.addEventListener('DOMContentLoaded', () => {
+    function initLoginAndRegister() {
+      // Check URL parameters to show register form if requested
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('register') === 'true') {
         toggleAuthForm(true);
       }
-    });
 
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
+      // Login Form Handler
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value;
+          const password = document.getElementById('login-password').value;
+          const submitBtn = loginForm.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
 
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          // Loading state
+          submitBtn.textContent = 'SIGNING IN...';
+          submitBtn.disabled = true;
+
+          try {
+            const res = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+
+            if (res.status === 200) {
+              localStorage.setItem('sanique_token', data.token);
+              localStorage.setItem('sanique_isAdmin', data.isAdmin);
+              localStorage.setItem('sanique_user_name', data.name);
+              localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
+              
+              if (typeof showToast === 'function') {
+                showToast("Welcome back to Sanique!", "success");
+              } else {
+                alert("Welcome back to Sanique!");
+              }
+
+              setTimeout(() => {
+                const redirectParam = urlParams.get('redirect') || '';
+                if (redirectParam) window.location.href = '/' + redirectParam;
+                else window.location.href = data.isAdmin ? '/admin.html' : '/dashboard.html';
+              }, 1000);
+            } else {
+              if (typeof showToast === 'function') {
+                showToast(data.message || "Invalid email or password.", "error");
+              } else {
+                alert(data.message || "Invalid email or password.");
+              }
+            }
+          } catch (err) {
+            console.error("Login connection error:", err);
+            if (typeof showToast === 'function') {
+              showToast("Unable to connect to the server. Please try again.", "error");
+            } else {
+              alert("Unable to connect to the server. Please try again.");
+            }
+          } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
         });
-        const data = await res.json();
-
-        if (res.status === 200) {
-          localStorage.setItem('sanique_token', data.token);
-          localStorage.setItem('sanique_isAdmin', data.isAdmin);
-          localStorage.setItem('sanique_user_name', data.name);
-          localStorage.setItem('sanique_wishlist', JSON.stringify(data.wishlist || []));
-          
-          showToast("Welcome back to Sanique!", "success");
-          setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const red = urlParams.get('redirect') || '';
-            if (red) window.location.href = '/' + red;
-            else window.location.href = data.isAdmin ? '/admin.html' : '/dashboard.html';
-          }, 1000);
-        } else {
-          showToast(data.message || "Invalid credentials", "error");
-        }
-      } catch (err) {
-        console.error(err);
       }
-    });
 
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
-      const mobile = document.getElementById('reg-mobile').value;
+      // Register Form Handler
+      const registerForm = document.getElementById('register-form');
+      if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const name = document.getElementById('reg-name').value;
+          const email = document.getElementById('reg-email').value;
+          const password = document.getElementById('reg-password').value;
+          const mobile = document.getElementById('reg-mobile').value;
+          const submitBtn = registerForm.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
 
-      try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password, mobile })
+          // Loading state
+          submitBtn.textContent = 'CREATING ACCOUNT...';
+          submitBtn.disabled = true;
+
+          try {
+            const res = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, email, password, mobile })
+            });
+            const data = await res.json();
+
+            if (res.status === 201) {
+              localStorage.setItem('sanique_token', data.token);
+              localStorage.setItem('sanique_isAdmin', data.isAdmin);
+              localStorage.setItem('sanique_user_name', data.name);
+              
+              if (typeof showToast === 'function') {
+                showToast("Welcome! Earned 100 loyalty registration points.", "success");
+              } else {
+                alert("Account created successfully!");
+              }
+
+              setTimeout(() => {
+                window.location.href = '/dashboard.html';
+              }, 1500);
+            } else {
+              if (typeof showToast === 'function') {
+                showToast(data.message || "Registration failed", "error");
+              } else {
+                alert(data.message || "Registration failed");
+              }
+            }
+          } catch (err) {
+            console.error("Registration connection error:", err);
+            if (typeof showToast === 'function') {
+              showToast("Unable to connect to the server. Please try again.", "error");
+            } else {
+              alert("Unable to connect to the server. Please try again.");
+            }
+          } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
         });
-        const data = await res.json();
-
-        if (res.status === 201) {
-          localStorage.setItem('sanique_token', data.token);
-          localStorage.setItem('sanique_isAdmin', data.isAdmin);
-          localStorage.setItem('sanique_user_name', data.name);
-          
-          showToast("Welcome! Earned 100 loyalty registration points.", "success");
-          setTimeout(() => {
-            window.location.href = '/dashboard.html';
-          }, 1500);
-        } else {
-          showToast(data.message || "Registration failed", "error");
-        }
-      } catch (err) {
-        console.error(err);
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLoginAndRegister);
+    } else {
+      initLoginAndRegister();
+    }
   </script>
 </body>
 </html>
