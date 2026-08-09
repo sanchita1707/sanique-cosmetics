@@ -196,6 +196,21 @@
   box-shadow: var(--shadow-sm);
 }
 
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.prev-arrow {
+  left: 30px;
+}
+
+.next-arrow {
+  right: 30px;
+}
+
+
 .slider-arrow:hover,
 .slider-control-btn:hover {
   background: var(--charcoal);
