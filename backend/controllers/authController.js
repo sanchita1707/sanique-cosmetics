@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 
 const generateToken = (id) => {
@@ -218,6 +219,103 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+// @desc    Get Google Client ID
+// @route   GET /api/auth/google/client-id
+// @access  Public
+const getGoogleClientId = (req, res) => {
+  res.json({ clientId: process.env.GOOGLE_CLIENT_ID || '' });
+};
+
+// @desc    Auth user via Google OAuth 2.0 Code Flow
+// @route   POST /api/auth/google
+// @access  Public
+const googleAuth = async (req, res) => {
+  const { code, redirectUri: clientRedirectUri } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ message: 'Google authorization code is required.' });
+  }
+
+  try {
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    
+    if (!clientId || !clientSecret) {
+      return res.status(500).json({ message: 'Google Authentication is not configured on the server.' });
+    }
+
+    // Determine the redirect URI to match the Google Cloud configuration
+    const redirectUri = process.env.GOOGLE_REDIRECT_URI || clientRedirectUri || `${req.protocol}://${req.get('host')}/login.html`;
+
+    const client = new OAuth2Client(clientId, clientSecret, redirectUri);
+    
+    // Exchange the temporary authorization code for tokens
+    const { tokens } = await client.getToken(code);
+    const idToken = tokens.id_token;
+
+    if (!idToken) {
+      return res.status(400).json({ message: 'Did not receive ID Token from Google.' });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: clientId
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload) {
+      return res.status(400).json({ message: 'Invalid Google token payload.' });
+    }
+
+    const { sub: googleId, email, name, picture, email_verified } = payload;
+
+    if (!email_verified) {
+      return res.status(400).json({ message: 'Google email is not verified.' });
+    }
+
+    // Case A: Find user by googleId
+    let user = await User.findOne({ googleId });
+
+    if (!user) {
+      // Case B: Find user by email (linked account flow)
+      user = await User.findOne({ email });
+
+      if (user) {
+        // Link Google ID to existing user
+        user.googleId = googleId;
+        await user.save();
+      } else {
+        // Case C: Create a new customer user
+        user = await User.create({
+          name: name || 'Google User',
+          email,
+          googleId,
+          isAdmin: false, // Ensure admin security
+          loyaltyPoints: 100 // Welcome registration points
+        });
+      }
+    }
+
+    // Respond with user payload and JWT
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile || '',
+      address: user.address || {},
+      isAdmin: user.isAdmin,
+      loyaltyPoints: user.loyaltyPoints,
+      vipLevel: user.vipLevel,
+      wishlist: user.wishlist || [],
+      token: generateToken(user._id)
+    });
+
+  } catch (error) {
+    console.error('Google Auth Error:', error.message);
+    res.status(401).json({ message: 'Authentication with Google failed. Invalid or expired authorization code.' });
+  }
+};
+
 module.exports = {
   registerUser,
   authUser,
@@ -226,6 +324,8 @@ module.exports = {
   updateRoutine,
   addSkinProgressLog,
   toggleWishlist,
-  getAllUsers
+  getAllUsers,
+  getGoogleClientId,
+  googleAuth
 };
 

@@ -4,8 +4,9 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  mobile: { type: String, required: true },
+  password: { type: String },
+  mobile: { type: String },
+  googleId: { type: String, unique: true, sparse: true },
   address: {
     street: { type: String, default: "" },
     city: { type: String, default: "" },
@@ -34,12 +35,13 @@ const userSchema = new mongoose.Schema({
 
 // Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
 // Encrypt password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     return next();
   }
   try {

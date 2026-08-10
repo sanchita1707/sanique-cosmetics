@@ -8,12 +8,16 @@ const {
   updateRoutine,
   addSkinProgressLog,
   toggleWishlist,
-  getAllUsers
+  getAllUsers,
+  getGoogleClientId,
+  googleAuth
 } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.post('/register', registerUser);
 router.post('/login', authUser);
+router.post('/google', googleAuth);
+router.get('/google/client-id', getGoogleClientId);
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
