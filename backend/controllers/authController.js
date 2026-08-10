@@ -244,8 +244,8 @@ const googleAuth = async (req, res) => {
       return res.status(500).json({ message: 'Google Authentication is not configured on the server.' });
     }
 
-    // Determine the redirect URI to match the Google Cloud configuration
-    const redirectUri = process.env.GOOGLE_REDIRECT_URI || clientRedirectUri || `${req.protocol}://${req.get('host')}/login.html`;
+    // Prioritize the redirect URI passed by the client (computed dynamically in their browser)
+    const redirectUri = clientRedirectUri || process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/login.html`;
 
     const client = new OAuth2Client(clientId, clientSecret, redirectUri);
     
