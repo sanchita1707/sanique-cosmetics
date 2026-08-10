@@ -269,6 +269,9 @@
     }
 
     function initLoginAndRegister() {
+      // Google Auth Button Reference (moved to the top to avoid Temporal Dead Zone reference errors)
+      const googleBtn = document.getElementById('google-login-btn');
+
       // Check URL parameters to show register form if requested
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('register') === 'true') {
@@ -429,7 +432,6 @@
       }
 
       // Google Auth Button Click Handler
-      const googleBtn = document.getElementById('google-login-btn');
       if (googleBtn) {
         googleBtn.addEventListener('click', async () => {
           const originalText = googleBtn.innerHTML;
